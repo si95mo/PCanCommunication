@@ -1,2 +1,2 @@
 # PCanCommunication
-A PEAK-CAN (PCAN-USB) resource for communicating with the hardware written in C#
+A UI for communication with PCAN
