@@ -51,6 +51,7 @@ namespace Hardware.Can
         private AutoResetEvent receiveEvent;
 
         private delegate void ReadHandler();
+
         private ReadHandler readHandler;
 
         private ushort channelHandle;
@@ -134,10 +135,10 @@ namespace Hardware.Can
         public PeakCanResource(ushort hwChannel, ushort baudRate, byte hwType, uint ioPort, ushort interrupt) : this()
         {
             Status = (uint)PCANBasic.Initialize(
-                hwChannel, 
-                (TPCANBaudrate)baudRate, 
-                (TPCANType)hwType, 
-                ioPort, 
+                hwChannel,
+                (TPCANBaudrate)baudRate,
+                (TPCANType)hwType,
+                ioPort,
                 interrupt
             );
             channelHandle = hwChannel;
@@ -205,7 +206,7 @@ namespace Hardware.Can
         }
 
         /// <summary>
-        /// Read the can messages and store them 
+        /// Read the can messages and store them
         /// in the relative <see cref="ICanChannel"/> subscribed
         /// in <see cref="Channels"/>
         /// </summary>
@@ -219,15 +220,15 @@ namespace Hardware.Can
             do
             {
                 readResult = PCANBasic.Read(
-                    channelHandle, 
-                    out TPCANMsg message, 
+                    channelHandle,
+                    out TPCANMsg message,
                     out TPCANTimestamp t
                 );
 
-                for(int i = 0; i < channels.Count && !channelFound; i++)
+                for (int i = 0; i < channels.Count && !channelFound; i++)
                 {
                     channel = channels.ElementAt(i);
-                    if(channel.CanId == message.ID)
+                    if (channel.CanId == message.ID)
                     {
                         channelFound = true;
 
@@ -252,16 +253,16 @@ namespace Hardware.Can
                 {
                     uint buffer = Convert.ToUInt32(receiveEvent.SafeWaitHandle.DangerousGetHandle().ToInt32());
                     TPCANStatus setValueResult = PCANBasic.SetValue(
-                        channelHandle, 
-                        TPCANParameter.PCAN_RECEIVE_EVENT, 
-                        ref buffer, 
+                        channelHandle,
+                        TPCANParameter.PCAN_RECEIVE_EVENT,
+                        ref buffer,
                         sizeof(uint)
                     );
 
                     if (setValueResult != TPCANStatus.PCAN_ERROR_OK)
                         Status = (uint)setValueResult;
 
-                    while(isReceiving)
+                    while (isReceiving)
                     {
                         if (receiveEvent.WaitOne(50))
                             readHandler.Invoke();

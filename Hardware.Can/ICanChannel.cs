@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hardware.Can
+﻿namespace Hardware.Can
 {
     /// <summary>
     /// Define a basic prototype for a can channel
@@ -22,7 +16,7 @@ namespace Hardware.Can
         byte[] Data { get; set; }
 
         /// <summary>
-        /// The <see cref="ICanChannel"/> associated 
+        /// The <see cref="ICanChannel"/> associated
         /// <see cref="Can.CanFrame"/>
         /// </summary>
         CanFrame CanFrame { get; set; }

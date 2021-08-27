@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hardware.Can
 {
@@ -80,12 +77,12 @@ namespace Hardware.Can
         /// <summary>
         /// The <see cref="CanChannel"/> data
         /// </summary>
-        public byte[] Data 
-        { 
-            get => data; 
+        public byte[] Data
+        {
+            get => data;
             set
             {
-                if(!value.SequenceEqual(data))
+                if (!value.SequenceEqual(data))
                 {
                     byte[] oldData = data;
                     data = value;
