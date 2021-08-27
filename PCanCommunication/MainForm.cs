@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Hardware.Can;
+using Hardware.Can.Lib;
+using System;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -13,9 +11,19 @@ namespace PCanCommunication
 {
     public partial class MainForm : Form
     {
+        private readonly Color startedColor = Color.Green;
+        private readonly Color stoppedColor = Color.Red;
+        private readonly Color unknowkColor = Color.DarkGray;
+
+        private PeakCanResource resource;
+        private CanChannel actualResistance;
+        private CanChannel setResistance;
+
         private TimeSpan startTime;
 
+        private bool continueToUpdateChart = true;
         private readonly int numberOfPOints = 32;
+        private readonly int updateInterval = 100; // ms
 
         private double rSet;
         private double rAct;
@@ -48,25 +56,94 @@ namespace PCanCommunication
             crtVariables.ChartAreas[0].AxisX.Minimum = 0;
         }
 
-        public MainForm()
+        /// <summary>
+        /// Initialize the chart (async) task updater
+        /// </summary>
+        private void InitiazlieChartUpdater()
         {
-            InitializeComponent();
-
-            rSet = 0.0;
-            rAct = 0.0;
-
-            InitializeChart();
-
             startTime = new TimeSpan(DateTime.Now.Ticks);
             bgWorker.DoWork += ChartUpdater_DoWork;
             bgWorker.RunWorkerAsync();
+
+        }
+
+        /// <summary>
+        /// Initialize user interface-related components
+        /// </summary>
+        private void InitializeUserInterface()
+        {
+            pnlResourceStarted.BackColor = unknowkColor;
+        }
+
+        /// <summary>
+        /// Initialize the can-related objects
+        /// (like the <see cref="PeakCanResource"/> or the 
+        /// various <see cref="CanChannel"/>)
+        /// </summary>
+        private void InitializeCanCommunication()
+        {
+            resource = new PeakCanResource();
+
+            lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+            resource.StatusChanged += Resource_StatusChanged;
+
+            actualResistance = new CanChannel();
+            setResistance = new CanChannel();
+
+            resource.Channels.Add(actualResistance);
+            resource.Channels.Add(setResistance);
+        }
+
+        private void Resource_StatusChanged(object sender, StatusChangedEventArgs e)
+        {
+            lblResourceStatus.Invoke(new MethodInvoker(()=>
+                    {
+                        lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+
+                        if (lblResourceStatus.Text.CompareTo("PCAN_ERROR_OK") != 0)
+                            lblResourceStatus.ForeColor = Color.Red;
+                        else
+                            lblResourceStatus.ForeColor = Color.Black;
+                    }
+                )
+            );
+        }
+
+        /// <summary>
+        /// Initialize a new instance of <see cref="MainForm"/>
+        /// </summary>
+        public MainForm()
+        {
+            // Initialize basic UI components
+            InitializeComponent();
+
+            // Initialize other UI components
+            InitializeUserInterface();
+
+            // Initialize variables
+            rSet = 0.0;
+            rAct = 0.0;
+
+            // Initialize chart
+            InitializeChart();
+
+            // Initialize chart task updater
+            InitiazlieChartUpdater();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // Initialize can-related objects
+            // This operation is performed in the Load event because
+            // a call to the Invoke method is performed in the code below
+            InitializeCanCommunication();
         }
 
         private async void ChartUpdater_DoWork(object sender, DoWorkEventArgs e)
         {
             int x = 0;
 
-            while (true)
+            while (continueToUpdateChart)
             {
                 x = (int)(new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds - startTime.TotalMilliseconds);
 
@@ -89,8 +166,28 @@ namespace PCanCommunication
                     }
                 );                
 
-                await Task.Delay(100);
+                await Task.Delay(updateInterval);
             }
+        }
+
+        private void BtnStart_Click(object sender, EventArgs e)
+        {
+            resource?.Start();
+            pnlResourceStarted.BackColor = startedColor;
+        }
+
+        private void BtnStop_Click(object sender, EventArgs e)
+        {
+            resource?.Stop();
+            pnlResourceStarted.BackColor = stoppedColor;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Stop to update the chart
+            continueToUpdateChart = false;
+            // Stop the can resource
+            resource?.Stop();
         }
     }
 }

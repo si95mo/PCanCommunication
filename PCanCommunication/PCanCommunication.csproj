@@ -67,6 +67,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="doc\pcan_library_documentation.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -79,6 +80,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hardware.Can.Peak\Hardware.Can.Peak.csproj">
+      <Project>{589da018-3b3a-4e20-95c8-3a8f046b598d}</Project>
+      <Name>Hardware.Can.Peak</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hardware.Can\Hardware.Can.csproj">
+      <Project>{12360666-20BA-42C9-BC06-5F3766B11BB7}</Project>
+      <Name>Hardware.Can</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
