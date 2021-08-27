@@ -44,8 +44,8 @@ namespace PCanCommunication
             this.btnOpen = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.btnSetVariables = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.txbRSet = new System.Windows.Forms.TextBox();
             this.txbRAct = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -73,7 +73,7 @@ namespace PCanCommunication
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.cbxDeviceList);
-            this.groupBox1.Location = new System.Drawing.Point(9, 8);
+            this.groupBox1.Location = new System.Drawing.Point(9, 11);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
@@ -147,7 +147,7 @@ namespace PCanCommunication
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.txbRSet);
             this.groupBox3.Controls.Add(this.txbRAct);
-            this.groupBox3.Location = new System.Drawing.Point(439, 12);
+            this.groupBox3.Location = new System.Drawing.Point(639, 12);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(333, 150);
             this.groupBox3.TabIndex = 9;
@@ -163,15 +163,6 @@ namespace PCanCommunication
             this.label2.TabIndex = 9;
             this.label2.Text = "Ract";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Rset";
-            // 
             // btnSetVariables
             // 
             this.btnSetVariables.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -181,6 +172,15 @@ namespace PCanCommunication
             this.btnSetVariables.TabIndex = 5;
             this.btnSetVariables.Text = "Set";
             this.btnSetVariables.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Rset";
             // 
             // txbRSet
             // 
@@ -201,7 +201,7 @@ namespace PCanCommunication
             this.groupBox4.Controls.Add(this.crtVariables);
             this.groupBox4.Location = new System.Drawing.Point(9, 168);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(763, 286);
+            this.groupBox4.Size = new System.Drawing.Size(963, 286);
             this.groupBox4.TabIndex = 10;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "CAN variables plot";
@@ -233,7 +233,7 @@ namespace PCanCommunication
             series2.Name = "SetSeries";
             this.crtVariables.Series.Add(series1);
             this.crtVariables.Series.Add(series2);
-            this.crtVariables.Size = new System.Drawing.Size(751, 261);
+            this.crtVariables.Size = new System.Drawing.Size(951, 261);
             this.crtVariables.TabIndex = 6;
             this.crtVariables.Text = "CAN variables";
             // 
@@ -241,7 +241,7 @@ namespace PCanCommunication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 461);
+            this.ClientSize = new System.Drawing.Size(984, 461);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);

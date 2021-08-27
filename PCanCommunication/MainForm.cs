@@ -15,7 +15,7 @@ namespace PCanCommunication
     {
         private TimeSpan startTime;
 
-        private readonly int numberOfPOints = 64;
+        private readonly int numberOfPOints = 32;
 
         private double rSet;
         private double rAct;
@@ -35,8 +35,11 @@ namespace PCanCommunication
 
             crtVariables.Series[rSetName].ChartType = SeriesChartType.FastLine;
             crtVariables.Series[rSetName].YAxisType = AxisType.Primary;
+            crtVariables.Series[rSetName].Color = Color.OrangeRed;
+
             crtVariables.Series[rActName].ChartType = SeriesChartType.FastLine;
             crtVariables.Series[rActName].YAxisType = AxisType.Secondary;
+            crtVariables.Series[rActName].Color = Color.RoyalBlue;
 
             crtVariables.ChartAreas[0].AxisX.Title = "Time [ms]";
             crtVariables.ChartAreas[0].AxisY.Title = "Rset";
@@ -65,10 +68,10 @@ namespace PCanCommunication
 
             while (true)
             {
-                rSet = new Random(Guid.NewGuid().GetHashCode()).NextDouble();
-                rAct = 10 * new Random(Guid.NewGuid().GetHashCode()).NextDouble();
-
                 x = (int)(new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds - startTime.TotalMilliseconds);
+
+                rSet = Math.Sin(x);
+                rAct = Math.Cos(x);
 
                 crtVariables.Invoke((MethodInvoker)delegate
                     {
