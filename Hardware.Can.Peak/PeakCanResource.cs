@@ -45,6 +45,7 @@ namespace Hardware.Can
         private uint status;
 
         private Queue<CanFrame> logQueue;
+        private int maxCapacity;
         private bool logEnabled;
 
         private object objectLock = new object();
@@ -121,6 +122,7 @@ namespace Hardware.Can
             channels = new List<ICanChannel>();
 
             logQueue = null;
+            maxCapacity = 65535;
             logEnabled = false;
 
             isReceiving = false;
@@ -214,14 +216,15 @@ namespace Hardware.Can
         public bool Send(CanFrame canFrame)
         {
             TPCANMsg msg = new TPCANMsg();
-            msg.ID = canFrame.Id;
+            msg.ID = (uint)canFrame.Id;
             msg.MSGTYPE = TPCANMessageType.PCAN_MESSAGE_STANDARD;
             msg.LEN = 8;
             msg.DATA = canFrame.Data;
 
-            bool succeded = PCANBasic.Write(channelHandle, ref msg) == TPCANStatus.PCAN_ERROR_OK;
+            Status = (uint)PCANBasic.Write(channelHandle, ref msg);
+            bool succeeded = status == (uint)TPCANStatus.PCAN_ERROR_OK;
 
-            return succeded;
+            return succeeded;
         }
 
         /// <summary>
@@ -244,13 +247,18 @@ namespace Hardware.Can
                     out TPCANTimestamp t
                 );
                 canFrame = new CanFrame(
-                    message.ID,
+                    (int)message.ID,
                     message.DATA,
                     (t.micros + 1000 * t.millis + 0x100000000 * 1000 * t.millis_overflow) / 1000
                 );
 
                 if (logEnabled)
+                {
+                    if (logQueue.Count >= maxCapacity)
+                        logQueue.Dequeue();
+
                     logQueue.Enqueue(canFrame);
+                }                    
 
                 for (int i = 0; i < channels.Count && !channelFound; i++)
                 {
@@ -318,6 +326,7 @@ namespace Hardware.Can
         public void EnableLog(int maxLogSize = 65535)
         {
             logEnabled = true;
+            maxCapacity = maxLogSize;
             logQueue = new Queue<CanFrame>(maxLogSize);
         }
 
