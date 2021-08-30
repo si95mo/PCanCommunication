@@ -41,7 +41,7 @@ namespace Hardware.Can
         private byte[] data;
         private CanFrame canFrame;
 
-        ICanResource resource;
+        private ICanResource resource;
 
         private object objectLock = new object();
 
@@ -87,8 +87,8 @@ namespace Hardware.Can
         /// <summary>
         /// The <see cref="CanChannel"/> can id
         /// </summary>
-        public int CanId 
-        { 
+        public int CanId
+        {
             get => canId;
             set
             {
@@ -101,7 +101,7 @@ namespace Hardware.Can
         /// The <see cref="CanChannel"/> data
         /// </summary>
         /// <remarks>
-        /// Only a change of this property will trigger 
+        /// Only a change of this property will trigger
         /// the <see cref="DataChanged"/> event!
         /// </remarks>
         public byte[] Data

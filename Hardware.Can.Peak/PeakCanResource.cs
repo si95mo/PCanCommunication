@@ -258,7 +258,7 @@ namespace Hardware.Can
                         logQueue.Dequeue();
 
                     logQueue.Enqueue(canFrame);
-                }                    
+                }
 
                 for (int i = 0; i < channels.Count && !channelFound; i++)
                 {
