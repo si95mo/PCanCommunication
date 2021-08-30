@@ -54,7 +54,6 @@ namespace Hardware.Can
         private AutoResetEvent receiveEvent;
 
         private delegate void ReadHandler();
-
         private ReadHandler readHandler;
 
         private ushort channelHandle;
@@ -72,7 +71,6 @@ namespace Hardware.Can
                 lock (objectLock)
                     StatusChangedHandler += value;
             }
-
             remove
             {
                 lock (objectLock)
@@ -85,9 +83,7 @@ namespace Hardware.Can
         /// </summary>
         /// <param name="e">The <see cref="StatusChangedEventArgs"/></param>
         protected virtual void OnStatusChanged(StatusChangedEventArgs e)
-        {
-            StatusChangedHandler?.Invoke(this, e);
-        }
+            => StatusChangedHandler?.Invoke(this, e);
 
         /// <summary>
         /// The <see cref="PeakCanResource"/> subscribed
@@ -115,6 +111,9 @@ namespace Hardware.Can
 
         /// <summary>
         /// Create a new instance of <see cref="PeakCanResource"/>
+        /// and perform an attribute initialization. <br/>
+        /// For a full initialization, use <see cref="PeakCanResource(ushort, ushort)"/>
+        /// or <see cref="PeakCanResource(ushort, ushort, byte, uint, ushort)"/>
         /// </summary>
         public PeakCanResource()
         {
@@ -127,11 +126,12 @@ namespace Hardware.Can
             receiveEvent = new AutoResetEvent(false);
             readHandler = new ReadHandler(ReadMessages);
 
-            rxTask = default;
+            rxTask = default; // Initialization to a known state
         }
 
         /// <summary>
-        /// Create a new instance of <see cref="PeakCanResource"/>. <br/>
+        /// Create a new instance of <see cref="PeakCanResource"/> 
+        /// for non plug-and-play hardware. <br/>
         /// See also <see cref="PeakCanResource(ushort, ushort)"/>
         /// </summary>
         /// <param name="hwChannel">The channel handle</param>
@@ -139,6 +139,11 @@ namespace Hardware.Can
         /// <param name="hwType">The hardware type</param>
         /// <param name="ioPort">The IO address of the parallel port</param>
         /// <param name="interrupt">The interrupt number of the parallel port</param>
+        /// <remarks>
+        /// This constructor should only be called for the non plug-and-play hardware
+        /// (such as PCAN-Dongle or PCAN-ISA). <br/>
+        /// For plug-and-play hardware see <see cref="PeakCanResource(ushort, ushort)"/>
+        /// </remarks>
         public PeakCanResource(ushort hwChannel, ushort baudRate, byte hwType, uint ioPort, ushort interrupt) : this()
         {
             Status = (uint)PCANBasic.Initialize(
@@ -152,11 +157,17 @@ namespace Hardware.Can
         }
 
         /// <summary>
-        /// Create a new instance of <see cref="PeakCanResource"/>. <br/>
+        /// Create a new instance of <see cref="PeakCanResource"/> 
+        /// for plug-and-play hardware. <br/>
         /// See also <see cref="PeakCanResource(ushort, ushort, byte, uint, ushort)"/>
         /// </summary>
         /// <param name="hwChannel">The channel handle</param>
         /// <param name="baudRate">The baud rate</param>
+        /// <remarks>
+        /// This constructor should only be called for the plug-and-play hardware
+        /// (such as PCAN-USB, PCAN-USB Pro or PCAN-PCI). <br/>
+        /// For non plug-and-play hardware see <see cref="PeakCanResource(ushort, ushort, byte, uint, ushort)"/>
+        /// </remarks>
         public PeakCanResource(ushort hwChannel, ushort baudRate) : this(hwChannel, baudRate, 0, 0, 0)
         { }
 
@@ -231,7 +242,6 @@ namespace Hardware.Can
                     out TPCANMsg message,
                     out TPCANTimestamp t
                 );
-
                 canFrame = new CanFrame(
                     message.ID,
                     message.DATA,
