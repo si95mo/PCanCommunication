@@ -41,9 +41,20 @@ namespace Hardware.Can
         private byte[] data;
         private CanFrame canFrame;
 
+        ICanResource resource;
+
         private object objectLock = new object();
 
         protected EventHandler<DataChangedEventArgs> DataChangedHandler;
+
+        public CanChannel(int canId, ICanResource resource)
+        {
+            this.canId = canId;
+            this.resource = resource;
+
+            data = new byte[8];
+            canFrame = new CanFrame(canId, data);
+        }
 
         /// <summary>
         /// The <see cref="DataChanged"/> event handler
@@ -76,11 +87,23 @@ namespace Hardware.Can
         /// <summary>
         /// The <see cref="CanChannel"/> can id
         /// </summary>
-        public int CanId { get => canId; set => canId = value; }
+        public int CanId 
+        { 
+            get => canId;
+            set
+            {
+                canId = value;
+                canFrame.Id = canId;
+            }
+        }
 
         /// <summary>
         /// The <see cref="CanChannel"/> data
         /// </summary>
+        /// <remarks>
+        /// Only a change of this property will trigger 
+        /// the <see cref="DataChanged"/> event!
+        /// </remarks>
         public byte[] Data
         {
             get => data;
@@ -92,6 +115,9 @@ namespace Hardware.Can
                     byte[] oldData = data;
                     data = value;
                     OnDataChanged(new DataChangedEventArgs(oldData, data));
+
+                    canFrame.Data = data;
+                    resource.Send(canFrame);
                 }
             }
         }
@@ -100,14 +126,20 @@ namespace Hardware.Can
         /// The <see cref="CanChannel"/> associated
         /// <see cref="Can.CanFrame"/>
         /// </summary>
-        public CanFrame CanFrame
+        public CanFrame CanFrame { get => canFrame; set => canFrame = value; }
+
+        /// <summary>
+        /// Return a textual description of the <see cref="CanChannel"/>
+        /// </summary>
+        /// <returns>The description</returns>
+        public override string ToString()
         {
-            get => canFrame;
-            set
-            {
-                canFrame = value;
-                Data = canFrame.Data; // value changed event trigger (if needed)
-            }
+            string dataAsString = data[0].ToString("D3");
+            for (int i = 1; i < data.Length; i++)
+                dataAsString += $", {data[i]:D3}";
+
+            string description = $"{canId};\t{dataAsString}";
+            return description;
         }
     }
 }

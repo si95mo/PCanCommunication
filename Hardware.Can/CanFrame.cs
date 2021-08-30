@@ -7,19 +7,19 @@ namespace Hardware.Can
     /// </summary>
     public class CanFrame
     {
-        private uint id;
+        private int id;
         private byte[] data;
         private double timestamp;
 
         /// <summary>
         /// The <see cref="CanFrame"/> id
         /// </summary>
-        public uint Id => id;
+        public int Id { get => id; set => id = value; }
 
         /// <summary>
         /// The <see cref="CanFrame"/> data
         /// </summary>
-        public byte[] Data => data;
+        public byte[] Data { get => data; set => data = value; }
 
         /// <summary>
         /// The <see cref="CanFrame"/> associated timestamp
@@ -33,7 +33,7 @@ namespace Hardware.Can
         /// <param name="id">The <see cref="CanFrame"/> id</param>
         /// <param name="data">The <see cref="CanFrame"/> data</param>
         /// <param name="timestamp">The <see cref="CanFrame"/> timestamp</param>
-        public CanFrame(uint id, byte[] data, double timestamp)
+        public CanFrame(int id, byte[] data, double timestamp)
         {
             this.id = id;
             this.data = data;
@@ -45,7 +45,7 @@ namespace Hardware.Can
         /// </summary>
         /// <param name="id">The <see cref="CanFrame"/> id</param>
         /// <param name="data">The <see cref="CanFrame"/> data</param>
-        public CanFrame(uint id, byte[] data) : this(id, data, DateTime.Now.TimeOfDay.TotalMilliseconds)
+        public CanFrame(int id, byte[] data) : this(id, data, DateTime.Now.TimeOfDay.TotalMilliseconds)
         { }
 
         /// <summary>
@@ -54,7 +54,11 @@ namespace Hardware.Can
         /// <returns>The <see cref="string"/> containing the description</returns>
         public override string ToString()
         {
-            string description = $"{timestamp}; {id}; {string.Join(", ", data)}";
+            string dataAsString = data[0].ToString("D3");
+            for (int i = 1; i < data.Length; i++)
+                dataAsString += $", {data[i]:D3}";
+
+            string description = $"{timestamp}; {id};\t{dataAsString}";
             return description;
         }
     }
