@@ -54,6 +54,7 @@ namespace Hardware.Can
         private AutoResetEvent receiveEvent;
 
         private delegate void ReadHandler();
+
         private ReadHandler readHandler;
 
         private ushort channelHandle;
@@ -130,7 +131,7 @@ namespace Hardware.Can
         }
 
         /// <summary>
-        /// Create a new instance of <see cref="PeakCanResource"/> 
+        /// Create a new instance of <see cref="PeakCanResource"/>
         /// for non plug-and-play hardware. <br/>
         /// See also <see cref="PeakCanResource(ushort, ushort)"/>
         /// </summary>
@@ -157,7 +158,7 @@ namespace Hardware.Can
         }
 
         /// <summary>
-        /// Create a new instance of <see cref="PeakCanResource"/> 
+        /// Create a new instance of <see cref="PeakCanResource"/>
         /// for plug-and-play hardware. <br/>
         /// See also <see cref="PeakCanResource(ushort, ushort, byte, uint, ushort)"/>
         /// </summary>
@@ -345,7 +346,7 @@ namespace Hardware.Can
             string log = "";
 
             // EnableLog(int) should has been called at least once
-            if (logQueue != null) 
+            if (logQueue != null)
             {
                 foreach (CanFrame canFrame in logQueue)
                     log += $"{canFrame}{Environment.NewLine}";
