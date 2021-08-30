@@ -44,6 +44,9 @@ namespace Hardware.Can
         private List<ICanChannel> channels;
         private uint status;
 
+        private Queue<CanFrame> logQueue;
+        private bool logEnabled;
+
         private object objectLock = new object();
 
         private Task rxTask;
@@ -100,6 +103,7 @@ namespace Hardware.Can
             get => status;
             set
             {
+                // Eventually trigger the value changed event
                 if (value != status)
                 {
                     uint oldStatus = status;
@@ -115,6 +119,9 @@ namespace Hardware.Can
         public PeakCanResource()
         {
             channels = new List<ICanChannel>();
+
+            logQueue = null;
+            logEnabled = false;
 
             isReceiving = false;
             receiveEvent = new AutoResetEvent(false);
@@ -225,18 +232,21 @@ namespace Hardware.Can
                     out TPCANTimestamp t
                 );
 
+                canFrame = new CanFrame(
+                    message.ID,
+                    message.DATA,
+                    (t.micros + 1000 * t.millis + 0x100000000 * 1000 * t.millis_overflow) / 1000
+                );
+
+                if (logEnabled)
+                    logQueue.Enqueue(canFrame);
+
                 for (int i = 0; i < channels.Count && !channelFound; i++)
                 {
                     channel = channels.ElementAt(i);
                     if (channel.CanId == message.ID)
                     {
                         channelFound = true;
-
-                        canFrame = new CanFrame(
-                            message.ID,
-                            message.DATA,
-                            (t.micros + 1000 * t.millis + 0x100000000 * 1000 * t.millis_overflow) / 1000
-                        );
                         channel.CanFrame = canFrame;
                     }
                 }
@@ -283,6 +293,55 @@ namespace Hardware.Can
         public bool SetBaudRate(uint baudRate)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Enable the <see cref="PeakCanResource"/> log for
+        /// received <see cref="CanFrame"/>
+        /// </summary>
+        /// <param name="maxLogSize">The maximum log size</param>
+        /// <remarks>
+        /// Calling multiple <see cref="EnableLog(int)"/> will
+        /// delete the previous logged info!
+        /// </remarks>
+        public void EnableLog(int maxLogSize = 65535)
+        {
+            logEnabled = true;
+            logQueue = new Queue<CanFrame>(maxLogSize);
+        }
+
+        /// <summary>
+        /// Disable the <see cref="PeakCanResource"/> log for
+        /// received <see cref="CanFrame"/>
+        /// </summary>
+        /// <remarks>
+        /// Calling <see cref="DisableLog"/> will not delete
+        /// previous logged info (but calling a second
+        /// <see cref="EnableLog(int)"/> will)!
+        /// </remarks>
+        public void DisableLog() => logEnabled = false;
+
+        /// <summary>
+        /// Read the current log for received <see cref="CanFrame"/>. <br/>
+        /// See also <see cref="EnableLog(int)"/> and <see cref="DisableLog"/>
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string"/> with the logged info. The <see cref="string"/>
+        /// will be empty if there are no logged <see cref="CanFrame"/> <br/>
+        /// or <see cref="EnableLog(int)"/> has not been called at least once
+        /// </returns>
+        public string ReadLog()
+        {
+            string log = "";
+
+            // EnableLog(int) should has been called at least once
+            if (logQueue != null) 
+            {
+                foreach (CanFrame canFrame in logQueue)
+                    log += $"{canFrame}{Environment.NewLine}";
+            }
+
+            return log;
         }
     }
 }

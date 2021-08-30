@@ -94,6 +94,7 @@ namespace PCanCommunication
             resource.Channels.Add(setResistance);
         }
 
+        // Handle the resource status value changed
         private void Resource_StatusChanged(object sender, StatusChangedEventArgs e)
         {
             lblResourceStatus.Invoke(new MethodInvoker(()=>
@@ -131,6 +132,10 @@ namespace PCanCommunication
             InitiazlieChartUpdater();
         }
 
+        // Handle initialization that can only be done
+        // after the form controll has been created
+        // (in particular the can communication initialization
+        // because there is an Invoke method call inside)
         private void MainForm_Load(object sender, EventArgs e)
         {
             // Initialize can-related objects
@@ -139,6 +144,7 @@ namespace PCanCommunication
             InitializeCanCommunication();
         }
 
+        // Update the chart
         private async void ChartUpdater_DoWork(object sender, DoWorkEventArgs e)
         {
             int x = 0;
@@ -170,18 +176,32 @@ namespace PCanCommunication
             }
         }
 
+        // Handle the start button click
         private void BtnStart_Click(object sender, EventArgs e)
         {
-            resource?.Start();
+            resource?.Start(); // Start the resource
+            resource?.EnableLog(); // And enable the log
+
             pnlResourceStarted.BackColor = startedColor;
         }
 
+        // Handle the stop button click
         private void BtnStop_Click(object sender, EventArgs e)
         {
             resource?.Stop();
+
             pnlResourceStarted.BackColor = stoppedColor;
         }
 
+        // Handle the read log button click
+        private void BtnReadLog_Click(object sender, EventArgs e)
+        {
+            lbxLog.Items.Clear(); // Clear previous log first
+            lbxLog.Items.Add(resource.ReadLog());
+        }
+
+        // Handle the form closing event
+        // (disable the chart updating and stop the can resource)
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Stop to update the chart

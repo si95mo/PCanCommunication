@@ -22,8 +22,8 @@ namespace Hardware.Can
         /// <summary>
         /// Create a new instance of <see cref="DataChangedEventArgs"/>
         /// </summary>
-        /// <param name="oldValue">The old value</param>
-        /// <param name="newValue">The new value</param>
+        /// <param name="oldValue">The old value of the property</param>
+        /// <param name="newValue">The new value of the property</param>
         public DataChangedEventArgs(object oldValue, object newValue)
         {
             OldValue = oldValue;
@@ -31,6 +31,10 @@ namespace Hardware.Can
         }
     }
 
+    /// <summary>
+    /// Define a channel to handle the can communication. <br/>
+    /// See also <see cref="ICanResource"/> for the protocol handling
+    /// </summary>
     public class CanChannel : ICanChannel
     {
         private int canId;
@@ -82,6 +86,7 @@ namespace Hardware.Can
             get => data;
             set
             {
+                // Eventually trigger the value changed event
                 if (!value.SequenceEqual(data))
                 {
                     byte[] oldData = data;
@@ -91,13 +96,17 @@ namespace Hardware.Can
             }
         }
 
+        /// <summary>
+        /// The <see cref="CanChannel"/> associated
+        /// <see cref="Can.CanFrame"/>
+        /// </summary>
         public CanFrame CanFrame
         {
             get => canFrame;
             set
             {
                 canFrame = value;
-                data = canFrame.Data;
+                Data = canFrame.Data; // value changed event trigger (if needed)
             }
         }
     }

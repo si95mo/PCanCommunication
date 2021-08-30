@@ -32,5 +32,24 @@ namespace Hardware.Can
         /// <see langword="false"/> otherwise
         /// </returns>
         bool Send(CanFrame canFrame);
+
+        /// <summary>
+        /// Enable the <see cref="ICanResource"/> log for
+        /// received <see cref="CanFrame"/>
+        /// </summary>
+        /// <param name="maxLogSize">The maximum log size</param>
+        void EnableLog(int maxLogSize = 65535);
+
+        /// <summary>
+        /// Disable the <see cref="ICanResource"/> log for
+        /// received <see cref="CanFrame"/>
+        /// </summary>
+        void DisableLog();
+
+        /// <summary>
+        /// Read the current <see cref="ICanResource"/> log
+        /// </summary>
+        /// <returns>The <see cref="string"/> containing the current log</returns>
+        string ReadLog();
     }
 }

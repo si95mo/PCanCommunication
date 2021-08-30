@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Hardware.Can.Peak")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Implement a PEAK-CAN hardware can resource")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HP Inc.")]
 [assembly: AssemblyProduct("Hardware.Can.Peak")]

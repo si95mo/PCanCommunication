@@ -52,16 +52,20 @@ namespace PCanCommunication
             this.crtVariables = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.bgWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.pnlResourceStarted = new System.Windows.Forms.Panel();
             this.lblResourceStatus = new System.Windows.Forms.Label();
+            this.pnlResourceStarted = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnReadLog = new System.Windows.Forms.Button();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.lbxLog = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.crtVariables)).BeginInit();
             this.groupBox5.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // cbxDeviceList
@@ -70,7 +74,7 @@ namespace PCanCommunication
             this.cbxDeviceList.Location = new System.Drawing.Point(123, 17);
             this.cbxDeviceList.Margin = new System.Windows.Forms.Padding(2);
             this.cbxDeviceList.Name = "cbxDeviceList";
-            this.cbxDeviceList.Size = new System.Drawing.Size(206, 21);
+            this.cbxDeviceList.Size = new System.Drawing.Size(164, 21);
             this.cbxDeviceList.TabIndex = 0;
             // 
             // groupBox1
@@ -83,7 +87,7 @@ namespace PCanCommunication
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(333, 71);
+            this.groupBox1.Size = new System.Drawing.Size(296, 71);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "CAN settings";
@@ -94,7 +98,7 @@ namespace PCanCommunication
             this.cbxBaudRate.Location = new System.Drawing.Point(123, 41);
             this.cbxBaudRate.Margin = new System.Windows.Forms.Padding(2);
             this.cbxBaudRate.Name = "cbxBaudRate";
-            this.cbxBaudRate.Size = new System.Drawing.Size(206, 21);
+            this.cbxBaudRate.Size = new System.Drawing.Size(164, 21);
             this.cbxBaudRate.TabIndex = 1;
             // 
             // label6
@@ -121,7 +125,7 @@ namespace PCanCommunication
             this.groupBox2.Controls.Add(this.btnStart);
             this.groupBox2.Location = new System.Drawing.Point(9, 84);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(333, 78);
+            this.groupBox2.Size = new System.Drawing.Size(296, 78);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "CAN commands";
@@ -131,7 +135,7 @@ namespace PCanCommunication
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStop.Location = new System.Drawing.Point(6, 48);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(323, 23);
+            this.btnStop.Size = new System.Drawing.Size(281, 23);
             this.btnStop.TabIndex = 7;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -142,7 +146,7 @@ namespace PCanCommunication
             this.btnStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStart.Location = new System.Drawing.Point(6, 19);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(323, 23);
+            this.btnStart.Size = new System.Drawing.Size(281, 23);
             this.btnStart.TabIndex = 2;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -155,9 +159,9 @@ namespace PCanCommunication
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.txbRSet);
             this.groupBox3.Controls.Add(this.txbRAct);
-            this.groupBox3.Location = new System.Drawing.Point(348, 12);
+            this.groupBox3.Location = new System.Drawing.Point(311, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(333, 150);
+            this.groupBox3.Size = new System.Drawing.Size(296, 150);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "CAN variables";
@@ -165,7 +169,7 @@ namespace PCanCommunication
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 40);
+            this.label2.Location = new System.Drawing.Point(3, 40);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(30, 13);
             this.label2.TabIndex = 9;
@@ -174,9 +178,9 @@ namespace PCanCommunication
             // btnSetVariables
             // 
             this.btnSetVariables.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSetVariables.Location = new System.Drawing.Point(4, 120);
+            this.btnSetVariables.Location = new System.Drawing.Point(6, 120);
             this.btnSetVariables.Name = "btnSetVariables";
-            this.btnSetVariables.Size = new System.Drawing.Size(323, 23);
+            this.btnSetVariables.Size = new System.Drawing.Size(281, 23);
             this.btnSetVariables.TabIndex = 5;
             this.btnSetVariables.Text = "Set";
             this.btnSetVariables.UseVisualStyleBackColor = true;
@@ -184,7 +188,7 @@ namespace PCanCommunication
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 16);
+            this.label1.Location = new System.Drawing.Point(3, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(29, 13);
             this.label1.TabIndex = 8;
@@ -194,14 +198,14 @@ namespace PCanCommunication
             // 
             this.txbRSet.Location = new System.Drawing.Point(122, 13);
             this.txbRSet.Name = "txbRSet";
-            this.txbRSet.Size = new System.Drawing.Size(205, 20);
+            this.txbRSet.Size = new System.Drawing.Size(165, 20);
             this.txbRSet.TabIndex = 3;
             // 
             // txbRAct
             // 
             this.txbRAct.Location = new System.Drawing.Point(122, 37);
             this.txbRAct.Name = "txbRAct";
-            this.txbRAct.Size = new System.Drawing.Size(205, 20);
+            this.txbRAct.Size = new System.Drawing.Size(165, 20);
             this.txbRAct.TabIndex = 4;
             // 
             // groupBox4
@@ -247,25 +251,36 @@ namespace PCanCommunication
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.btnReadLog);
             this.groupBox5.Controls.Add(this.lblResourceStatus);
             this.groupBox5.Controls.Add(this.pnlResourceStarted);
             this.groupBox5.Controls.Add(this.label4);
             this.groupBox5.Controls.Add(this.label3);
-            this.groupBox5.Location = new System.Drawing.Point(687, 12);
+            this.groupBox5.Location = new System.Drawing.Point(613, 12);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(333, 150);
+            this.groupBox5.Size = new System.Drawing.Size(296, 150);
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "CAN resource status";
             // 
-            // label3
+            // lblResourceStatus
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 16);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Resource started";
+            this.lblResourceStatus.Location = new System.Drawing.Point(96, 37);
+            this.lblResourceStatus.Name = "lblResourceStatus";
+            this.lblResourceStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblResourceStatus.Size = new System.Drawing.Size(194, 19);
+            this.lblResourceStatus.TabIndex = 3;
+            this.lblResourceStatus.Text = "00000000";
+            this.lblResourceStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // pnlResourceStarted
+            // 
+            this.pnlResourceStarted.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.pnlResourceStarted.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlResourceStarted.Location = new System.Drawing.Point(270, 16);
+            this.pnlResourceStarted.Name = "pnlResourceStarted";
+            this.pnlResourceStarted.Size = new System.Drawing.Size(20, 20);
+            this.pnlResourceStarted.TabIndex = 2;
             // 
             // label4
             // 
@@ -276,30 +291,52 @@ namespace PCanCommunication
             this.label4.TabIndex = 1;
             this.label4.Text = "Resource status";
             // 
-            // pnlResourceStarted
+            // label3
             // 
-            this.pnlResourceStarted.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.pnlResourceStarted.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlResourceStarted.Location = new System.Drawing.Point(307, 13);
-            this.pnlResourceStarted.Name = "pnlResourceStarted";
-            this.pnlResourceStarted.Size = new System.Drawing.Size(20, 20);
-            this.pnlResourceStarted.TabIndex = 2;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 16);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(88, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Resource started";
             // 
-            // lblResourceStatus
+            // btnReadLog
             // 
-            this.lblResourceStatus.Location = new System.Drawing.Point(96, 37);
-            this.lblResourceStatus.Name = "lblResourceStatus";
-            this.lblResourceStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblResourceStatus.Size = new System.Drawing.Size(231, 19);
-            this.lblResourceStatus.TabIndex = 3;
-            this.lblResourceStatus.Text = "00000000";
-            this.lblResourceStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnReadLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReadLog.Location = new System.Drawing.Point(9, 120);
+            this.btnReadLog.Name = "btnReadLog";
+            this.btnReadLog.Size = new System.Drawing.Size(281, 23);
+            this.btnReadLog.TabIndex = 10;
+            this.btnReadLog.Text = "Read log";
+            this.btnReadLog.UseVisualStyleBackColor = true;
+            this.btnReadLog.Click += new System.EventHandler(this.BtnReadLog_Click);
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.lbxLog);
+            this.groupBox7.Location = new System.Drawing.Point(915, 12);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(337, 150);
+            this.groupBox7.TabIndex = 13;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Log";
+            // 
+            // lbxLog
+            // 
+            this.lbxLog.BackColor = System.Drawing.SystemColors.ControlText;
+            this.lbxLog.ForeColor = System.Drawing.SystemColors.Info;
+            this.lbxLog.FormattingEnabled = true;
+            this.lbxLog.Location = new System.Drawing.Point(6, 22);
+            this.lbxLog.Name = "lbxLog";
+            this.lbxLog.Size = new System.Drawing.Size(325, 121);
+            this.lbxLog.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -322,6 +359,7 @@ namespace PCanCommunication
             ((System.ComponentModel.ISupportInitialize)(this.crtVariables)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -349,6 +387,9 @@ namespace PCanCommunication
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblResourceStatus;
+        private System.Windows.Forms.Button btnReadLog;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.ListBox lbxLog;
     }
 }
 

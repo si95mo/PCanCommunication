@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Hardware.Can")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Contains general classes to handle a communication via can protocol")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HP Inc.")]
 [assembly: AssemblyProduct("Hardware.Can")]
