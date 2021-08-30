@@ -63,6 +63,7 @@ namespace PCanCommunication
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblActualValue = new System.Windows.Forms.Label();
             this.lblSetValue = new System.Windows.Forms.Label();
+            this.chbLogEnabled = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -262,6 +263,7 @@ namespace PCanCommunication
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.chbLogEnabled);
             this.groupBox5.Controls.Add(this.btnReadLog);
             this.groupBox5.Controls.Add(this.lblResourceStatus);
             this.groupBox5.Controls.Add(this.pnlResourceStarted);
@@ -393,6 +395,18 @@ namespace PCanCommunication
             this.lblSetValue.TabIndex = 12;
             this.lblSetValue.Text = "........";
             // 
+            // cbxLogEnabled
+            // 
+            this.chbLogEnabled.AutoSize = true;
+            this.chbLogEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chbLogEnabled.Location = new System.Drawing.Point(5, 64);
+            this.chbLogEnabled.Name = "cbxLogEnabled";
+            this.chbLogEnabled.Size = new System.Drawing.Size(85, 17);
+            this.chbLogEnabled.TabIndex = 11;
+            this.chbLogEnabled.Text = "Log enabled";
+            this.chbLogEnabled.UseVisualStyleBackColor = true;
+            this.chbLogEnabled.CheckedChanged += new System.EventHandler(this.CbxLogEnabled_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -459,6 +473,7 @@ namespace PCanCommunication
         private System.Windows.Forms.Label lblActualValue;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label lblSetValue;
+        private System.Windows.Forms.CheckBox chbLogEnabled;
     }
 }
 

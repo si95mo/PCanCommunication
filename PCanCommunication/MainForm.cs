@@ -85,6 +85,8 @@ namespace PCanCommunication
         {
             // Set the resource started led to a default color
             pnlResourceStarted.BackColor = unknowkColor;
+            // Set the log button border color to stopped
+            btnReadLog.FlatAppearance.BorderColor = stoppedColor;
         }
 
         /// <summary>
@@ -125,7 +127,7 @@ namespace PCanCommunication
             lblSetValue.Invoke(new MethodInvoker(() =>
                     {
                         lblSetValue.Text = $"{BitConverter.ToDouble(setResistance.Data, 0):F3} Ohm";
-                        lbxLog.Items.Add(setResistance.ToString());
+                        lbxLog.Items.Add($"Sent >> {setResistance}");
                     }
                 )
             );
@@ -136,7 +138,6 @@ namespace PCanCommunication
             lblActualValue.Invoke(new MethodInvoker(() =>
                     {
                         lblActualValue.Text = $"{BitConverter.ToDouble(actualResistance.Data, 0):F3} Ohm";
-                        lbxLog.Items.Add(actualResistance.ToString());
                     }
                 )
             );
@@ -175,7 +176,7 @@ namespace PCanCommunication
         }
 
         // Handle initialization that can only be done
-        // after the form controll has been created
+        // after the form control has been created
         // (in particular the can communication initialization
         // because there is an Invoke method call inside)
         private void MainForm_Load(object sender, EventArgs e)
@@ -206,8 +207,8 @@ namespace PCanCommunication
                 // by the board in the can bus every x milliseconds)
                 double a = -1 + 0.02 * Math.Cos(x);
                 double s = 1 + 0.02 * Math.Sin(x);
-                // actualResistance.Data = BitConverter.GetBytes(a);
-                // setResistance.Data = BitConverter.GetBytes(s);
+                actualResistance.CanFrame.Data = BitConverter.GetBytes(a);
+                setResistance.CanFrame.Data = BitConverter.GetBytes(s);
 
                 crtVariables.Invoke(new MethodInvoker(() => UpdateChart(x)));
 
@@ -223,8 +224,8 @@ namespace PCanCommunication
         private void UpdateChart(int x)
         {
             // Add the new points to the chart series
-            crtVariables.Series[rSetName].Points.AddXY(x, BitConverter.ToDouble(setResistance.Data, 0));
-            crtVariables.Series[rActName].Points.AddXY(x, BitConverter.ToDouble(actualResistance.Data, 0));
+            crtVariables.Series[rSetName].Points.AddXY(x, BitConverter.ToDouble(setResistance.CanFrame.Data, 0));
+            crtVariables.Series[rActName].Points.AddXY(x, BitConverter.ToDouble(actualResistance.CanFrame.Data, 0));
 
             // "Real-time" chart, the oldest point is removed if necessary
             if (crtVariables.Series[rSetName].Points.Count > numberOfPOints)
@@ -245,9 +246,6 @@ namespace PCanCommunication
         {
             // Start the resource
             resource?.Start();
-            // And enable the log
-            resource?.EnableLog(); 
-
             // Update UI
             pnlResourceStarted.BackColor = startedColor;
         }
@@ -296,6 +294,24 @@ namespace PCanCommunication
                     MessageBoxIcon.Error
                 );
                 txbRSet.Focus();
+            }
+        }
+
+        private void CbxLogEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chbLogEnabled.Checked)
+            {
+                // Enable log
+                resource.EnableLog(65535);
+                // And update UI
+                btnReadLog.FlatAppearance.BorderColor = startedColor;
+            }
+            else
+            {
+                // Disable log
+                resource.DisableLog();
+                // And update UI
+                btnReadLog.FlatAppearance.BorderColor = stoppedColor;
             }
         }
     }
