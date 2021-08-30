@@ -131,7 +131,15 @@ namespace Hardware.Can
         /// A change in this property will not trigger
         /// the <see cref="DataChanged"/> event!
         /// </remarks>
-        public CanFrame CanFrame { get => canFrame; set => canFrame = value; }
+        public CanFrame CanFrame 
+        { 
+            get => canFrame;
+            set
+            {
+                canFrame = value;
+                data = canFrame.Data;
+            }
+        }
 
         /// <summary>
         /// Return a textual description of the <see cref="CanChannel"/>
