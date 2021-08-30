@@ -153,6 +153,10 @@ namespace PCanCommunication
             {
                 x = (int)(new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds - startTime.TotalMilliseconds);
 
+                // Dummy values, have to be replaced with the values read via can protocol 
+                // (Rset is an asynchronous read, once when a different value is written,
+                // while Ract is a periodic read - the frame is automatically sent
+                // by the board in the can bus every x milliseconds)
                 rSet = Math.Sin(x);
                 rAct = Math.Cos(x);
 
