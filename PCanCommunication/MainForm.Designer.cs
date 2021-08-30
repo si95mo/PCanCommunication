@@ -47,18 +47,22 @@ namespace PCanCommunication
             this.btnSetVariables = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txbRSet = new System.Windows.Forms.TextBox();
-            this.txbRAct = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.crtVariables = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.bgWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btnReadLog = new System.Windows.Forms.Button();
             this.lblResourceStatus = new System.Windows.Forms.Label();
             this.pnlResourceStarted = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.btnReadLog = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.lbxLog = new System.Windows.Forms.ListBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblActualValue = new System.Windows.Forms.Label();
+            this.lblSetValue = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -66,15 +70,17 @@ namespace PCanCommunication
             ((System.ComponentModel.ISupportInitialize)(this.crtVariables)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cbxDeviceList
             // 
             this.cbxDeviceList.FormattingEnabled = true;
-            this.cbxDeviceList.Location = new System.Drawing.Point(123, 17);
+            this.cbxDeviceList.Location = new System.Drawing.Point(99, 17);
             this.cbxDeviceList.Margin = new System.Windows.Forms.Padding(2);
             this.cbxDeviceList.Name = "cbxDeviceList";
-            this.cbxDeviceList.Size = new System.Drawing.Size(164, 21);
+            this.cbxDeviceList.Size = new System.Drawing.Size(188, 21);
             this.cbxDeviceList.TabIndex = 0;
             // 
             // groupBox1
@@ -95,10 +101,10 @@ namespace PCanCommunication
             // cbxBaudRate
             // 
             this.cbxBaudRate.FormattingEnabled = true;
-            this.cbxBaudRate.Location = new System.Drawing.Point(123, 41);
+            this.cbxBaudRate.Location = new System.Drawing.Point(99, 41);
             this.cbxBaudRate.Margin = new System.Windows.Forms.Padding(2);
             this.cbxBaudRate.Name = "cbxBaudRate";
-            this.cbxBaudRate.Size = new System.Drawing.Size(164, 21);
+            this.cbxBaudRate.Size = new System.Drawing.Size(188, 21);
             this.cbxBaudRate.TabIndex = 1;
             // 
             // label6
@@ -154,11 +160,10 @@ namespace PCanCommunication
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.groupBox6);
             this.groupBox3.Controls.Add(this.btnSetVariables);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.txbRSet);
-            this.groupBox3.Controls.Add(this.txbRAct);
             this.groupBox3.Location = new System.Drawing.Point(311, 12);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(296, 150);
@@ -169,44 +174,38 @@ namespace PCanCommunication
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 40);
+            this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 13);
+            this.label2.Size = new System.Drawing.Size(36, 13);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Ract";
+            this.label2.Text = "Ract: ";
             // 
             // btnSetVariables
             // 
             this.btnSetVariables.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSetVariables.Location = new System.Drawing.Point(6, 120);
+            this.btnSetVariables.Location = new System.Drawing.Point(9, 40);
             this.btnSetVariables.Name = "btnSetVariables";
             this.btnSetVariables.Size = new System.Drawing.Size(281, 23);
             this.btnSetVariables.TabIndex = 5;
             this.btnSetVariables.Text = "Set";
             this.btnSetVariables.UseVisualStyleBackColor = true;
+            this.btnSetVariables.Click += new System.EventHandler(this.btnSetVariables_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 16);
+            this.label1.Location = new System.Drawing.Point(6, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 13);
+            this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Rset";
+            this.label1.Text = "Rset value";
             // 
             // txbRSet
             // 
-            this.txbRSet.Location = new System.Drawing.Point(122, 13);
+            this.txbRSet.Location = new System.Drawing.Point(92, 16);
             this.txbRSet.Name = "txbRSet";
-            this.txbRSet.Size = new System.Drawing.Size(165, 20);
+            this.txbRSet.Size = new System.Drawing.Size(198, 20);
             this.txbRSet.TabIndex = 3;
-            // 
-            // txbRAct
-            // 
-            this.txbRAct.Location = new System.Drawing.Point(122, 37);
-            this.txbRAct.Name = "txbRAct";
-            this.txbRAct.Size = new System.Drawing.Size(165, 20);
-            this.txbRAct.TabIndex = 4;
             // 
             // groupBox4
             // 
@@ -222,12 +221,24 @@ namespace PCanCommunication
             // 
             this.crtVariables.BackColor = System.Drawing.Color.Transparent;
             chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.Silver;
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisX2.LineColor = System.Drawing.Color.OrangeRed;
+            chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.LineColor = System.Drawing.Color.OrangeRed;
+            chartArea1.AxisY.LineWidth = 2;
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.OrangeRed;
+            chartArea1.AxisY2.LineColor = System.Drawing.Color.RoyalBlue;
+            chartArea1.AxisY2.LineWidth = 2;
+            chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY2.TitleForeColor = System.Drawing.Color.RoyalBlue;
             chartArea1.BackColor = System.Drawing.Color.Transparent;
             chartArea1.BackSecondaryColor = System.Drawing.Color.Transparent;
             chartArea1.Name = "ChartArea";
             this.crtVariables.ChartAreas.Add(chartArea1);
             legend1.BackColor = System.Drawing.Color.Transparent;
             legend1.BackImageAlignment = System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.Top;
+            legend1.Enabled = false;
             legend1.MaximumAutoSize = 20F;
             legend1.Name = "Legend";
             this.crtVariables.Legends.Add(legend1);
@@ -262,6 +273,17 @@ namespace PCanCommunication
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "CAN resource status";
+            // 
+            // btnReadLog
+            // 
+            this.btnReadLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReadLog.Location = new System.Drawing.Point(9, 120);
+            this.btnReadLog.Name = "btnReadLog";
+            this.btnReadLog.Size = new System.Drawing.Size(281, 23);
+            this.btnReadLog.TabIndex = 10;
+            this.btnReadLog.Text = "Read log";
+            this.btnReadLog.UseVisualStyleBackColor = true;
+            this.btnReadLog.Click += new System.EventHandler(this.BtnReadLog_Click);
             // 
             // lblResourceStatus
             // 
@@ -300,17 +322,6 @@ namespace PCanCommunication
             this.label3.TabIndex = 0;
             this.label3.Text = "Resource started";
             // 
-            // btnReadLog
-            // 
-            this.btnReadLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReadLog.Location = new System.Drawing.Point(9, 120);
-            this.btnReadLog.Name = "btnReadLog";
-            this.btnReadLog.Size = new System.Drawing.Size(281, 23);
-            this.btnReadLog.TabIndex = 10;
-            this.btnReadLog.Text = "Read log";
-            this.btnReadLog.UseVisualStyleBackColor = true;
-            this.btnReadLog.Click += new System.EventHandler(this.BtnReadLog_Click);
-            // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.lbxLog);
@@ -324,12 +335,63 @@ namespace PCanCommunication
             // lbxLog
             // 
             this.lbxLog.BackColor = System.Drawing.SystemColors.ControlText;
-            this.lbxLog.ForeColor = System.Drawing.SystemColors.Info;
+            this.lbxLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lbxLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbxLog.ForeColor = System.Drawing.SystemColors.Control;
             this.lbxLog.FormattingEnabled = true;
-            this.lbxLog.Location = new System.Drawing.Point(6, 22);
+            this.lbxLog.ItemHeight = 16;
+            this.lbxLog.Location = new System.Drawing.Point(6, 16);
             this.lbxLog.Name = "lbxLog";
-            this.lbxLog.Size = new System.Drawing.Size(325, 121);
+            this.lbxLog.Size = new System.Drawing.Size(325, 128);
             this.lbxLog.TabIndex = 0;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 13);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(35, 13);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "Rset: ";
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.flowLayoutPanel1);
+            this.groupBox6.Location = new System.Drawing.Point(9, 71);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(281, 72);
+            this.groupBox6.TabIndex = 11;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Actual values";
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.label2);
+            this.flowLayoutPanel1.Controls.Add(this.lblActualValue);
+            this.flowLayoutPanel1.Controls.Add(this.label7);
+            this.flowLayoutPanel1.Controls.Add(this.lblSetValue);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(6, 26);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(110, 34);
+            this.flowLayoutPanel1.TabIndex = 11;
+            // 
+            // lblActualValue
+            // 
+            this.lblActualValue.AutoSize = true;
+            this.lblActualValue.Location = new System.Drawing.Point(45, 0);
+            this.lblActualValue.Name = "lblActualValue";
+            this.lblActualValue.Size = new System.Drawing.Size(31, 13);
+            this.lblActualValue.TabIndex = 11;
+            this.lblActualValue.Text = "........";
+            // 
+            // lblSetValue
+            // 
+            this.lblSetValue.AutoSize = true;
+            this.lblSetValue.Location = new System.Drawing.Point(44, 13);
+            this.lblSetValue.Name = "lblSetValue";
+            this.lblSetValue.Size = new System.Drawing.Size(31, 13);
+            this.lblSetValue.TabIndex = 12;
+            this.lblSetValue.Text = "........";
             // 
             // MainForm
             // 
@@ -360,6 +422,9 @@ namespace PCanCommunication
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox7.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -376,7 +441,6 @@ namespace PCanCommunication
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnSetVariables;
         private System.Windows.Forms.TextBox txbRSet;
-        private System.Windows.Forms.TextBox txbRAct;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.DataVisualization.Charting.Chart crtVariables;
         private System.ComponentModel.BackgroundWorker bgWorker;
@@ -390,6 +454,11 @@ namespace PCanCommunication
         private System.Windows.Forms.Button btnReadLog;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.ListBox lbxLog;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label lblActualValue;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblSetValue;
     }
 }
 
