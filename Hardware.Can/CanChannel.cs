@@ -110,6 +110,7 @@ namespace Hardware.Can
             set
             {
                 // Eventually trigger the value changed event
+                // and send the new can frame via the resource
                 if (!value.SequenceEqual(data))
                 {
                     byte[] oldData = data;
@@ -126,6 +127,10 @@ namespace Hardware.Can
         /// The <see cref="CanChannel"/> associated
         /// <see cref="Can.CanFrame"/>
         /// </summary>
+        /// <remarks>
+        /// A change in this property will not trigger
+        /// the <see cref="DataChanged"/> event!
+        /// </remarks>
         public CanFrame CanFrame { get => canFrame; set => canFrame = value; }
 
         /// <summary>
