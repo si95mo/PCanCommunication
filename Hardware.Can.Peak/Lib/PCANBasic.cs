@@ -20,7 +20,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hardware.Can.Lib
+namespace Hardware.Can.Peak.Lib
 {
     using TPCANBitrateFD = System.String;
     using TPCANHandle = System.UInt16;
