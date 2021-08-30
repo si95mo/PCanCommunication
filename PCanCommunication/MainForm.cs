@@ -64,7 +64,6 @@ namespace PCanCommunication
             startTime = new TimeSpan(DateTime.Now.Ticks);
             bgWorker.DoWork += ChartUpdater_DoWork;
             bgWorker.RunWorkerAsync();
-
         }
 
         /// <summary>
@@ -77,7 +76,7 @@ namespace PCanCommunication
 
         /// <summary>
         /// Initialize the can-related objects
-        /// (like the <see cref="PeakCanResource"/> or the 
+        /// (like the <see cref="PeakCanResource"/> or the
         /// various <see cref="CanChannel"/>)
         /// </summary>
         private void InitializeCanCommunication()
@@ -97,7 +96,7 @@ namespace PCanCommunication
         // Handle the resource status value changed
         private void Resource_StatusChanged(object sender, StatusChangedEventArgs e)
         {
-            lblResourceStatus.Invoke(new MethodInvoker(()=>
+            lblResourceStatus.Invoke(new MethodInvoker(() =>
                     {
                         lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
 
@@ -153,7 +152,7 @@ namespace PCanCommunication
             {
                 x = (int)(new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds - startTime.TotalMilliseconds);
 
-                // Dummy values, have to be replaced with the values read via can protocol 
+                // Dummy values, have to be replaced with the values read via can protocol
                 // (Rset is an asynchronous read, once when a different value is written,
                 // while Ract is a periodic read - the frame is automatically sent
                 // by the board in the can bus every x milliseconds)
@@ -165,7 +164,7 @@ namespace PCanCommunication
                         crtVariables.Series[rSetName].Points.AddXY(x, rSet);
                         crtVariables.Series[rActName].Points.AddXY(x, rAct);
 
-                        if(crtVariables.Series[rSetName].Points.Count > numberOfPOints)
+                        if (crtVariables.Series[rSetName].Points.Count > numberOfPOints)
                         {
                             crtVariables.Series[rSetName].Points.RemoveAt(0);
                             crtVariables.Series[rActName].Points.RemoveAt(0);
@@ -174,7 +173,7 @@ namespace PCanCommunication
                             crtVariables.ResetAutoValues();
                         }
                     }
-                );                
+                );
 
                 await Task.Delay(updateInterval);
             }
