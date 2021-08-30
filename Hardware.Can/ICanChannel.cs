@@ -20,5 +20,11 @@
         /// <see cref="Can.CanFrame"/>
         /// </summary>
         CanFrame CanFrame { get; set; }
+
+        /// <summary>
+        /// Forcibly send a <see cref="Can.CanFrame"/> through
+        /// the <see cref="ICanResource"/>
+        /// </summary>
+        void Send();
     }
 }

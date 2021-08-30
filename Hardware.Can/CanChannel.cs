@@ -141,5 +141,11 @@ namespace Hardware.Can
             string description = $"{canId};\t{dataAsString}";
             return description;
         }
+
+        /// <summary>
+        /// Forcibly send a <see cref="Can.CanFrame"/> through
+        /// the <see cref="ICanResource"/>
+        /// </summary>
+        public void Send() => resource.Send(canFrame);
     }
 }
