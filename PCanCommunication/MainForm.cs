@@ -16,11 +16,13 @@ namespace PCanCommunication
     {
         // Color constants
         private readonly Color startedColor = Color.Green;
+
         private readonly Color stoppedColor = Color.Red;
         private readonly Color unknowkColor = Color.DarkGray;
 
         // Can-related variables
         private PeakCanResource resource;
+
         private CanChannel actualResistance;
         private CanChannel setResistance;
 
@@ -29,12 +31,14 @@ namespace PCanCommunication
 
         // Chart-related variables
         private bool continueToUpdateChart = true;
+
         private int chartLineTickness = 2;
         private readonly int numberOfPOints = 32;
         private readonly int updateInterval = 100; // ms
 
         // Utility
         private readonly string rSetName = "Rset"; // Chart series name
+
         private readonly string rActName = "Ract"; // Chart series name
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace PCanCommunication
         private void InitializeChart()
         {
             // Remove old series
-            crtVariables.Series.Clear(); 
+            crtVariables.Series.Clear();
 
             // Add the new series
             crtVariables.Series.Add(rSetName);
