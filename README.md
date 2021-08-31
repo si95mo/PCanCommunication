@@ -1,2 +1,2 @@
 # PCanCommunication
-A UI for communication with PCAN
+META - An UI for communication with PCAN hardware
