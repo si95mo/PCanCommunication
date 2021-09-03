@@ -44,11 +44,6 @@ namespace PCanCommunication
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lblActualValue = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.lblSetValue = new System.Windows.Forms.Label();
             this.btnSetVariables = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txbRSet = new System.Windows.Forms.TextBox();
@@ -80,10 +75,14 @@ namespace PCanCommunication
             this.label13 = new System.Windows.Forms.Label();
             this.cmsClearLog = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblActualValue = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.lblSetValue = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.crtVariables)).BeginInit();
             this.groupBox5.SuspendLayout();
@@ -95,6 +94,7 @@ namespace PCanCommunication
             ((System.ComponentModel.ISupportInitialize)(this.nudReceive)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSend)).BeginInit();
             this.cmsClearLog.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // cbxDeviceList
@@ -184,65 +184,15 @@ namespace PCanCommunication
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.groupBox6);
             this.groupBox3.Controls.Add(this.btnSetVariables);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.txbRSet);
             this.groupBox3.Location = new System.Drawing.Point(613, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(296, 150);
+            this.groupBox3.Size = new System.Drawing.Size(296, 70);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "CAN variables";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.label2);
-            this.groupBox6.Controls.Add(this.lblActualValue);
-            this.groupBox6.Controls.Add(this.label7);
-            this.groupBox6.Controls.Add(this.lblSetValue);
-            this.groupBox6.Location = new System.Drawing.Point(9, 71);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(281, 73);
-            this.groupBox6.TabIndex = 11;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Actual values";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 30);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 13);
-            this.label2.TabIndex = 13;
-            this.label2.Text = "Ract: ";
-            // 
-            // lblActualValue
-            // 
-            this.lblActualValue.AutoSize = true;
-            this.lblActualValue.Location = new System.Drawing.Point(61, 30);
-            this.lblActualValue.Name = "lblActualValue";
-            this.lblActualValue.Size = new System.Drawing.Size(31, 13);
-            this.lblActualValue.TabIndex = 15;
-            this.lblActualValue.Text = "........";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(19, 43);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 13);
-            this.label7.TabIndex = 14;
-            this.label7.Text = "Rset: ";
-            // 
-            // lblSetValue
-            // 
-            this.lblSetValue.AutoSize = true;
-            this.lblSetValue.Location = new System.Drawing.Point(60, 43);
-            this.lblSetValue.Name = "lblSetValue";
-            this.lblSetValue.Size = new System.Drawing.Size(31, 13);
-            this.lblSetValue.TabIndex = 16;
-            this.lblSetValue.Text = "........";
             // 
             // btnSetVariables
             // 
@@ -623,11 +573,61 @@ namespace PCanCommunication
             this.tsmItem.Size = new System.Drawing.Size(101, 22);
             this.tsmItem.Text = "Clear";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label2);
+            this.groupBox6.Controls.Add(this.lblActualValue);
+            this.groupBox6.Controls.Add(this.label7);
+            this.groupBox6.Controls.Add(this.lblSetValue);
+            this.groupBox6.Location = new System.Drawing.Point(613, 84);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(296, 78);
+            this.groupBox6.TabIndex = 15;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Actual values";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 30);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(36, 13);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "Ract: ";
+            // 
+            // lblActualValue
+            // 
+            this.lblActualValue.AutoSize = true;
+            this.lblActualValue.Location = new System.Drawing.Point(61, 30);
+            this.lblActualValue.Name = "lblActualValue";
+            this.lblActualValue.Size = new System.Drawing.Size(31, 13);
+            this.lblActualValue.TabIndex = 15;
+            this.lblActualValue.Text = "........";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 43);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(35, 13);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Rset: ";
+            // 
+            // lblSetValue
+            // 
+            this.lblSetValue.AutoSize = true;
+            this.lblSetValue.Location = new System.Drawing.Point(61, 43);
+            this.lblSetValue.Name = "lblSetValue";
+            this.lblSetValue.Size = new System.Drawing.Size(31, 13);
+            this.lblSetValue.TabIndex = 16;
+            this.lblSetValue.Text = "........";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1574, 741);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.groupBox7);
@@ -650,8 +650,6 @@ namespace PCanCommunication
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.crtVariables)).EndInit();
             this.groupBox5.ResumeLayout(false);
@@ -667,6 +665,8 @@ namespace PCanCommunication
             ((System.ComponentModel.ISupportInitialize)(this.nudReceive)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSend)).EndInit();
             this.cmsClearLog.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -694,15 +694,10 @@ namespace PCanCommunication
         private System.Windows.Forms.Label lblResourceStatus;
         private System.Windows.Forms.Button btnReadLog;
         private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.CheckBox chbLogEnabled;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.NumericUpDown nudLogSize;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label lblActualValue;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label lblSetValue;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Button btnSetCanId;
         private System.Windows.Forms.NumericUpDown nudReceive;
@@ -717,6 +712,11 @@ namespace PCanCommunication
         private System.Windows.Forms.ContextMenuStrip cmsClearLog;
         private System.Windows.Forms.ToolStripMenuItem tsmItem;
         private System.Windows.Forms.TextBox txbLog;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblActualValue;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblSetValue;
     }
 }
 
