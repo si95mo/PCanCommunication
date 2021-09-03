@@ -117,7 +117,7 @@ namespace Hardware.Can
                     data = value;
                     OnDataChanged(new DataChangedEventArgs(oldData, data));
 
-                    canFrame.Data = data;
+                    canFrame = new CanFrame(canId, data);
                     resource.Send(canFrame);
                 }
             }
@@ -145,15 +145,7 @@ namespace Hardware.Can
         /// Return a textual description of the <see cref="CanChannel"/>
         /// </summary>
         /// <returns>The description</returns>
-        public override string ToString()
-        {
-            string dataAsString = data[0].ToString("D3");
-            for (int i = 1; i < data.Length; i++)
-                dataAsString += $", {data[i]:D3}";
-
-            string description = $"{canId};\t{dataAsString}";
-            return description;
-        }
+        public override string ToString() => canFrame.ToString();
 
         /// <summary>
         /// Forcibly send a <see cref="Can.CanFrame"/> through
