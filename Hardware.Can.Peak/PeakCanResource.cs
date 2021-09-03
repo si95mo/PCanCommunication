@@ -399,7 +399,7 @@ namespace Hardware.Can
 
                     while (started)
                     {
-                        if (receiveEvent.WaitOne(50))
+                        if (receiveEvent.WaitOne(10))
                             readHandler.Invoke();
                     }
                 }
