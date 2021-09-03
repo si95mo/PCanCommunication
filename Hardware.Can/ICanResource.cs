@@ -14,6 +14,11 @@ namespace Hardware.Can
         List<ICanChannel> Channels { get; }
 
         /// <summary>
+        /// The collection of the filtered can id
+        /// </summary>
+        Dictionary<int, bool> FilteredCanId { get; }
+
+        /// <summary>
         /// Start the <see cref="ICanResource"/>
         /// </summary>
         void Start();
