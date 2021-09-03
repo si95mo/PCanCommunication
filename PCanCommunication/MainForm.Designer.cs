@@ -284,16 +284,22 @@ namespace PCanCommunication
             // crtVariables
             // 
             this.crtVariables.BackColor = System.Drawing.Color.Transparent;
+            chartArea1.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.Silver;
             chartArea1.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.AxisX2.LineColor = System.Drawing.Color.OrangeRed;
+            chartArea1.AxisX2.MajorGrid.LineColor = System.Drawing.Color.IndianRed;
             chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.AxisY.LineColor = System.Drawing.Color.OrangeRed;
             chartArea1.AxisY.LineWidth = 2;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.Firebrick;
             chartArea1.AxisY.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.AxisY.TitleForeColor = System.Drawing.Color.OrangeRed;
             chartArea1.AxisY2.LineColor = System.Drawing.Color.RoyalBlue;
             chartArea1.AxisY2.LineWidth = 2;
+            chartArea1.AxisY2.MajorGrid.LineColor = System.Drawing.Color.SlateBlue;
             chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.AxisY2.TitleForeColor = System.Drawing.Color.RoyalBlue;
             chartArea1.BackColor = System.Drawing.Color.Transparent;
