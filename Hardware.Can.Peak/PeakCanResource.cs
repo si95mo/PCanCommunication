@@ -149,7 +149,10 @@ namespace Hardware.Can
         /// </summary>
         public Dictionary<int, bool> FilteredCanId => filteredCanId;
 
-        public EventHandler<StatusChangedEventArgs> StatusChangedHandler;
+        /// <summary>
+        /// The <see cref="StatusChanged"/> handler
+        /// </summary>
+        protected EventHandler<StatusChangedEventArgs> StatusChangedHandler;
 
         /// <summary>
         /// The <see cref="StatusChangedHandler"/> event handler
@@ -552,7 +555,6 @@ namespace Hardware.Can
         /// Gets the formated text for a PCAN-Basic channel handle
         /// </summary>
         /// <param name="handle">PCAN-Basic Handle to format</param>
-        /// <param name="isFD">If the channel is FD capable</param>
         /// <returns>The formatted text for a channel</returns>
         private static string FormatChannelName(uint handle)
         {

@@ -13,18 +13,20 @@ namespace PCanCommunication
 {
     /// <summary>
     /// Implement a visual application for managing the can communication
+    /// of the resistance emulator device
     /// </summary>
     public partial class MainForm : Form
     {
-        // Color constants
+        // Color "constants"
         private readonly Color startedColor = Color.Green;
         private readonly Color stoppedColor = Color.Red;
         private readonly Color unknowkColor = Color.DarkGray;
 
-        // Can-related variables
-        private ushort hardwareHandle = 0;
+        // Can resource variables
+        private ushort hardwareHandle = 0; // The hardware handle (changed in InitializeCanCommunication)
         private PeakCanResource resource; // The resource
 
+        // Can channel variables
         private CanChannel actualResistance; // R act channel
         private CanChannel setResistance; // R set channel
 
@@ -33,80 +35,52 @@ namespace PCanCommunication
 
         // Chart-related variables
         private bool continueToUpdateChart = true;
-
         private int chartLineTickness = 2;
         private readonly int numberOfPOints = 128;
         private readonly int updateInterval = 100; // ms
 
         // Utility
         private readonly string rSetName = "Rset"; // Chart series name
-
         private readonly string rActName = "Ract"; // Chart series name
 
-        // Converted values
+        // Read values from the can channels
         private double rAct = 0.0;
         private double rSet = 0.0;
 
         /// <summary>
-        /// Convert a textual representation of a <see cref="BaudRate"/>
+        /// Initialize a new instance of <see cref="MainForm"/>
         /// </summary>
-        /// <param name="baudRate">The baud rate as <see cref="string"/></param>
-        /// <returns>The baudrate as <see cref="BaudRate"/></returns>
-        private BaudRate StringToBaudRate(string baudRate)
+        public MainForm()
         {
-            BaudRate convertedBaudRate;
+            // Initialize basic UI components
+            InitializeComponent();
 
-            switch(baudRate)
-            {
-                case "1000 kbit/s":
-                    convertedBaudRate = BaudRate.K1000;
-                    break;
-                case "800 kbit/s":
-                    convertedBaudRate = BaudRate.K800;
-                    break;
-                case "500 kbit/s":
-                    convertedBaudRate = BaudRate.K500;
-                    break;
-                case "250 kbit/s":
-                    convertedBaudRate = BaudRate.K250;
-                    break;
-                case "125 kbit/s":
-                    convertedBaudRate = BaudRate.K125;
-                    break;
-                case "100 kbit/s":
-                    convertedBaudRate = BaudRate.K100;
-                    break;
-                case "95 kbit/s":
-                    convertedBaudRate = BaudRate.K95;
-                    break;
-                case "83 kbit/s":
-                    convertedBaudRate = BaudRate.K83;
-                    break;
-                case "50 kbit/s":
-                    convertedBaudRate = BaudRate.K50;
-                    break;
-                case "47 kbit/s":
-                    convertedBaudRate = BaudRate.K47;
-                    break;
-                case "33 kbit/s":
-                    convertedBaudRate = BaudRate.K33;
-                    break;
-                case "20 kbit/s":
-                    convertedBaudRate = BaudRate.K20;
-                    break;
-                case "10 kbit/s":
-                    convertedBaudRate = BaudRate.K10;
-                    break;
-                case "5 kbit/s":
-                    convertedBaudRate = BaudRate.K5;
-                    break;
-                default:
-                    convertedBaudRate = BaudRate.K500;
-                    break;
-            }
-
-            return convertedBaudRate;
+            // Initialize chart
+            InitializeChart();
         }
+
+        // Handle initialization that can only be done
+        // after the form control has been created
+        // (in particular the can communication initialization
+        // because there is an Invoke method call inside)
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // Initialize other UI components
+            InitializeUserInterface();
+
+            // Initialize can-related objects
+            // This operation is performed in the Load event because
+            // a call to the Invoke method is performed in the code below
+            InitializeCanCommunication();
+
+            // Initialize chart task updater
+            InitializeChartUpdater();
+
+            // Update the filtered can id
+            UpdateFilteredCanId();
+        }
+
+        #region Initialization methods
 
         /// <summary>
         /// Initialize the chart
@@ -229,9 +203,17 @@ namespace PCanCommunication
             resource.Channels.Add(setResistance);
 
             resource.AddFilteredCanId(actualResistance.CanId);
-            resource.AddFilteredCanId(setResistance.CanId);
         }
 
+        #endregion
+
+        #region Non-UI event handlers
+
+        /// <summary>
+        /// Handle the actual resistance value changed
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The <see cref="DataChangedEventArgs"/></param>
         private void ActualResistance_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
             lblActualValue.Invoke(new MethodInvoker(() =>
@@ -244,6 +226,11 @@ namespace PCanCommunication
             );
         }
 
+        /// <summary>
+        /// Handle the set resistance value changed
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The <see cref="DataChangedEventArgs"/></param>
         private void SetResistance_DataChanged(object sender, DataChangedEventArgs e)
         {
             lblSetValue.Invoke(new MethodInvoker(() =>
@@ -256,7 +243,11 @@ namespace PCanCommunication
             );
         }
 
-        // Handle the resource status value changed
+        /// <summary>
+        /// Handle the resource status changed
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The <see cref="StatusChangedEventArgs"/></param>
         private void Resource_StatusChanged(object sender, StatusChangedEventArgs e)
         {
             // Update the UI component (different thread)
@@ -273,40 +264,15 @@ namespace PCanCommunication
             );
         }
 
+        #endregion
+
+        #region Chart updating
+
         /// <summary>
-        /// Initialize a new instance of <see cref="MainForm"/>
+        /// Update the chart (as a background task)
         /// </summary>
-        public MainForm()
-        {
-            // Initialize basic UI components
-            InitializeComponent();
-
-            // Initialize chart
-            InitializeChart();
-        }
-
-        // Handle initialization that can only be done
-        // after the form control has been created
-        // (in particular the can communication initialization
-        // because there is an Invoke method call inside)
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            // Initialize other UI components
-            InitializeUserInterface();
-
-            // Initialize can-related objects
-            // This operation is performed in the Load event because
-            // a call to the Invoke method is performed in the code below
-            InitializeCanCommunication();
-
-            // Initialize chart task updater
-            InitializeChartUpdater();
-
-            // Update the filtered can id
-            UpdateFiltereCanId();
-        }
-
-        // Update the chart
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The <see cref="DoWorkEventArgs"/></param>
         private async void ChartUpdater_DoWork(object sender, DoWorkEventArgs e)
         {
             // Chart x axis value
@@ -316,18 +282,6 @@ namespace PCanCommunication
             while (continueToUpdateChart)
             {
                 x = (int)(new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds - startTime.TotalMilliseconds);
-
-                // Dummy values, have to be replaced with the values read via can protocol
-                // (Rset is an asynchronous read, sent back once when a different value is written,
-                // while Ract is a periodic read - the frame is automatically sent
-                // by the board in the can bus every x milliseconds)
-                //double a = -1 + 0.02 * Math.Cos(x);
-                //double s = 1 + 0.02 * Math.Sin(x);
-                // actualResistance.CanFrame.Data = BitConverter.GetBytes(a);
-                // setResistance.CanFrame.Data = BitConverter.GetBytes(s);
-                //actualResistance.Data = BitConverter.GetBytes(a);
-                //setResistance.Data = BitConverter.GetBytes(s);
-
                 crtVariables.Invoke(new MethodInvoker(() => UpdateChart(x)));
 
                 // Wait for an amount of time
@@ -359,6 +313,127 @@ namespace PCanCommunication
             }
         }
 
+        #endregion
+
+        #region Conversion methods
+
+        /// <summary>
+        /// Convert a textual representation of a <see cref="BaudRate"/>
+        /// </summary>
+        /// <param name="baudRate">The baud rate as <see cref="string"/></param>
+        /// <returns>The baudrate as <see cref="BaudRate"/></returns>
+        private BaudRate StringToBaudRate(string baudRate)
+        {
+            BaudRate convertedBaudRate;
+
+            switch (baudRate)
+            {
+                case "1000 kbit/s":
+                    convertedBaudRate = BaudRate.K1000;
+                    break;
+                case "800 kbit/s":
+                    convertedBaudRate = BaudRate.K800;
+                    break;
+                case "500 kbit/s":
+                    convertedBaudRate = BaudRate.K500;
+                    break;
+                case "250 kbit/s":
+                    convertedBaudRate = BaudRate.K250;
+                    break;
+                case "125 kbit/s":
+                    convertedBaudRate = BaudRate.K125;
+                    break;
+                case "100 kbit/s":
+                    convertedBaudRate = BaudRate.K100;
+                    break;
+                case "95 kbit/s":
+                    convertedBaudRate = BaudRate.K95;
+                    break;
+                case "83 kbit/s":
+                    convertedBaudRate = BaudRate.K83;
+                    break;
+                case "50 kbit/s":
+                    convertedBaudRate = BaudRate.K50;
+                    break;
+                case "47 kbit/s":
+                    convertedBaudRate = BaudRate.K47;
+                    break;
+                case "33 kbit/s":
+                    convertedBaudRate = BaudRate.K33;
+                    break;
+                case "20 kbit/s":
+                    convertedBaudRate = BaudRate.K20;
+                    break;
+                case "10 kbit/s":
+                    convertedBaudRate = BaudRate.K10;
+                    break;
+                case "5 kbit/s":
+                    convertedBaudRate = BaudRate.K5;
+                    break;
+                default:
+                    convertedBaudRate = BaudRate.K500;
+                    break;
+            }
+
+            return convertedBaudRate;
+        }
+
+        /// <summary>
+        /// Convert a <see cref="byte"/> array in little endian
+        /// to big endian and then convert it in in <see cref="double"/>
+        /// </summary>
+        /// <param name="data">The data convert</param>
+        /// <param name="actual">Indicates whether convert the actual or set resistance</param>
+        /// <returns>The converted data</returns>
+        private double ByteArrayToDouble(byte[] data, bool actual = true)
+        {
+            double converted = 0.0;
+
+            byte[] storedData = new byte[4];
+
+            if (actual) // Actual resistance, last 4 bytes
+            {
+                for (int i = 0; i < 4; i++)
+                    storedData[i] = data[4 + i];
+            }
+            else // Set resistance, first 4 bytes
+            {
+                for (int i = 0; i < 4; i++)
+                    storedData[i] = data[i];
+            }
+
+            converted = BitConverter.ToInt32(storedData, 0);
+
+            return converted;
+        }
+
+        /// <summary>
+        /// Convert an <see cref="int"/> value into
+        /// a <see cref="byte"/> array (of 8 elements)
+        /// </summary>
+        /// <param name="data">The data to converted</param>
+        /// <returns>The converted data as an array</returns>
+        private byte[] IntToByteArray(int data)
+        {
+            byte[] converted = new byte[8];
+
+            byte[] partial = BitConverter.GetBytes(data); // Int, 4 bytes
+
+            for(int i = 0; i < 8; i++)
+            {
+                if (i < 4) // The first 4 bytes are the actual data
+                    converted[i] = partial[i];
+                else // Pad the converted array with 0
+                    converted[i] = 0x0;
+            }
+
+            return converted;
+        }
+
+        #endregion
+
+        #region UI event handlers
+
         // Handle the start button click
         private void BtnStart_Click(object sender, EventArgs e)
         {
@@ -368,6 +443,8 @@ namespace PCanCommunication
             resource?.EnableLog();
 
             // Update UI
+            btnStart.FlatAppearance.BorderColor = startedColor;
+            btnStop.FlatAppearance.BorderColor = Color.Black;
             pnlResourceStarted.BackColor = startedColor;
         }
 
@@ -377,9 +454,11 @@ namespace PCanCommunication
             // Stop the resource.
             // Doesn't disable the log in order to not delete unseen log entries
             // (multiple invokes of EnableLog will delete the log)
-            resource?.Stop(); 
+            resource?.Stop();
 
             // Update UI
+            btnStart.FlatAppearance.BorderColor = Color.Black;
+            btnStop.FlatAppearance.BorderColor = stoppedColor;
             pnlResourceStarted.BackColor = stoppedColor;
         }
 
@@ -418,105 +497,22 @@ namespace PCanCommunication
             }
         }
 
-        private void CbxLogEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chbLogEnabled.Checked)
-            {
-                // Enable log
-                resource.EnableLog((int)nudLogSize.Value);
-                // And update UI
-                btnReadLog.FlatAppearance.BorderColor = startedColor;
-            }
-            else
-            {
-                // Disable log
-                resource.DisableLog();
-                // And update UI
-                btnReadLog.FlatAppearance.BorderColor = stoppedColor;
-            }
-        }
-
-        private void CbxBaudRate_SelectedIndexChanged(object sender, EventArgs e)
-            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString())); 
-
-        /// <summary>
-        /// Convert a <see cref="byte"/> array in little endian
-        /// to big endian and then convert it in in <see cref="double"/>
-        /// </summary>
-        /// <param name="data">The data convert</param>
-        /// <param name="actual">Indicates whether convert the actual or set resistance</param>
-        /// <returns>The converted data</returns>
-        private double ByteArrayToDouble(byte[] data, bool actual = true)
-        {
-            double converted = 0.0;
-
-            byte[] storedData = new byte[4];
-
-            if (actual)
-            {
-                for (int i = 0; i < 4; i++)
-                    storedData[i] = data[4 + i];
-            }
-            else
-            {
-                for (int i = 0; i < 4; i++)
-                    storedData[i] = data[i];
-            }
-
-            converted = BitConverter.ToInt32(storedData, 0);
-
-            return converted;
-        }
-
-        private byte[] IntToByteArray(int data)
-        {
-            byte[] converted = new byte[8];
-
-            byte[] partial = BitConverter.GetBytes(data);
-
-            for(int i = 0; i < 8; i++)
-            {
-                if (i < 4)
-                    converted[i] = partial[i];
-                else
-                    converted[i] = 0x0;
-            }
-
-            return converted;
-        }
-
         private void btnSetCanId_Click(object sender, EventArgs e)
         {
             actualResistance.CanId = 0x180 + (int)nudReceive.Value;
             setResistance.CanId = 0x200 + (int)nudSend.Value;
         }
 
-        /// <summary>
-        /// Update the UI component with the updated
-        /// filtered can id
-        /// </summary>
-        private void UpdateFiltereCanId()
-        {
-            Dictionary<int, bool> ids = resource?.FilteredCanId;
-
-            lbxFilteredCanId.Items.Clear();
-            foreach (KeyValuePair<int, bool> id in ids)
-            {
-                if (id.Value)
-                    lbxFilteredCanId.Items.Add($"0x{id.Key:X2}");
-            }
-        }
-
         private void BtnAddFiltered(object sender, EventArgs e)
         {
             resource?.AddFilteredCanId((int)nudFilter.Value);
-            UpdateFiltereCanId();            
+            UpdateFilteredCanId();            
         }
 
         private void BtnRemoveFilter_Click(object sender, EventArgs e)
         {
             resource?.RemoveFilteredCanId((int)nudFilter.Value);
-            UpdateFiltereCanId();
+            UpdateFilteredCanId();
         }
 
         private void CbxDeviceList_SelectedIndexChanged(object sender, EventArgs e)
@@ -539,5 +535,48 @@ namespace PCanCommunication
 
         private void CmsClearLog_Click(object sender, EventArgs e)
             => txbLog.Text = "";
+
+        private void CbxLogEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chbLogEnabled.Checked)
+            {
+                // Enable log
+                resource.EnableLog((int)nudLogSize.Value);
+                // And update UI
+                btnReadLog.FlatAppearance.BorderColor = startedColor;
+            }
+            else
+            {
+                // Disable log
+                resource.DisableLog();
+                // And update UI
+                btnReadLog.FlatAppearance.BorderColor = stoppedColor;
+            }
+        }
+
+        private void CbxBaudRate_SelectedIndexChanged(object sender, EventArgs e)
+            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
+
+        #endregion
+
+        #region UI-related methods
+
+        /// <summary>
+        /// Update the UI component with the updated
+        /// filtered can id
+        /// </summary>
+        private void UpdateFilteredCanId()
+        {
+            Dictionary<int, bool> ids = resource?.FilteredCanId;
+
+            lbxFilteredCanId.Items.Clear();
+            foreach (KeyValuePair<int, bool> id in ids)
+            {
+                if (id.Value)
+                    lbxFilteredCanId.Items.Add($"0x{id.Key:X2}");
+            }
+        }
+
+        #endregion
     }
 }

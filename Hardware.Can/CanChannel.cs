@@ -4,18 +4,18 @@ using System.Linq;
 namespace Hardware.Can
 {
     /// <summary>
-    /// Handles the property data changed event.
+    /// Handles the <see cref="CanChannel.Data"/> changed event.
     /// See also <see cref="EventArgs"/>
     /// </summary>
     public class DataChangedEventArgs : EventArgs
     {
         /// <summary>
-        /// The old value
+        /// The old data
         /// </summary>
         public readonly object OldData;
 
         /// <summary>
-        /// The new value
+        /// The new data
         /// </summary>
         public readonly object NewData;
 
@@ -31,11 +31,27 @@ namespace Hardware.Can
         }
     }
 
+    /// <summary>
+    /// Handles the <see cref="CanChannel.CanFrame"/> changed event.
+    /// See also <see cref="EventArgs"/>
+    /// </summary>
     public class CanFrameChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// The old <see cref="CanFrame"/>
+        /// </summary>
         public readonly object OldCanFrame;
+
+        /// <summary>
+        /// The new <see cref="CanFrame"/>
+        /// </summary>
         public readonly object NewCanFrame;
 
+        /// <summary>
+        /// Create a new instance of <see cref="CanFrameChangedEventArgs"/>
+        /// </summary>
+        /// <param name="oldCanFrame">The old value of the property</param>
+        /// <param name="newCanFrame">The new value of the property</param>
         public CanFrameChangedEventArgs(object oldCanFrame, object newCanFrame)
         {
             OldCanFrame = oldCanFrame;
@@ -57,10 +73,21 @@ namespace Hardware.Can
 
         private object objectLock = new object();
 
+        /// <summary>
+        /// The <see cref="DataChanged"/> handler
+        /// </summary>
         protected EventHandler<DataChangedEventArgs> DataChangedHandler;
 
+        /// <summary>
+        /// The <see cref="CanFrameChanged"/> handler
+        /// </summary>
         protected EventHandler<CanFrameChangedEventArgs> CanFrameChangedHandler;
 
+        /// <summary>
+        /// Create a new instance of <see cref="CanChannel"/>
+        /// </summary>
+        /// <param name="canId">The can id</param>
+        /// <param name="resource">The <see cref="ICanResource"/></param>
         public CanChannel(int canId, ICanResource resource)
         {
             this.canId = canId;
@@ -72,7 +99,7 @@ namespace Hardware.Can
 
         /// <summary>
         /// The <see cref="DataChanged"/> event handler
-        /// for the <see cref="Value"/> property
+        /// for the <see cref="Data"/> property
         /// </summary>
         public event EventHandler<DataChangedEventArgs> DataChanged
         {
@@ -91,7 +118,7 @@ namespace Hardware.Can
 
         /// <summary>
         /// The <see cref="CanFrameChanged"/> event handler
-        /// for the <see cref="Value"/> property
+        /// for the <see cref="CanFrame"/> property
         /// </summary>
         public event EventHandler<CanFrameChangedEventArgs> CanFrameChanged
         {
@@ -111,7 +138,7 @@ namespace Hardware.Can
         /// <summary>
         /// On <see cref="Data"/> changed event
         /// </summary>
-        /// <param name="e">The <see cref="ValueChangedEventArgs"/></param>
+        /// <param name="e">The <see cref="DataChangedEventArgs"/></param>
         protected virtual void OnDataChanged(DataChangedEventArgs e)
             => DataChangedHandler?.Invoke(this, e);
 
