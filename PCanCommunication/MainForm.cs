@@ -35,7 +35,7 @@ namespace PCanCommunication
         private bool continueToUpdateChart = true;
 
         private int chartLineTickness = 2;
-        private readonly int numberOfPOints = 32;
+        private readonly int numberOfPOints = 128;
         private readonly int updateInterval = 100; // ms
 
         // Utility
@@ -165,7 +165,7 @@ namespace PCanCommunication
             bs.DataSource = hardwareNames;
 
             cbxDeviceList.DataSource = bs.DataSource;
-            cbxDeviceList.SelectedIndex = 0;
+            cbxDeviceList.SelectedIndex = cbxDeviceList.Items.Count > 0 ? 0 : -1;
 
             bs = new BindingSource();
             bs.DataSource = new string[]
@@ -215,7 +215,7 @@ namespace PCanCommunication
             setResistance = new CanChannel(0x200, resource);
 
             // Connect the event handlers
-            actualResistance.DataChanged += ActualResistance_DataChanged;
+            actualResistance.CanFrameChanged += ActualResistance_CanFrameChanged;
             setResistance.DataChanged += SetResistance_DataChanged;
 
             // Initialize the can channels data to a default value
@@ -232,6 +232,18 @@ namespace PCanCommunication
             resource.AddFilteredCanId(setResistance.CanId);
         }
 
+        private void ActualResistance_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
+        {
+            lblActualValue.Invoke(new MethodInvoker(() =>
+                    {
+                        // lblActualValue.Text = string.Join(", ", actualResistance.Data);
+                        rAct = ByteArrayToDouble(actualResistance.Data, actual: true);
+                        lblActualValue.Text = $"{rAct:F3} Ohm";
+                    }
+                )
+            );
+        }
+
         private void SetResistance_DataChanged(object sender, DataChangedEventArgs e)
         {
             lblSetValue.Invoke(new MethodInvoker(() =>
@@ -239,18 +251,6 @@ namespace PCanCommunication
                         // lblSetValue.Text = $"{BitConverter.ToDouble(setResistance.Data, 0):F3} Ohm";
                         rSet = ByteArrayToDouble(setResistance.Data, actual: false);
                         lblSetValue.Text = $"{rSet:F3} Ohm";
-                    }
-                )
-            );
-        }
-
-        private void ActualResistance_DataChanged(object sender, DataChangedEventArgs e)
-        {
-            lblActualValue.Invoke(new MethodInvoker(() =>
-                    {
-                        // lblActualValue.Text = string.Join(", ", actualResistance.Data);
-                        rAct = ByteArrayToDouble(actualResistance.Data, actual: true);
-                        lblActualValue.Text = $"{rAct:F3} Ohm";
                     }
                 )
             );
@@ -460,7 +460,7 @@ namespace PCanCommunication
             else
             {
                 for (int i = 0; i < 4; i++)
-                    storedData[i] = data[4 + i];
+                    storedData[i] = data[i];
             }
 
             converted = BitConverter.ToInt32(storedData, 0);
@@ -477,9 +477,9 @@ namespace PCanCommunication
             for(int i = 0; i < 8; i++)
             {
                 if (i < 4)
-                    converted[i] = 0x0;
+                    converted[i] = partial[i];
                 else
-                    converted[i] = partial[i - 4];
+                    converted[i] = 0x0;
             }
 
             return converted;

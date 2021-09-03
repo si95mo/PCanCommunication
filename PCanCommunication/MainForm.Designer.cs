@@ -554,7 +554,7 @@ namespace PCanCommunication
             // btnSetCanId
             // 
             this.btnSetCanId.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSetCanId.Location = new System.Drawing.Point(0, 120);
+            this.btnSetCanId.Location = new System.Drawing.Point(9, 120);
             this.btnSetCanId.Name = "btnSetCanId";
             this.btnSetCanId.Size = new System.Drawing.Size(281, 23);
             this.btnSetCanId.TabIndex = 12;
