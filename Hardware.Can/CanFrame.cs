@@ -54,11 +54,11 @@ namespace Hardware.Can
         /// <returns>The <see cref="string"/> containing the description</returns>
         public override string ToString()
         {
-            string dataAsString = data[0].ToString("D3");
+            string dataAsString = data[0].ToString("X2");
             for (int i = 1; i < data.Length; i++)
-                dataAsString += $", {data[i]:D3}";
+                dataAsString += $", {data[i]:X2}";
 
-            string description = $"{timestamp}; {id};\t{dataAsString}";
+            string description = $"{timestamp:F3}; {id:X2}; {dataAsString}";
             return description;
         }
     }
