@@ -140,6 +140,7 @@ namespace Hardware.Can
         private byte hwType;
         private uint ioPort;
         private ushort interrupt;
+        private BaudRate baudRate;
 
         private Dictionary<int, bool> filteredCanId;
 
@@ -243,18 +244,11 @@ namespace Hardware.Can
         /// </remarks>
         public PeakCanResource(ushort hwChannel, BaudRate baudRate, byte hwType, uint ioPort, ushort interrupt) : this()
         {
-            Status = (uint)PCANBasic.Initialize(
-                hwChannel,
-                (TPCANBaudrate)baudRate,
-                (TPCANType)hwType,
-                ioPort,
-                interrupt
-            );
-
             channelHandle = hwChannel;
             this.hwType = hwType;
             this.ioPort = ioPort;
             this.interrupt = interrupt;
+            this.baudRate = baudRate;
         }
 
         /// <summary>
@@ -277,12 +271,23 @@ namespace Hardware.Can
         /// </summary>
         public void Start()
         {
-            started = true;
-
-            if (rxTask == default || rxTask.IsCompleted)
+            if (!started)
             {
-                rxTask = CreateReceiveTask();
-                rxTask.Start();
+                Status = (uint)PCANBasic.Initialize(
+                    channelHandle,
+                    (TPCANBaudrate)baudRate,
+                    (TPCANType)hwType,
+                    ioPort,
+                    interrupt
+                );
+
+                if (rxTask == default || rxTask.IsCompleted)
+                {
+                    rxTask = CreateReceiveTask();
+                    rxTask.Start();
+                }
+
+                started = true;
             }
         }
 
@@ -291,12 +296,16 @@ namespace Hardware.Can
         /// </summary>
         public void Stop()
         {
-            started = false;
+            if (started)
+            {
+                Status = (uint)PCANBasic.Uninitialize(channelHandle);
 
-            if (rxTask != default && !rxTask.IsCompleted)
-                rxTask.Wait(100);
+                if (rxTask != default && !rxTask.IsCompleted)
+                    rxTask.Wait(100);
 
-            rxTask = default;
+                rxTask = default;
+                started = false;
+            }
         }
 
         /// <summary>
@@ -423,7 +432,13 @@ namespace Hardware.Can
             bool succeeded = true;
 
             Status = (uint)PCANBasic.Uninitialize(channelHandle);
-            Status = (uint)PCANBasic.Initialize(channelHandle, (TPCANBaudrate)baudRate, (TPCANType)hwType, ioPort, interrupt);
+            Status = (uint)PCANBasic.Initialize(
+                channelHandle, 
+                (TPCANBaudrate)baudRate, 
+                (TPCANType)hwType, 
+                ioPort, 
+                interrupt
+            );
 
             succeeded &= status == (uint)TPCANStatus.PCAN_ERROR_OK;
 
