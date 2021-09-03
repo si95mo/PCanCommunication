@@ -12,7 +12,7 @@ namespace Hardware.Can
     /// baud-rates (bit-rates)
     /// </summary>
     public enum BaudRate : ushort
-    { 
+    {
         /// <summary>
         /// 1 MBit/s
         /// </summary>
@@ -519,9 +519,9 @@ namespace Hardware.Can
             List<string> hardwareNames = new List<string>();
 
             TPCANStatus result = PCANBasic.GetValue(
-                PCANBasic.PCAN_NONEBUS, 
-                TPCANParameter.PCAN_ATTACHED_CHANNELS_COUNT, 
-                out uint channelsNumber, 
+                PCANBasic.PCAN_NONEBUS,
+                TPCANParameter.PCAN_ATTACHED_CHANNELS_COUNT,
+                out uint channelsNumber,
                 sizeof(uint)
             );
 
@@ -530,8 +530,8 @@ namespace Hardware.Can
                 TPCANChannelInformation[] info = new TPCANChannelInformation[channelsNumber];
 
                 result = PCANBasic.GetValue(
-                    PCANBasic.PCAN_NONEBUS, 
-                    TPCANParameter.PCAN_ATTACHED_CHANNELS, 
+                    PCANBasic.PCAN_NONEBUS,
+                    TPCANParameter.PCAN_ATTACHED_CHANNELS,
                     info
                 );
 
@@ -561,7 +561,7 @@ namespace Hardware.Can
             TPCANDevice devDevice;
             byte byChannel;
 
-            // Gets the owner device and channel for a 
+            // Gets the owner device and channel for a
             // PCAN-Basic handle
             //
             if (handle < 0x100)

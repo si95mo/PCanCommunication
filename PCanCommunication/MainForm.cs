@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -19,15 +18,18 @@ namespace PCanCommunication
     {
         // Color "constants"
         private readonly Color startedColor = Color.Green;
+
         private readonly Color stoppedColor = Color.Red;
         private readonly Color unknowkColor = Color.DarkGray;
 
         // Can resource variables
         private ushort hardwareHandle = 0; // The hardware handle (changed in InitializeCanCommunication)
+
         private PeakCanResource resource; // The resource
 
         // Can channel variables
         private CanChannel actualResistance; // R act channel
+
         private CanChannel setResistance; // R set channel
 
         // The initial time (first x axis value of the chart)
@@ -35,16 +37,19 @@ namespace PCanCommunication
 
         // Chart-related variables
         private bool continueToUpdateChart = true;
+
         private int chartLineTickness = 2;
         private readonly int numberOfPOints = 128;
         private readonly int updateInterval = 100; // ms
 
         // Utility
         private readonly string rSetName = "Rset"; // Chart series name
+
         private readonly string rActName = "Ract"; // Chart series name
 
         // Read values from the can channels
         private double rAct = 0.0;
+
         private double rSet = 0.0;
 
         /// <summary>
@@ -205,7 +210,7 @@ namespace PCanCommunication
             resource.AddFilteredCanId(actualResistance.CanId);
         }
 
-        #endregion
+        #endregion Initialization methods
 
         #region Non-UI event handlers
 
@@ -264,7 +269,7 @@ namespace PCanCommunication
             );
         }
 
-        #endregion
+        #endregion Non-UI event handlers
 
         #region Chart updating
 
@@ -313,7 +318,7 @@ namespace PCanCommunication
             }
         }
 
-        #endregion
+        #endregion Chart updating
 
         #region Conversion methods
 
@@ -331,45 +336,59 @@ namespace PCanCommunication
                 case "1000 kbit/s":
                     convertedBaudRate = BaudRate.K1000;
                     break;
+
                 case "800 kbit/s":
                     convertedBaudRate = BaudRate.K800;
                     break;
+
                 case "500 kbit/s":
                     convertedBaudRate = BaudRate.K500;
                     break;
+
                 case "250 kbit/s":
                     convertedBaudRate = BaudRate.K250;
                     break;
+
                 case "125 kbit/s":
                     convertedBaudRate = BaudRate.K125;
                     break;
+
                 case "100 kbit/s":
                     convertedBaudRate = BaudRate.K100;
                     break;
+
                 case "95 kbit/s":
                     convertedBaudRate = BaudRate.K95;
                     break;
+
                 case "83 kbit/s":
                     convertedBaudRate = BaudRate.K83;
                     break;
+
                 case "50 kbit/s":
                     convertedBaudRate = BaudRate.K50;
                     break;
+
                 case "47 kbit/s":
                     convertedBaudRate = BaudRate.K47;
                     break;
+
                 case "33 kbit/s":
                     convertedBaudRate = BaudRate.K33;
                     break;
+
                 case "20 kbit/s":
                     convertedBaudRate = BaudRate.K20;
                     break;
+
                 case "10 kbit/s":
                     convertedBaudRate = BaudRate.K10;
                     break;
+
                 case "5 kbit/s":
                     convertedBaudRate = BaudRate.K5;
                     break;
+
                 default:
                     convertedBaudRate = BaudRate.K500;
                     break;
@@ -419,7 +438,7 @@ namespace PCanCommunication
 
             byte[] partial = BitConverter.GetBytes(data); // Int, 4 bytes
 
-            for(int i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
                 if (i < 4) // The first 4 bytes are the actual data
                     converted[i] = partial[i];
@@ -430,7 +449,7 @@ namespace PCanCommunication
             return converted;
         }
 
-        #endregion
+        #endregion Conversion methods
 
         #region UI event handlers
 
@@ -506,7 +525,7 @@ namespace PCanCommunication
         private void BtnAddFiltered(object sender, EventArgs e)
         {
             resource?.AddFilteredCanId((int)nudFilter.Value);
-            UpdateFilteredCanId();            
+            UpdateFilteredCanId();
         }
 
         private void BtnRemoveFilter_Click(object sender, EventArgs e)
@@ -557,7 +576,7 @@ namespace PCanCommunication
         private void CbxBaudRate_SelectedIndexChanged(object sender, EventArgs e)
             => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
 
-        #endregion
+        #endregion UI event handlers
 
         #region UI-related methods
 
@@ -577,6 +596,6 @@ namespace PCanCommunication
             }
         }
 
-        #endregion
+        #endregion UI-related methods
     }
 }
