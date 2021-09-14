@@ -567,30 +567,28 @@ namespace Hardware.Can
         }
 
         /// <summary>
-        /// Gets the formated text for a PCAN-Basic channel handle
+        /// Format a PCAN-Basic channel handle (name)
         /// </summary>
-        /// <param name="handle">PCAN-Basic Handle to format</param>
-        /// <returns>The formatted text for a channel</returns>
+        /// <param name="handle">The PCAN-Basic channel handle to format</param>
+        /// <returns>The formatted text of the channel handle</returns>
         private static string FormatChannelName(uint handle)
         {
-            TPCANDevice devDevice;
-            byte byChannel;
+            TPCANDevice device;
+            byte channel;
 
-            // Gets the owner device and channel for a
-            // PCAN-Basic handle
-            //
+            // Gets the owner device and channel for a PCAN-Basic handle
             if (handle < 0x100)
             {
-                devDevice = (TPCANDevice)(handle >> 4);
-                byChannel = (byte)(handle & 0xF);
+                device = (TPCANDevice)(handle >> 4);
+                channel = (byte)(handle & 0xF);
             }
             else
             {
-                devDevice = (TPCANDevice)(handle >> 8);
-                byChannel = (byte)(handle & 0xFF);
+                device = (TPCANDevice)(handle >> 8);
+                channel = (byte)(handle & 0xFF);
             }
 
-            return string.Format("{0} {1} ({2:X2}h)", devDevice, byChannel, handle);
+            return string.Format("{0} {1} ({2:X2}h)", device, channel, handle);
         }
     }
 }
