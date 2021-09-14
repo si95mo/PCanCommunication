@@ -122,7 +122,7 @@ namespace Hardware.Can
         private uint status;
 
         private Queue<CanFrame> logQueue;
-        private int maxCapacity;
+        private int maxLogSize;
         private bool logEnabled;
 
         private object objectLock = new object();
@@ -215,12 +215,12 @@ namespace Hardware.Can
             channels = new List<ICanChannel>();
 
             logQueue = null;
-            maxCapacity = 65535;
+            maxLogSize = 65535;
             logEnabled = false;
 
             started = false;
             receiveEvent = new AutoResetEvent(false);
-            readHandler = new ReadHandler(ReadMessages);
+            readHandler = new ReadHandler(ReadFrame);
 
             rxTask = default; // Initialization to a known state
 
@@ -336,11 +336,11 @@ namespace Hardware.Can
         }
 
         /// <summary>
-        /// Read the can messages and store them
+        /// Read a can frame and store it
         /// in the relative <see cref="ICanChannel"/> subscribed
         /// in <see cref="Channels"/>
         /// </summary>
-        private void ReadMessages()
+        private void ReadFrame()
         {
             TPCANStatus readResult;
             bool channelFound = false;
@@ -368,7 +368,7 @@ namespace Hardware.Can
                         {
                             lock (logLock)
                             {
-                                if (logQueue.Count >= maxCapacity)
+                                if (logQueue.Count >= maxLogSize)
                                     logQueue.Dequeue();
 
                                 logQueue.Enqueue(canFrame);
@@ -457,7 +457,7 @@ namespace Hardware.Can
         public void EnableLog(int maxLogSize = 65535)
         {
             logEnabled = true;
-            maxCapacity = maxLogSize;
+            this.maxLogSize = maxLogSize;
             logQueue = new Queue<CanFrame>(maxLogSize);
         }
 
@@ -486,7 +486,7 @@ namespace Hardware.Can
         {
             string log = "";
 
-            // EnableLog(int) should has been called at least once
+            // EnableLog(int) should have been called at least once
             if (logQueue != null)
             {
                 lock (logLock)
@@ -514,7 +514,7 @@ namespace Hardware.Can
         }
 
         /// <summary>
-        /// Remove or disable a can id into the filtered collection
+        /// Remove or add (disabled) a can id into the filtered collection
         /// </summary>
         /// <param name="canId">The can id to remove</param>
         public void RemoveFilteredCanId(int canId)
@@ -528,7 +528,7 @@ namespace Hardware.Can
         /// <summary>
         /// Get all the available hardware
         /// </summary>
-        /// <returns>The available hardware handle and its name</returns>
+        /// <returns>The available hardware handles and their names</returns>
         public static List<string> GetAvailableHardware()
         {
             List<string> hardwareNames = new List<string>();
