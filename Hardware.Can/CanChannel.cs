@@ -65,11 +65,11 @@ namespace Hardware.Can
     /// </summary>
     public class CanChannel : ICanChannel
     {
-        private int canId;
-        private byte[] data;
-        private CanFrame canFrame;
+        protected int canId;
+        protected byte[] data;
+        protected CanFrame canFrame;
 
-        private ICanResource resource;
+        protected ICanResource resource;
 
         private object objectLock = new object();
 
@@ -167,9 +167,10 @@ namespace Hardware.Can
         /// </summary>
         /// <remarks>
         /// Only a change of this property will trigger
-        /// the <see cref="DataChanged"/> event!
+        /// the <see cref="DataChanged"/> event! <br/>
+        /// So, <b>this property is used for writing to the can bus</b>
         /// </remarks>
-        public byte[] Data
+        public virtual byte[] Data
         {
             get => data;
             set
@@ -194,9 +195,10 @@ namespace Hardware.Can
         /// </summary>
         /// <remarks>
         /// A change in this property will not trigger
-        /// the <see cref="DataChanged"/> event!
+        /// the <see cref="DataChanged"/> event! <br/>
+        /// So, <b>this property is used for reading from the can bus</b>
         /// </remarks>
-        public CanFrame CanFrame
+        public virtual CanFrame CanFrame
         {
             get => canFrame;
             set
