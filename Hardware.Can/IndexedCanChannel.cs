@@ -8,7 +8,9 @@ namespace Hardware.Can
 {
     /// <summary>
     /// Define a channel to handle the can communication
-    /// with indexed <see cref="CanFrame"/>. <br/>
+    /// with an indexed <see cref="CanFrame"/>. <br/>
+    /// The first 2 bytes represent the index, the second 2 
+    /// the sub-index and the last 4 the actual data. <br/>
     /// See also <see cref="CanChannel"/>
     /// </summary>
     public class IndexedCanChannel : CanChannel
