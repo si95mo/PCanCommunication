@@ -46,6 +46,7 @@
     <Compile Include="CanFrame.cs" />
     <Compile Include="ICanChannel.cs" />
     <Compile Include="ICanResource.cs" />
+    <Compile Include="IndexedCanChannel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
