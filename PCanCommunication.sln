@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hardware.Can", "Hardware.Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hardware.Can.Peak", "Hardware.Can.Peak\Hardware.Can.Peak.csproj", "{589DA018-3B3A-4E20-95C8-3A8F046B598D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures.Variables", "DataStructures.Variables\DataStructures.Variables.csproj", "{9B4C98EF-8522-48E3-A224-282F8BC1655D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Instructions", "Instructions\Instructions.csproj", "{B539EC3D-3A1F-495D-B012-D187996055C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{589DA018-3B3A-4E20-95C8-3A8F046B598D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{589DA018-3B3A-4E20-95C8-3A8F046B598D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{589DA018-3B3A-4E20-95C8-3A8F046B598D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B4C98EF-8522-48E3-A224-282F8BC1655D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B4C98EF-8522-48E3-A224-282F8BC1655D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B4C98EF-8522-48E3-A224-282F8BC1655D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B4C98EF-8522-48E3-A224-282F8BC1655D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B539EC3D-3A1F-495D-B012-D187996055C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B539EC3D-3A1F-495D-B012-D187996055C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B539EC3D-3A1F-495D-B012-D187996055C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B539EC3D-3A1F-495D-B012-D187996055C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
