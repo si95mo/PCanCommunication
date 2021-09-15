@@ -433,10 +433,10 @@ namespace Hardware.Can
 
             Status = (uint)PCANBasic.Uninitialize(channelHandle);
             Status = (uint)PCANBasic.Initialize(
-                channelHandle, 
-                (TPCANBaudrate)baudRate, 
-                (TPCANType)hwType, 
-                ioPort, 
+                channelHandle,
+                (TPCANBaudrate)baudRate,
+                (TPCANType)hwType,
+                ioPort,
                 interrupt
             );
 

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hardware.Can
 {
     /// <summary>
     /// Define a channel to handle the can communication
     /// with an indexed <see cref="CanFrame"/>. <br/>
-    /// The first 2 bytes represent the index, the second 2 
+    /// The first 2 bytes represent the index, the second 2
     /// the sub-index and the last 4 the actual data. <br/>
     /// See also <see cref="CanChannel"/>
     /// </summary>
@@ -42,8 +39,8 @@ namespace Hardware.Can
         /// <remarks>
         /// <see cref="Data"/> is an 8 <see cref="byte"/>
         /// long array, but the first 4 elements are
-        /// <see cref="Index"/> and <see cref="SubIndex"/>), <br/> 
-        /// while the actual data are stored in the last 4 elements. 
+        /// <see cref="Index"/> and <see cref="SubIndex"/>), <br/>
+        /// while the actual data are stored in the last 4 elements.
         /// So, the array passed in the setter must have a length of 4! <br/>
         /// <b>This property is used for writing to the can bus</b>
         /// </remarks>
@@ -104,7 +101,7 @@ namespace Hardware.Can
         /// <param name="index">The can channel index</param>
         /// <param name="subIndex">The can channel sub index</param>
         /// <param name="resource">The <see cref="ICanResource"/></param>
-        public IndexedCanChannel(int canId, ushort index, ushort subIndex, ICanResource resource) 
+        public IndexedCanChannel(int canId, ushort index, ushort subIndex, ICanResource resource)
             : base(canId, resource)
         {
             this.index = index;
