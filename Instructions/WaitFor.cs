@@ -30,6 +30,9 @@ namespace Instructions
         Lesser = 3
     }
 
+    /// <summary>
+    /// Implement an <see cref="Instruction"/> that wait for a condition
+    /// </summary>
     public class WaitFor : Instruction
     {
         private string firstVariableName;
@@ -39,7 +42,15 @@ namespace Instructions
 
         private bool result;
 
-        public WaitFor(string firstVariableName, string secondVariableName, ConditionOperand operand, int timeout = 1000) : base("WaitFor")
+        /// <summary>
+        /// Create a new instance of <see cref="WaitFor"/>
+        /// </summary>
+        /// <param name="firstVariableName">The first variable in the condition name</param>
+        /// <param name="secondVariableName">The second variable in the condition name</param>
+        /// <param name="operand">The <see cref="ConditionOperand"/></param>
+        /// <param name="timeout">The timeout (in milliseconds)</param>
+        /// <param name="order">The order index</param>
+        public WaitFor(string firstVariableName, string secondVariableName, ConditionOperand operand, int timeout, int order) : base("WaitFor", order)
         {
             this.firstVariableName = firstVariableName;
             this.secondVariableName = secondVariableName;

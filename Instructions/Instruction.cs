@@ -10,6 +10,12 @@ namespace Instructions
         protected string name;
         protected List<object> inputParameters;
         protected List<object> outputParameters;
+        protected int order;
+
+        /// <summary>
+        /// The <see cref="Instruction"/> order index
+        /// </summary>
+        public int Order => order;
 
         /// <summary>
         /// The <see cref="Instruction"/> input parameters
@@ -30,9 +36,10 @@ namespace Instructions
         /// Initialize the <see cref="Instruction"/> attributes
         /// </summary>
         /// <param name="name">The name</param>
-        protected Instruction(string name)
+        protected Instruction(string name, int order)
         {
             this.name = name;
+            this.order = order;
 
             inputParameters = new List<object>();
             outputParameters = new List<object>();

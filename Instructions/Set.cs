@@ -15,7 +15,8 @@ namespace Instructions
         /// </summary>
         /// <param name="variableName">The variable name</param>
         /// <param name="valueToSet">The value to set</param>
-        public Set(string variableName, double valueToSet) : base("Set")
+        /// <param name="order">The order index</param>
+        public Set(string variableName, double valueToSet, int order) : base("Set", order)
         {
             this.variableName = variableName;
             this.valueToSet = valueToSet;
