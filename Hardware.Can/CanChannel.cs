@@ -65,10 +65,24 @@ namespace Hardware.Can
     /// </summary>
     public class CanChannel : ICanChannel
     {
+        /// <summary>
+        /// The can id
+        /// </summary>
         protected int canId;
+
+        /// <summary>
+        /// The data
+        /// </summary>
         protected byte[] data;
+
+        /// <summary>
+        /// The can frame
+        /// </summary>
         protected CanFrame canFrame;
 
+        /// <summary>
+        /// The can resource
+        /// </summary>
         protected ICanResource resource;
 
         private object objectLock = new object();
