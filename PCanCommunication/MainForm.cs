@@ -177,7 +177,7 @@ namespace PCanCommunication
         /// </summary>
         private void InitializeCanCommunication()
         {
-            // Create the can reasource
+            // Create the can resource
             resource = new PeakCanResource(hardwareHandle, StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
 
             // Update the UI and connect the event handler
