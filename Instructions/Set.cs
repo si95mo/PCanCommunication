@@ -31,8 +31,12 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
-            VariableDictionary.Get(variableName, out IVariable<double> variable);
-            variable.Value = valueToSet;
+            await Task.Run(() =>
+                {
+                    VariableDictionary.Get(variableName, out IVariable<double> variable);
+                    variable.Value = valueToSet;
+                }
+            );
         }
     }
 }

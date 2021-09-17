@@ -21,6 +21,9 @@ namespace Instructions
             inputParameters.Add(delay);
         }
 
+        /// <summary>
+        /// Execute the <see cref="Wait"/> instruction
+        /// </summary>
         public override async Task Execute() => await Task.Delay(delay);
     }
 }

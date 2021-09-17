@@ -63,6 +63,9 @@ namespace Instructions
             inputParameters.Add(timeout);
         }
 
+        /// <summary>
+        /// Execute the <see cref="WaitFor"/> instruction
+        /// </summary>
         public override async Task Execute()
         {
             Func<bool> condition = () =>

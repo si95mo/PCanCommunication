@@ -23,12 +23,19 @@ namespace Instructions
             inputParameters.Add(this.variableName);
         }
 
+        /// <summary>
+        /// Execute the <see cref="Get"/> instruction
+        /// </summary>
         public override async Task Execute()
         {
-            VariableDictionary.Get(variableName, out IVariable<double> variable);
-            valueGot = variable.Value;
+            await Task.Run(()=>
+                {
+                    VariableDictionary.Get(variableName, out IVariable<double> variable);
+                    valueGot = variable.Value;
 
-            outputParameters.Add(valueGot);
+                    outputParameters.Add(valueGot);
+                }
+            );            
         }
     }
 }

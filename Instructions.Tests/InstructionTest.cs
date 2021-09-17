@@ -70,7 +70,7 @@ namespace Instructions.Tests
             WaitFor waitFor = new WaitFor("FirstVariable", "SecondVariable", ConditionOperand.Equal, 10000, 1);
             Stopwatch sw = Stopwatch.StartNew();
 
-            secondVariable.Value = firstVariable.Value;
+            secondVariable.Value = (float)firstVariable.Value;
             await waitFor.Execute();
 
             bool result = (bool)waitFor.OutputParameters[0];
