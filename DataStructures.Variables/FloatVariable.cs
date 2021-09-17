@@ -15,7 +15,7 @@
         { }
 
         /// <summary>
-        /// Create a new instance of <see cref="DoubleVariable"/>
+        /// Create a new instance of <see cref="FloatVariable"/>
         /// </summary>
         /// <param name="name">The name</param>
         /// <param name="index">The index</param>
