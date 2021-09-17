@@ -13,14 +13,14 @@ namespace Instructions.Tests
     [TestFixture]
     public class InstructionTest
     {
-        FloatVariable firstVariable;
-        FloatVariable secondVariable;
+        DoubleVariable firstVariable;
+        DoubleVariable secondVariable;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            firstVariable = new FloatVariable("FirstVariable", 0, 0, 0.1);
-            secondVariable = new FloatVariable("SecondVariable", 0, 0, 0.2);
+            firstVariable = new DoubleVariable("FirstVariable", 0, 0, 0.1);
+            secondVariable = new DoubleVariable("SecondVariable", 0, 0, 0.2);
 
             VariableDictionary.Initialize();
             VariableDictionary.Add(firstVariable);

@@ -10,7 +10,7 @@ namespace DataStructure.VariablesDictionary
         private static Dictionary<string, IVariable<double>> variables;
 
         /// <summary>
-        /// The <see cref="Dictionary{TKey, TValue}"/> of <see cref="FloatVariable"/>
+        /// The <see cref="Dictionary{TKey, TValue}"/> of <see cref="DoubleVariable"/>
         /// </summary>
         public static Dictionary<string, IVariable<double>> Variables => variables;
 
