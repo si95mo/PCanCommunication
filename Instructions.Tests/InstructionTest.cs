@@ -1,4 +1,4 @@
-﻿using DataStructure.VariablesDictionary;
+﻿using DataStructures.VariablesDictionary;
 using FluentAssertions;
 using NUnit.Framework;
 using System;

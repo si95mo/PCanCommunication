@@ -1,4 +1,4 @@
-﻿namespace DataStructure.VariablesDictionary
+﻿namespace DataStructures.VariablesDictionary
 {
     /// <summary>
     /// Define a general prototype for a variable

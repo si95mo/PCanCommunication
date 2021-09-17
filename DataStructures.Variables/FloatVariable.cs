@@ -1,17 +1,17 @@
 ﻿namespace DataStructures.VariablesDictionary
 {
     /// <summary>
-    /// A <see cref="double"/> type of <see cref="Variable{T}"/>
+    /// A <see cref="float"/> type of <see cref="Variable{T}"/>
     /// </summary>
-    public class DoubleVariable : Variable<double>
+    public class FloatVariable : Variable<float>
     {
         /// <summary>
-        /// Create a new instance of <see cref="DoubleVariable"/>
+        /// Create a new instance of <see cref="FloatVariable"/>
         /// </summary>
         /// <param name="name">The name</param>
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
-        public DoubleVariable(string name, uint index, uint subIndex) : base(name, index, subIndex)
+        public FloatVariable(string name, uint index, uint subIndex) : base(name, index, subIndex)
         { }
 
         /// <summary>
@@ -21,7 +21,7 @@
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
         /// <param name="value">The value</param>
-        public DoubleVariable(string name, uint index, uint subIndex, double value) : base(name, index, subIndex, value)
+        public FloatVariable(string name, uint index, uint subIndex, float value) : base(name, index, subIndex, value)
         { }
     }
 }

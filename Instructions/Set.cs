@@ -1,4 +1,4 @@
-﻿using DataStructure.VariablesDictionary;
+﻿using DataStructures.VariablesDictionary;
 using System.Threading.Tasks;
 
 namespace Instructions

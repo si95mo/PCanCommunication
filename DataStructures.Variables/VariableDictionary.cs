@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DataStructure.VariablesDictionary
+namespace DataStructures.VariablesDictionary
 {
     /// <summary>
     /// Implement a dictionary containing <see cref="Variable{T}"/>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataStructure.VariablesDictionary
+namespace DataStructures.VariablesDictionary
 {
     /// <summary>
     /// Handles the <see cref="CanChannel.Data"/> changed event.
