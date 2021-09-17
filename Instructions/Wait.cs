@@ -21,6 +21,6 @@ namespace Instructions
             inputParameters.Add(delay);
         }
 
-        public override async void Execute() => await Task.Delay(delay);
+        public override async Task Execute() => await Task.Delay(delay);
     }
 }

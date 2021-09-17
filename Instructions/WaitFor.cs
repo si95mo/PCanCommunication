@@ -61,11 +61,9 @@ namespace Instructions
             inputParameters.Add(this.secondVariableName);
             inputParameters.Add(this.operand);
             inputParameters.Add(timeout);
-
-            outputParameters.Add(result);
         }
 
-        public override async void Execute()
+        public override async Task Execute()
         {
             Func<bool> condition = () =>
             {
@@ -98,7 +96,7 @@ namespace Instructions
 
             Task waitTask = Task.Run(async () =>
                 {
-                    while (condition()) 
+                    while (!condition()) 
                         await Task.Delay(10);
                 }
             );
@@ -107,6 +105,8 @@ namespace Instructions
                 result = false;
             else
                 result = true;
+
+            outputParameters.Add(result);
         }
     }
 }

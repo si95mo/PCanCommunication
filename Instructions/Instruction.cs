@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Instructions
 {
@@ -49,6 +50,6 @@ namespace Instructions
         /// Execute the <see cref="Instruction"/>
         /// </summary>
         /// <returns></returns>
-        public abstract void Execute();
+        public abstract Task Execute();
     }
 }

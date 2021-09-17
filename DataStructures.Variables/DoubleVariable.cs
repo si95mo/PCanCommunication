@@ -3,7 +3,7 @@
     /// <summary>
     /// A <see cref="float"/> type of <see cref="Variable{T}"/>
     /// </summary>
-    public class FloatVariable : Variable<float>
+    public class FloatVariable : Variable<double>
     {
         /// <summary>
         /// Create a new instance of <see cref="FloatVariable"/>
@@ -21,7 +21,7 @@
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
         /// <param name="value">The value</param>
-        public FloatVariable(string name, uint index, uint subIndex, float value) : base(name, index, subIndex, value)
+        public FloatVariable(string name, uint index, uint subIndex, double value) : base(name, index, subIndex, value)
         { }
     }
 }

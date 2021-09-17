@@ -1,4 +1,5 @@
 ﻿using DataStructure.VariablesDictionary;
+using System.Threading.Tasks;
 
 namespace Instructions
 {
@@ -28,7 +29,7 @@ namespace Instructions
         /// <summary>
         /// Execute the <see cref="Set"/> instruction
         /// </summary>
-        public override void Execute()
+        public override async Task Execute()
         {
             VariableDictionary.Get(variableName, out IVariable<double> variable);
             variable.Value = valueToSet;

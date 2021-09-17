@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FloatVariable.cs" />
+    <Compile Include="DoubleVariable.cs" />
     <Compile Include="IVariable.cs" />
     <Compile Include="Variable.cs" />
     <Compile Include="VariableDictionary.cs" />

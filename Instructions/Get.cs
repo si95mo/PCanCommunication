@@ -1,4 +1,5 @@
 ﻿using DataStructure.VariablesDictionary;
+using System.Threading.Tasks;
 
 namespace Instructions
 {
@@ -20,13 +21,14 @@ namespace Instructions
             this.variableName = variableName;
 
             inputParameters.Add(this.variableName);
-            outputParameters.Add(valueGot);
         }
 
-        public override void Execute()
+        public override async Task Execute()
         {
             VariableDictionary.Get(variableName, out IVariable<double> variable);
             valueGot = variable.Value;
+
+            outputParameters.Add(valueGot);
         }
     }
 }
