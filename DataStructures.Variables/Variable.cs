@@ -75,6 +75,15 @@ namespace DataStructures.VariablesDictionary
         }
 
         /// <summary>
+        /// The <see cref="Variable{T}"/> as <see cref="object"/>
+        /// </summary>
+        public object ValueAsObject
+        {
+            get => value;
+            set => this.value = (T)value;
+        }
+
+        /// <summary>
         /// The <see cref="Variable{T}"/> type, same as <see langword="typeof"/>(<see cref="T"/>)
         /// </summary>
         public Type Type => typeof(T);

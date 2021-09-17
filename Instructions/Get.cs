@@ -1,4 +1,5 @@
 ﻿using DataStructures.VariablesDictionary;
+using System;
 using System.Threading.Tasks;
 
 namespace Instructions
@@ -30,8 +31,8 @@ namespace Instructions
         {
             await Task.Run(() =>
                 {
-                    VariableDictionary.Get(variableName, out IVariable<double> variable);
-                    valueGot = variable.Value;
+                    VariableDictionary.Get(variableName, out IVariable variable);
+                    valueGot = Convert.ToDouble(variable.ValueAsObject);
 
                     outputParameters.Add(valueGot);
                 }

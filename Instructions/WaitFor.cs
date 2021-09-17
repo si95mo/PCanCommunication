@@ -68,34 +68,38 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
-            Func<bool> condition = () =>
+            bool condition()
             {
                 bool returnValue = false;
 
-                VariableDictionary.Get(firstVariableName, out IVariable<double> firstVariable);
-                VariableDictionary.Get(secondVariableName, out IVariable<double> secondVariable);
+                VariableDictionary.Get(firstVariableName, out IVariable firstVariable);
+                VariableDictionary.Get(secondVariableName, out IVariable secondVariable);
 
                 switch (operand)
                 {
                     case ConditionOperand.Equal:
-                        returnValue = firstVariable.Value == secondVariable.Value;
+                        returnValue =
+                        (double)firstVariable.ValueAsObject == (double)secondVariable.ValueAsObject;
                         break;
 
                     case ConditionOperand.NotEqual:
-                        returnValue = firstVariable.Value != secondVariable.Value;
+                        returnValue =
+                        (double)firstVariable.ValueAsObject != (double)secondVariable.ValueAsObject;
                         break;
 
                     case ConditionOperand.Greather:
-                        returnValue = firstVariable.Value > secondVariable.Value;
+                        returnValue =
+                        (double)firstVariable.ValueAsObject > (double)secondVariable.ValueAsObject;
                         break;
 
                     case ConditionOperand.Lesser:
-                        returnValue = firstVariable.Value < secondVariable.Value;
+                        returnValue =
+                        (double)firstVariable.ValueAsObject < (double)secondVariable.ValueAsObject;
                         break;
                 }
 
                 return returnValue;
-            };
+            }
 
             Task waitTask = Task.Run(async () =>
                 {

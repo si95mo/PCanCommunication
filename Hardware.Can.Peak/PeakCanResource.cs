@@ -322,11 +322,13 @@ namespace Hardware.Can
 
             if (started)
             {
-                TPCANMsg msg = new TPCANMsg();
-                msg.ID = (uint)canFrame.Id;
-                msg.MSGTYPE = TPCANMessageType.PCAN_MESSAGE_STANDARD;
-                msg.LEN = 8;
-                msg.DATA = canFrame.Data;
+                TPCANMsg msg = new TPCANMsg
+                {
+                    ID = (uint)canFrame.Id,
+                    MSGTYPE = TPCANMessageType.PCAN_MESSAGE_STANDARD,
+                    LEN = 8,
+                    DATA = canFrame.Data
+                };
 
                 Status = (uint)PCANBasic.Write(channelHandle, ref msg);
                 succeeded = status == (uint)TPCANStatus.PCAN_ERROR_OK;

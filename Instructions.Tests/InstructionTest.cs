@@ -10,13 +10,13 @@ namespace Instructions.Tests
     public class InstructionTest
     {
         private DoubleVariable firstVariable;
-        private DoubleVariable secondVariable;
+        private FloatVariable secondVariable;
 
         [OneTimeSetUp]
         public void Setup()
         {
             firstVariable = new DoubleVariable("FirstVariable", 0, 0, 0.1);
-            secondVariable = new DoubleVariable("SecondVariable", 0, 0, 0.2);
+            secondVariable = new FloatVariable("SecondVariable", 0, 0, 0.2F);
 
             VariableDictionary.Initialize();
             VariableDictionary.Add(firstVariable);

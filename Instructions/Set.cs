@@ -33,8 +33,8 @@ namespace Instructions
         {
             await Task.Run(() =>
                 {
-                    VariableDictionary.Get(variableName, out IVariable<double> variable);
-                    variable.Value = valueToSet;
+                    VariableDictionary.Get(variableName, out IVariable variable);
+                    variable.ValueAsObject = valueToSet;
                 }
             );
         }
