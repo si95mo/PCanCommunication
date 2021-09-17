@@ -23,7 +23,7 @@ namespace Instructions.Scheduler
             string[][] testParsed = new string[testProgram.Length][];
 
             Instruction instruction;
-            for(int i = 0; i < testProgram.Length; i++)
+            for (int i = 0; i < testProgram.Length; i++)
             {
                 testParsed[i] = testProgram[i].Split(';');
 
@@ -31,46 +31,53 @@ namespace Instructions.Scheduler
                 {
                     case "GET":
                         instruction = new Get(testParsed[i][1].Trim(), 0);
-                            break;
+                        break;
+
                     case "SET":
                         instruction = new Set(
-                            testParsed[i][1].Trim(), 
+                            testParsed[i][1].Trim(),
                             double.Parse(testParsed[i][2].Trim()),
                             0
                         );
                         break;
+
                     case "WAIT":
                         instruction = new Wait(
-                            int.Parse(testParsed[i][1].Trim()), 
+                            int.Parse(testParsed[i][1].Trim()),
                             int.Parse(testParsed[i][2].Trim())
                         );
                         break;
+
                     case "WAIT_FOR":
                         ConditionOperand operand = ConditionOperand.Equal;
-                        switch(testParsed[i][3].Trim())
+                        switch (testParsed[i][3].Trim())
                         {
                             case "==":
                                 operand = ConditionOperand.Equal;
                                 break;
+
                             case "!=":
                                 operand = ConditionOperand.NotEqual;
                                 break;
+
                             case "<":
                                 operand = ConditionOperand.Lesser;
                                 break;
+
                             case ">":
                                 operand = ConditionOperand.Greather;
                                 break;
                         }
 
                         instruction = new WaitFor(
-                            testParsed[i][1].Trim(), 
-                            testParsed[i][2].Trim(), 
-                            operand, 
-                            int.Parse(testParsed[i][4].Trim()), 
+                            testParsed[i][1].Trim(),
+                            testParsed[i][2].Trim(),
+                            operand,
+                            int.Parse(testParsed[i][4].Trim()),
                             0
                         );
                         break;
+
                     default:
                         instruction = null;
                         break; // ?

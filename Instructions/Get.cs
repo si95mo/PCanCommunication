@@ -28,14 +28,14 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
-            await Task.Run(()=>
+            await Task.Run(() =>
                 {
                     VariableDictionary.Get(variableName, out IVariable<double> variable);
                     valueGot = variable.Value;
 
                     outputParameters.Add(valueGot);
                 }
-            );            
+            );
         }
     }
 }

@@ -2,11 +2,8 @@
 using FluentAssertions;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instructions.Scheduler.Test
@@ -14,9 +11,9 @@ namespace Instructions.Scheduler.Test
     [TestFixture]
     public class SchedulerTest
     {
-        DoubleVariable firstVariable;
-        DoubleVariable secondVariable;
-        Scheduler scheduler;
+        private DoubleVariable firstVariable;
+        private DoubleVariable secondVariable;
+        private Scheduler scheduler;
 
         [OneTimeSetUp]
         public void Setup()
@@ -31,7 +28,7 @@ namespace Instructions.Scheduler.Test
             VariableDictionary.Variables.Count.Should().Be(2);
 
             string path = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop), 
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 "test.csv"
             );
             scheduler = new Scheduler(path);

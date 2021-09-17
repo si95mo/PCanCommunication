@@ -1,11 +1,7 @@
 ﻿using DataStructures.VariablesDictionary;
 using FluentAssertions;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instructions.Tests
@@ -13,8 +9,8 @@ namespace Instructions.Tests
     [TestFixture]
     public class InstructionTest
     {
-        DoubleVariable firstVariable;
-        DoubleVariable secondVariable;
+        private DoubleVariable firstVariable;
+        private DoubleVariable secondVariable;
 
         [OneTimeSetUp]
         public void Setup()

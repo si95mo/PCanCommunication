@@ -99,7 +99,7 @@ namespace Instructions
 
             Task waitTask = Task.Run(async () =>
                 {
-                    while (!condition()) 
+                    while (!condition())
                         await Task.Delay(10);
                 }
             );
