@@ -54,7 +54,7 @@ namespace Hardware.Can
                 byte[] subIndexAsArray = BitConverter.GetBytes(subIndex); // Should be 2 bytes
                 byte[] firstHalf = new byte[indexAsArray.Length + subIndexAsArray.Length]; // Should be 4 bytes
                 indexAsArray.CopyTo(firstHalf, 0);
-                subIndexAsArray.CopyTo(firstHalf, subIndexAsArray.Length);
+                subIndexAsArray.CopyTo(firstHalf, indexAsArray.Length);
                 byte[] oldData = new byte[8];
                 firstHalf.CopyTo(oldData, 0);
                 data.CopyTo(oldData, firstHalf.Length);
