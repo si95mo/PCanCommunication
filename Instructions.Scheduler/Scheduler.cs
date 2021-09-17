@@ -37,7 +37,7 @@ namespace Instructions.Scheduler
 
         /// <summary>
         /// Execute all the subscribed <see cref="Instruction"/>
-        /// and remove themo from <see cref="Instructions"/>
+        /// and remove them from <see cref="Instructions"/>
         /// </summary>
         public async Task ExecuteAll()
         {
