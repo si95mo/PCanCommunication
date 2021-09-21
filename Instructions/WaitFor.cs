@@ -1,5 +1,6 @@
 ﻿using DataStructures.VariablesDictionary;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Instructions
@@ -39,6 +40,8 @@ namespace Instructions
         private string secondVariableName;
         private ConditionOperand operand;
         private int timeout;
+        private int conditionTime;
+        private int pollingInterval;
 
         private bool result;
 
@@ -48,14 +51,19 @@ namespace Instructions
         /// <param name="firstVariableName">The first variable in the condition name</param>
         /// <param name="secondVariableName">The second variable in the condition name</param>
         /// <param name="operand">The <see cref="ConditionOperand"/></param>
+        /// <param name="conditionTime">The time (in milliseconds) in which the condition must remain <see langword="true"/></param>
         /// <param name="timeout">The timeout (in milliseconds)</param>
         /// <param name="order">The order index</param>
-        public WaitFor(string firstVariableName, string secondVariableName, ConditionOperand operand, int timeout, int order) : base("WaitFor", order)
+        /// <param name="pollingInterval">The polling interval (in milliseconds)</param>
+        public WaitFor(string firstVariableName, string secondVariableName, ConditionOperand operand, 
+            int conditionTime, int timeout, int order, int pollingInterval = 10) : base("WaitFor", order)
         {
             this.firstVariableName = firstVariableName;
             this.secondVariableName = secondVariableName;
             this.operand = operand;
             this.timeout = timeout;
+            this.conditionTime = conditionTime;
+            this.pollingInterval = pollingInterval;
 
             inputParameters.Add(this.firstVariableName);
             inputParameters.Add(this.secondVariableName);
@@ -68,6 +76,8 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
+            outputParameters.Clear();
+
             bool condition()
             {
                 bool returnValue = false;
@@ -75,26 +85,25 @@ namespace Instructions
                 VariableDictionary.Get(firstVariableName, out IVariable firstVariable);
                 VariableDictionary.Get(secondVariableName, out IVariable secondVariable);
 
+                double firstValue = Convert.ToDouble(firstVariable.ValueAsObject);
+                double secondValue = Convert.ToDouble(secondVariable.ValueAsObject);
+                double threshold = 0.000001;
                 switch (operand)
                 {
                     case ConditionOperand.Equal:
-                        returnValue =
-                        (double)firstVariable.ValueAsObject == (double)secondVariable.ValueAsObject;
+                        returnValue = Math.Abs(firstValue - secondValue) <= threshold;
                         break;
 
                     case ConditionOperand.NotEqual:
-                        returnValue =
-                        (double)firstVariable.ValueAsObject != (double)secondVariable.ValueAsObject;
+                        returnValue = Math.Abs(firstValue - secondValue) > threshold;
                         break;
 
                     case ConditionOperand.Greather:
-                        returnValue =
-                        (double)firstVariable.ValueAsObject > (double)secondVariable.ValueAsObject;
+                        returnValue = firstValue > secondValue + threshold;
                         break;
 
                     case ConditionOperand.Lesser:
-                        returnValue =
-                        (double)firstVariable.ValueAsObject < (double)secondVariable.ValueAsObject;
+                        returnValue = firstValue < secondValue - threshold;
                         break;
                 }
 
@@ -104,7 +113,11 @@ namespace Instructions
             Task waitTask = Task.Run(async () =>
                 {
                     while (!condition())
-                        await Task.Delay(10);
+                        await Task.Delay(pollingInterval);
+
+                    Stopwatch sw = Stopwatch.StartNew();
+                    while (sw.Elapsed.TotalMilliseconds < conditionTime != !condition())
+                        await Task.Delay(pollingInterval);
                 }
             );
 

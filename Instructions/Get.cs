@@ -29,6 +29,8 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
+            outputParameters.Clear();
+
             await Task.Run(() =>
                 {
                     VariableDictionary.Get(variableName, out IVariable variable);

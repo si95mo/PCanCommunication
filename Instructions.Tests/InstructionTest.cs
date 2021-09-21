@@ -63,7 +63,14 @@ namespace Instructions.Tests
         [Test]
         public async Task TestWaitFor()
         {
-            WaitFor waitFor = new WaitFor("FirstVariable", "SecondVariable", ConditionOperand.Equal, 10000, 1);
+            WaitFor waitFor = new WaitFor(
+                "FirstVariable", 
+                "SecondVariable", 
+                ConditionOperand.Equal, 
+                1000, 
+                10000, 
+                1
+            );
             Stopwatch sw = Stopwatch.StartNew();
 
             secondVariable.Value = (float)firstVariable.Value;
@@ -71,9 +78,20 @@ namespace Instructions.Tests
 
             bool result = (bool)waitFor.OutputParameters[0];
             result.Should().BeTrue();
-            firstVariable.Value.Should().Be(secondVariable.Value);
+            firstVariable.Value.Should().BeApproximately(secondVariable.Value, 0.000001); // Approximation
 
-            sw.Elapsed.TotalMilliseconds.Should().BeApproximately(100, 100);
+            sw.Elapsed.TotalMilliseconds.Should().BeApproximately(1000, 100);
+
+            sw = Stopwatch.StartNew();
+
+            secondVariable.Value = 2F * secondVariable.Value;
+            await waitFor.Execute();
+
+            result = (bool)waitFor.OutputParameters[0];
+            result.Should().BeFalse();
+            firstVariable.Value.Should().NotBeApproximately(secondVariable.Value, 0.000001); // Approximation
+
+            sw.Elapsed.TotalMilliseconds.Should().BeApproximately(10000, 100);
         }
     }
 }

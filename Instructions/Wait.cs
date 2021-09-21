@@ -24,6 +24,11 @@ namespace Instructions
         /// <summary>
         /// Execute the <see cref="Wait"/> instruction
         /// </summary>
-        public override async Task Execute() => await Task.Delay(delay);
+        public override async Task Execute()
+        {
+            outputParameters.Clear();
+
+            await Task.Delay(delay);
+        }
     }
 }
