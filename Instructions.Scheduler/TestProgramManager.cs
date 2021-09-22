@@ -7,7 +7,7 @@ namespace Instructions.Scheduler
     /// <summary>
     /// Load a test program from a csv file
     /// </summary>
-    internal static class TestProgramHandler
+    internal static class TestProgramManager
     {
         /// <summary>
         /// Load a test program from disk
@@ -30,21 +30,24 @@ namespace Instructions.Scheduler
                 switch (testParsed[i][0])
                 {
                     case "GET":
-                        instruction = new Get(testParsed[i][1].Trim(), 0);
+                        instruction = new Get(
+                            testParsed[i][1].Trim(),           // Variable name 
+                            int.Parse(testParsed[i][2].Trim()) // Order
+                        );
                         break;
 
                     case "SET":
                         instruction = new Set(
-                            testParsed[i][1].Trim(),
-                            double.Parse(testParsed[i][2].Trim()),
-                            0
+                            testParsed[i][1].Trim(),               // Variable name
+                            double.Parse(testParsed[i][2].Trim()), // Value
+                            int.Parse(testParsed[i][3].Trim())     // Order
                         );
                         break;
 
                     case "WAIT":
                         instruction = new Wait(
-                            int.Parse(testParsed[i][1].Trim()),
-                            int.Parse(testParsed[i][2].Trim())
+                            int.Parse(testParsed[i][1].Trim()), // Delay
+                            int.Parse(testParsed[i][2].Trim())  // Order
                         );
                         break;
 
@@ -70,11 +73,12 @@ namespace Instructions.Scheduler
                         }
 
                         instruction = new WaitFor(
-                            testParsed[i][1].Trim(),
-                            testParsed[i][2].Trim(),
-                            operand,
-                            int.Parse(testParsed[i][4].Trim()),
-                            0
+                            testParsed[i][1].Trim(),            // First variable name
+                            testParsed[i][2].Trim(),            // Second variable name
+                            operand,                            // Operand
+                            int.Parse(testParsed[i][4].Trim()), // Condition time
+                            int.Parse(testParsed[i][5].Trim()), // Timeout
+                            int.Parse(testParsed[i][6].Trim())  // Operand
                         );
                         break;
 
@@ -110,11 +114,18 @@ namespace Instructions.Scheduler
             if (instruction is WaitFor)
                 result += "WAIT_FOR; ";
 
+            result += $"order: {instruction.Order}; ";
+
             foreach (object o in instruction.InputParameters)
                 result += $"in: {o}; ";
 
             foreach (object o in instruction.OutputParameters)
-                result += $"out: {o}; ";
+            {
+                if (o is DateTime)
+                    result += $"out: {(DateTime)o:HH:mm:ss:fff}; ";
+                else
+                    result += $"out: {o}; ";
+            }
 
             result.Trim();
             result.Remove(result.Length - 1);

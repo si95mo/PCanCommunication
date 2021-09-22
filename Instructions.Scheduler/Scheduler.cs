@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Dasync.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Instructions.Scheduler
@@ -10,12 +12,23 @@ namespace Instructions.Scheduler
     /// </summary>
     public class Scheduler
     {
-        private Queue<Instruction> instructions;
+        private SortedDictionary<int, Queue<Instruction>> instructions;
 
         /// <summary>
         /// The subscribed <see cref="Instruction"/>
         /// </summary>
-        public Queue<Instruction> Instructions => instructions;
+        public Queue<Instruction> Instructions
+        {
+            get
+            {
+                Queue<Instruction> instructionQueue = new Queue<Instruction>();
+
+                foreach (Queue<Instruction> instruction in instructions.Values)
+                    instruction.ToList().ForEach(x => instructionQueue.Enqueue(x));
+
+                return instructionQueue;
+            }
+        }
 
         /// <summary>
         /// Create a new instance of <see cref="Scheduler"/>
@@ -23,8 +36,8 @@ namespace Instructions.Scheduler
         /// <param name="path">The test program file path</param>
         public Scheduler(string path)
         {
-            instructions = new Queue<Instruction>();
-            TestProgramHandler.ReadTest(path).ForEach(x => Add(x));
+            instructions = new SortedDictionary<int, Queue<Instruction>>();
+            TestProgramManager.ReadTest(path).ForEach(x => Add(x));
         }
 
         /// <summary>
@@ -33,7 +46,15 @@ namespace Instructions.Scheduler
         /// </summary>
         /// <param name="instruction">The <see cref="Instruction"/> to add</param>
         public void Add(Instruction instruction)
-            => instructions.Enqueue(instruction);
+        {
+            if (instructions.ContainsKey(instruction.Order))
+                instructions[instruction.Order].Enqueue(instruction);
+            else
+            {
+                instructions.Add(instruction.Order, new Queue<Instruction>());
+                instructions[instruction.Order].Enqueue(instruction);
+            }
+        }
 
         /// <summary>
         /// Execute all the subscribed <see cref="Instruction"/>
@@ -41,16 +62,29 @@ namespace Instructions.Scheduler
         /// </summary>
         public async Task ExecuteAll()
         {
+            string path = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                "result.csv"
+            );
+            int order = instructions.Keys.Min();
+            List<Instruction> instructionList = new List<Instruction>();
+
             while (instructions.Count > 0)
             {
-                Instruction instruction = instructions.Dequeue();
-                await instruction.Execute();
+                while (instructions[order].Count > 0)
+                    instructionList.Add(instructions[order].Dequeue());
 
-                string path = System.IO.Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                    "result.csv"
+                await instructionList.ParallelForEachAsync(
+                    async (x) =>
+                    {
+                        await x.Execute();
+                        TestProgramManager.SaveResult(path, x);
+                    }
                 );
-                TestProgramHandler.SaveResult(path, instruction);
+
+                instructions.Remove(order);
+                order = instructions.Count > 0 ? instructions.Keys.Min() : 0;
+                instructionList.Clear();
             }
         }
     }
