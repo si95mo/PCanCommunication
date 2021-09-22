@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Instructions
@@ -12,6 +13,9 @@ namespace Instructions
         protected List<object> inputParameters;
         protected List<object> outputParameters;
         protected int order;
+
+        protected DateTime startTime;
+        protected DateTime stopTime;
 
         /// <summary>
         /// The <see cref="Instruction"/> order index
@@ -32,6 +36,16 @@ namespace Instructions
         /// The instruction name
         /// </summary>
         public string Name => name;
+
+        /// <summary>
+        /// The <see cref="Instruction"/> start time
+        /// </summary>
+        public DateTime StartTime => startTime;
+
+        /// <summary>
+        /// The <see cref="Instruction"/> stop time
+        /// </summary>
+        public DateTime StopTime => StopTime;
 
         /// <summary>
         /// Initialize the <see cref="Instruction"/> attributes

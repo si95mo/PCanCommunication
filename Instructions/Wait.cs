@@ -26,9 +26,15 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
+            startTime = System.DateTime.Now;
             outputParameters.Clear();
 
             await Task.Delay(delay);
+
+            stopTime = System.DateTime.Now;
+
+            outputParameters.Add(startTime);
+            outputParameters.Add(stopTime);
         }
     }
 }

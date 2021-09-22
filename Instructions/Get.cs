@@ -29,6 +29,7 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
+            startTime = DateTime.Now;
             outputParameters.Clear();
 
             await Task.Run(() =>
@@ -39,6 +40,11 @@ namespace Instructions
                     outputParameters.Add(valueGot);
                 }
             );
+
+            stopTime = DateTime.Now;
+
+            outputParameters.Add(startTime);
+            outputParameters.Add(stopTime);
         }
     }
 }

@@ -68,6 +68,7 @@ namespace Instructions
             inputParameters.Add(this.firstVariableName);
             inputParameters.Add(this.secondVariableName);
             inputParameters.Add(this.operand);
+            inputParameters.Add(this.conditionTime);
             inputParameters.Add(timeout);
         }
 
@@ -76,6 +77,7 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
+            startTime = DateTime.Now;
             outputParameters.Clear();
 
             bool condition()
@@ -126,7 +128,12 @@ namespace Instructions
             else
                 result = true;
 
+            stopTime = DateTime.Now;
+
             outputParameters.Add(result);
+
+            outputParameters.Add(startTime);
+            outputParameters.Add(stopTime);
         }
     }
 }
