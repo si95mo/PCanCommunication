@@ -9,6 +9,8 @@ namespace Instructions.Scheduler
     /// </summary>
     internal static class TestProgramManager
     {
+        private static object lockObject = new object();
+
         /// <summary>
         /// Load a test program from disk
         /// </summary>
@@ -27,33 +29,36 @@ namespace Instructions.Scheduler
             {
                 testParsed[i] = testProgram[i].Split(';');
 
-                switch (testParsed[i][0])
+                switch (testParsed[i][1].Trim())
                 {
                     case "GET":
                         instruction = new Get(
-                            testParsed[i][1].Trim(),           // Variable name 
+                            testParsed[i][3].Trim(),           // Variable name
+                            int.Parse(testParsed[i][0].Trim()),
                             int.Parse(testParsed[i][2].Trim()) // Order
                         );
                         break;
 
                     case "SET":
                         instruction = new Set(
-                            testParsed[i][1].Trim(),               // Variable name
-                            double.Parse(testParsed[i][2].Trim()), // Value
-                            int.Parse(testParsed[i][3].Trim())     // Order
+                            testParsed[i][3].Trim(),               // Variable name
+                            double.Parse(testParsed[i][4].Trim()), // Value
+                            int.Parse(testParsed[i][0].Trim()),
+                            int.Parse(testParsed[i][2].Trim())     // Order
                         );
                         break;
 
                     case "WAIT":
                         instruction = new Wait(
-                            int.Parse(testParsed[i][1].Trim()), // Delay
+                            int.Parse(testParsed[i][3].Trim()), // Delay
+                            int.Parse(testParsed[i][0].Trim()),
                             int.Parse(testParsed[i][2].Trim())  // Order
                         );
                         break;
 
                     case "WAIT_FOR":
                         ConditionOperand operand = ConditionOperand.Equal;
-                        switch (testParsed[i][3].Trim())
+                        switch (testParsed[i][5].Trim())
                         {
                             case "==":
                                 operand = ConditionOperand.Equal;
@@ -73,12 +78,13 @@ namespace Instructions.Scheduler
                         }
 
                         instruction = new WaitFor(
-                            testParsed[i][1].Trim(),            // First variable name
-                            testParsed[i][2].Trim(),            // Second variable name
+                            testParsed[i][3].Trim(),            // First variable name
+                            testParsed[i][4].Trim(),            // Second variable name
                             operand,                            // Operand
-                            int.Parse(testParsed[i][4].Trim()), // Condition time
-                            int.Parse(testParsed[i][5].Trim()), // Timeout
-                            int.Parse(testParsed[i][6].Trim())  // Operand
+                            int.Parse(testParsed[i][6].Trim()), // Condition time
+                            int.Parse(testParsed[i][7].Trim()), // Timeout
+                            int.Parse(testParsed[i][0].Trim()),
+                            int.Parse(testParsed[i][2].Trim())  // Order
                         );
                         break;
 
@@ -114,6 +120,7 @@ namespace Instructions.Scheduler
             if (instruction is WaitFor)
                 result += "WAIT_FOR; ";
 
+            result += $"id: {instruction.Id}; ";
             result += $"order: {instruction.Order}; ";
 
             foreach (object o in instruction.InputParameters)
@@ -131,7 +138,8 @@ namespace Instructions.Scheduler
             result.Remove(result.Length - 1);
             result += Environment.NewLine;
 
-            File.AppendAllText(path, result);
+            lock (lockObject)
+                File.AppendAllText(path, result);
         }
     }
 }

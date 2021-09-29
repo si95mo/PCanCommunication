@@ -13,8 +13,9 @@ namespace Instructions
         /// Create a new instance of <see cref="Wait"/>
         /// </summary>
         /// <param name="delay">The delay (in milliseconds)</param>
+        /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Wait(int delay, int order) : base("Wait", order)
+        public Wait(int delay, int id, int order) : base("Wait", id, order)
         {
             this.delay = delay;
 

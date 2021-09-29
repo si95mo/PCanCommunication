@@ -55,9 +55,13 @@ namespace Hardware.Can
                 byte[] firstHalf = new byte[indexAsArray.Length + subIndexAsArray.Length]; // Should be 4 bytes
                 indexAsArray.CopyTo(firstHalf, 0);
                 subIndexAsArray.CopyTo(firstHalf, indexAsArray.Length);
+
                 byte[] oldData = new byte[8];
                 firstHalf.CopyTo(oldData, 0);
-                data.CopyTo(oldData, firstHalf.Length);
+
+                byte[] secondHalf = new byte[4];
+                Array.Copy(data, 4, secondHalf, 0, 4);
+                secondHalf.CopyTo(oldData, firstHalf.Length);
 
                 data = firstHalf.Concat(value).ToArray(); // Should be 4 bytes + 4 bytes = 8 bytes
                 OnDataChanged(new DataChangedEventArgs(oldData, data));
@@ -89,7 +93,7 @@ namespace Hardware.Can
 
                 index = BitConverter.ToUInt16(canFrame.Data, 0);
                 subIndex = BitConverter.ToUInt16(canFrame.Data, 2);
-                Array.Copy(canFrame.Data, 4, data, 0, 4);
+                Array.Copy(canFrame.Data, 4, data, 4, 4);
             }
         }
 

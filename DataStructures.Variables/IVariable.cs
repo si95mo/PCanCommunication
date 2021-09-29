@@ -23,7 +23,7 @@
         /// <summary>
         /// The <see cref="IVariable"/> variable as <see cref="object"/>
         /// </summary>
-        object ValueAsObject { get; set;  }
+        object ValueAsObject { get; set; }
     }
 
     /// <summary>

@@ -28,11 +28,11 @@ namespace Instructions.Tests
         [Test]
         public async Task TestGet()
         {
-            Get get = new Get("FirstVariable", 1);
+            Get get = new Get("FirstVariable", 1, 1);
             await get.Execute();
             get.OutputParameters[0].Should().Be(firstVariable.Value);
 
-            get = new Get("SecondVariable", 1);
+            get = new Get("SecondVariable", 1, 1);
             await get.Execute();
             get.OutputParameters[0].Should().Be(secondVariable.Value);
         }
@@ -41,7 +41,7 @@ namespace Instructions.Tests
         [TestCase(1d)]
         public async Task TestSet(double value)
         {
-            Set set = new Set("FirstVariable", value, 1);
+            Set set = new Set("FirstVariable", value, 1, 1);
 
             await set.Execute();
             firstVariable.Value.Should().Be(value);
@@ -51,7 +51,7 @@ namespace Instructions.Tests
         [TestCase(1000)]
         public async Task TestWait(int delay)
         {
-            Wait wait = new Wait(delay, 1);
+            Wait wait = new Wait(delay, 1, 1);
 
             Stopwatch sw = Stopwatch.StartNew();
             await wait.Execute();
@@ -64,11 +64,12 @@ namespace Instructions.Tests
         public async Task TestWaitFor()
         {
             WaitFor waitFor = new WaitFor(
-                "FirstVariable", 
-                "SecondVariable", 
-                ConditionOperand.Equal, 
-                1000, 
-                10000, 
+                "FirstVariable",
+                "SecondVariable",
+                ConditionOperand.Equal,
+                1000,
+                10000,
+                1,
                 1
             );
             Stopwatch sw = Stopwatch.StartNew();

@@ -53,10 +53,11 @@ namespace Instructions
         /// <param name="operand">The <see cref="ConditionOperand"/></param>
         /// <param name="conditionTime">The time (in milliseconds) in which the condition must remain <see langword="true"/></param>
         /// <param name="timeout">The timeout (in milliseconds)</param>
+        /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
         /// <param name="pollingInterval">The polling interval (in milliseconds)</param>
-        public WaitFor(string firstVariableName, string secondVariableName, ConditionOperand operand, 
-            int conditionTime, int timeout, int order, int pollingInterval = 10) : base("WaitFor", order)
+        public WaitFor(string firstVariableName, string secondVariableName, ConditionOperand operand,
+            int conditionTime, int timeout, int id, int order, int pollingInterval = 10) : base("WaitFor", id, order)
         {
             this.firstVariableName = firstVariableName;
             this.secondVariableName = secondVariableName;

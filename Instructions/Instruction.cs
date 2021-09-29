@@ -13,6 +13,7 @@ namespace Instructions
         protected List<object> inputParameters;
         protected List<object> outputParameters;
         protected int order;
+        protected int id;
 
         protected DateTime startTime;
         protected DateTime stopTime;
@@ -21,6 +22,11 @@ namespace Instructions
         /// The <see cref="Instruction"/> order index
         /// </summary>
         public int Order => order;
+
+        /// <summary>
+        /// The <see cref="Instruction"/> id
+        /// </summary>
+        public int Id => id;
 
         /// <summary>
         /// The <see cref="Instruction"/> input parameters
@@ -51,9 +57,12 @@ namespace Instructions
         /// Initialize the <see cref="Instruction"/> attributes
         /// </summary>
         /// <param name="name">The name</param>
-        protected Instruction(string name, int order)
+        /// <param name="id">The id</param>
+        /// <param name="order">The order index</param>
+        protected Instruction(string name, int id, int order)
         {
             this.name = name;
+            this.id = id;
             this.order = order;
 
             inputParameters = new List<object>();

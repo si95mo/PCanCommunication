@@ -13,6 +13,7 @@ namespace Instructions.Scheduler
     public class Scheduler
     {
         private SortedDictionary<int, Queue<Instruction>> instructions;
+        private bool stop;
 
         /// <summary>
         /// The subscribed <see cref="Instruction"/>
@@ -38,6 +39,8 @@ namespace Instructions.Scheduler
         {
             instructions = new SortedDictionary<int, Queue<Instruction>>();
             TestProgramManager.ReadTest(path).ForEach(x => Add(x));
+
+            stop = false;
         }
 
         /// <summary>
@@ -60,16 +63,22 @@ namespace Instructions.Scheduler
         /// Execute all the subscribed <see cref="Instruction"/>
         /// and remove them from <see cref="Instructions"/>
         /// </summary>
-        public async Task ExecuteAll()
+        /// <param name="path">The result path (if not specified,
+        /// file will be saved in Desktop)</param>
+        public async Task ExecuteAll(string path = "")
         {
-            string path = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                "result.csv"
-            );
+            stop = false;
+
+            if (path.CompareTo("") == 0)
+                path = System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                    "result.csv"
+                );
+
             int order = instructions.Keys.Min();
             List<Instruction> instructionList = new List<Instruction>();
 
-            while (instructions.Count > 0)
+            while (instructions.Count > 0 && !stop)
             {
                 while (instructions[order].Count > 0)
                     instructionList.Add(instructions[order].Dequeue());
@@ -87,5 +96,10 @@ namespace Instructions.Scheduler
                 instructionList.Clear();
             }
         }
+
+        /// <summary>
+        /// Stop the current execution
+        /// </summary>
+        public void StopAll() => stop = true;
     }
 }

@@ -16,8 +16,9 @@ namespace Instructions
         /// Create a new instance of <see cref="Get"/>
         /// </summary>
         /// <param name="variableName">The variable name</param>
+        /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Get(string variableName, int order) : base("Get", order)
+        public Get(string variableName, int id, int order) : base("Get", id, order)
         {
             this.variableName = variableName;
 

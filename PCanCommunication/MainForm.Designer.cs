@@ -67,14 +67,14 @@ namespace PCanCommunication
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.txbLog = new System.Windows.Forms.TextBox();
+            this.cmsClearLog = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.btnSetCanId = new System.Windows.Forms.Button();
             this.nudReceive = new System.Windows.Forms.NumericUpDown();
             this.nudSend = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.cmsClearLog = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.lblActualValue = new System.Windows.Forms.Label();
@@ -90,10 +90,10 @@ namespace PCanCommunication
             ((System.ComponentModel.ISupportInitialize)(this.nudFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLogSize)).BeginInit();
             this.groupBox7.SuspendLayout();
+            this.cmsClearLog.SuspendLayout();
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudReceive)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSend)).BeginInit();
-            this.cmsClearLog.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -487,6 +487,21 @@ namespace PCanCommunication
             this.txbLog.TabIndex = 0;
             this.txbLog.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TxbLog_MouseDown);
             // 
+            // cmsClearLog
+            // 
+            this.cmsClearLog.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmItem});
+            this.cmsClearLog.Name = "cmsClearLog";
+            this.cmsClearLog.Size = new System.Drawing.Size(102, 26);
+            this.cmsClearLog.Text = "Clear log";
+            this.cmsClearLog.Click += new System.EventHandler(this.CmsClearLog_Click);
+            // 
+            // tsmItem
+            // 
+            this.tsmItem.Name = "tsmItem";
+            this.tsmItem.Size = new System.Drawing.Size(101, 22);
+            this.tsmItem.Text = "Clear";
+            // 
             // groupBox9
             // 
             this.groupBox9.Controls.Add(this.btnSetCanId);
@@ -557,21 +572,6 @@ namespace PCanCommunication
             this.label13.Size = new System.Drawing.Size(155, 13);
             this.label13.TabIndex = 8;
             this.label13.Text = "Send id: 0x200 + (hexadecimal)";
-            // 
-            // cmsClearLog
-            // 
-            this.cmsClearLog.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmItem});
-            this.cmsClearLog.Name = "cmsClearLog";
-            this.cmsClearLog.Size = new System.Drawing.Size(102, 26);
-            this.cmsClearLog.Text = "Clear log";
-            this.cmsClearLog.Click += new System.EventHandler(this.CmsClearLog_Click);
-            // 
-            // tsmItem
-            // 
-            this.tsmItem.Name = "tsmItem";
-            this.tsmItem.Size = new System.Drawing.Size(101, 22);
-            this.tsmItem.Text = "Clear";
             // 
             // groupBox6
             // 
@@ -660,11 +660,11 @@ namespace PCanCommunication
             ((System.ComponentModel.ISupportInitialize)(this.nudLogSize)).EndInit();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.cmsClearLog.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudReceive)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSend)).EndInit();
-            this.cmsClearLog.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
