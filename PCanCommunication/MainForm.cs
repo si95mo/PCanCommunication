@@ -140,29 +140,33 @@ namespace PCanCommunication
 
             List<string> hardwareNames = PeakCanResource.GetAvailableHardware();
 
-            BindingSource bs = new BindingSource();
-            bs.DataSource = hardwareNames;
+            BindingSource bs = new BindingSource
+            {
+                DataSource = hardwareNames
+            };
 
             cbxDeviceList.DataSource = bs.DataSource;
             cbxDeviceList.SelectedIndex = cbxDeviceList.Items.Count > 0 ? 0 : -1;
 
-            bs = new BindingSource();
-            bs.DataSource = new string[]
+            bs = new BindingSource
             {
-                "1000 kbit/s",
-                "800 kbit/s",
-                "500 kbit/s",
-                "250 kbit/s",
-                "125 kbit/s",
-                "100 kbit/s",
-                "95 kbit/s",
-                "83 kbit/s",
-                "50 kbit/s",
-                "47 kbit/s",
-                "33 kbit/s",
-                "20 kbit/s",
-                "10 kbit/s",
-                "5 kbit/s"
+                DataSource = new string[]
+                {
+                    "1000 kbit/s",
+                    "800 kbit/s",
+                    "500 kbit/s",
+                    "250 kbit/s",
+                    "125 kbit/s",
+                    "100 kbit/s",
+                    "95 kbit/s",
+                    "83 kbit/s",
+                    "50 kbit/s",
+                    "47 kbit/s",
+                    "33 kbit/s",
+                    "20 kbit/s",
+                    "10 kbit/s",
+                    "5 kbit/s"
+                }
             };
             cbxBaudRate.DataSource = bs;
 
@@ -406,8 +410,6 @@ namespace PCanCommunication
         /// <returns>The converted data</returns>
         private double ByteArrayToDouble(byte[] data, bool actual = true)
         {
-            double converted = 0.0;
-
             byte[] storedData = new byte[4];
 
             if (actual) // Actual resistance, last 4 bytes
@@ -421,8 +423,7 @@ namespace PCanCommunication
                     storedData[i] = data[i];
             }
 
-            converted = BitConverter.ToInt32(storedData, 0);
-
+            double converted = BitConverter.ToInt32(storedData, 0);
             return converted;
         }
 
@@ -495,7 +496,7 @@ namespace PCanCommunication
             resource?.Stop();
         }
 
-        private void btnSetVariables_Click(object sender, EventArgs e)
+        private void BtnSetVariables_Click(object sender, EventArgs e)
         {
             // Parse the user input for R set
             bool flag = int.TryParse(txbRSet.Text.Replace('.', ','), out int value);
@@ -516,7 +517,7 @@ namespace PCanCommunication
             }
         }
 
-        private void btnSetCanId_Click(object sender, EventArgs e)
+        private void BtnSetCanId_Click(object sender, EventArgs e)
         {
             actualResistance.CanId = 0x180 + (int)nudReceive.Value;
             setResistance.CanId = 0x200 + (int)nudSend.Value;

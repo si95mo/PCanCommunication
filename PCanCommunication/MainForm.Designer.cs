@@ -203,7 +203,7 @@ namespace PCanCommunication
             this.btnSetVariables.TabIndex = 5;
             this.btnSetVariables.Text = "Set";
             this.btnSetVariables.UseVisualStyleBackColor = true;
-            this.btnSetVariables.Click += new System.EventHandler(this.btnSetVariables_Click);
+            this.btnSetVariables.Click += new System.EventHandler(this.BtnSetVariables_Click);
             // 
             // label1
             // 
@@ -525,7 +525,7 @@ namespace PCanCommunication
             this.btnSetCanId.TabIndex = 12;
             this.btnSetCanId.Text = "Set";
             this.btnSetCanId.UseVisualStyleBackColor = true;
-            this.btnSetCanId.Click += new System.EventHandler(this.btnSetCanId_Click);
+            this.btnSetCanId.Click += new System.EventHandler(this.BtnSetCanId_Click);
             // 
             // nudReceive
             // 

@@ -49,29 +49,33 @@ namespace TestProgram
 
             List<string> hardwareNames = PeakCanResource.GetAvailableHardware();
 
-            BindingSource bs = new BindingSource();
-            bs.DataSource = hardwareNames;
+            BindingSource bs = new BindingSource
+            {
+                DataSource = hardwareNames
+            };
 
             cbxDeviceList.DataSource = bs.DataSource;
             cbxDeviceList.SelectedIndex = cbxDeviceList.Items.Count > 0 ? 0 : -1;
 
-            bs = new BindingSource();
-            bs.DataSource = new string[]
+            bs = new BindingSource
             {
-                "1000 kbit/s",
-                "800 kbit/s",
-                "500 kbit/s",
-                "250 kbit/s",
-                "125 kbit/s",
-                "100 kbit/s",
-                "95 kbit/s",
-                "83 kbit/s",
-                "50 kbit/s",
-                "47 kbit/s",
-                "33 kbit/s",
-                "20 kbit/s",
-                "10 kbit/s",
-                "5 kbit/s"
+                DataSource = new string[]
+                {
+                    "1000 kbit/s",
+                    "800 kbit/s",
+                    "500 kbit/s",
+                    "250 kbit/s",
+                    "125 kbit/s",
+                    "100 kbit/s",
+                    "95 kbit/s",
+                    "83 kbit/s",
+                    "50 kbit/s",
+                    "47 kbit/s",
+                    "33 kbit/s",
+                    "20 kbit/s",
+                    "10 kbit/s",
+                    "5 kbit/s"
+                }
             };
             cbxBaudRate.DataSource = bs;
 
@@ -412,7 +416,7 @@ namespace TestProgram
             hardwareHandle = Convert.ToUInt16(str, 16);
         }
 
-        private void btnReadLog_Click(object sender, EventArgs e)
+        private void BtnReadLog_Click(object sender, EventArgs e)
         {
             txbLog.Text = resource?.ReadLog();
         }

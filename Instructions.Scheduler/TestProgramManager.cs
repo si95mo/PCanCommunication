@@ -18,7 +18,7 @@ namespace Instructions.Scheduler
         /// <param name="path">The test program path</param>
         /// <param name="delimeter">The delimiter <see cref="char"/></param>
         /// <returns>A <see cref="List"/> with the retrieved <see cref="Instruction"/></returns>
-        internal static List<Instruction> ReadTest(string path, char delimeter = ';')
+        internal static List<Instruction> ReadTest(string path, char delimiter = ';')
         {
             List<Instruction> instructions = new List<Instruction>();
 
@@ -28,7 +28,7 @@ namespace Instructions.Scheduler
             Instruction instruction;
             for (int i = 1; i < testProgram.Length; i++) // No headers
             {
-                testParsed[i] = testProgram[i].Split(';');
+                testParsed[i] = testProgram[i].Split(delimiter);
 
                 int.TryParse(testParsed[i][0].Trim(), out int id);
                 int.TryParse(testParsed[i][1].Trim(), out int order);
@@ -142,8 +142,8 @@ namespace Instructions.Scheduler
 
             foreach (object o in instruction.OutputParameters)
             {
-                if (o is DateTime)
-                    result += $"out: {(DateTime)o:HH:mm:ss:fff}; ";
+                if (o is DateTime time)
+                    result += $"out: {time:HH:mm:ss:fff}; ";
                 else
                     result += $"out: {o}; ";
             }

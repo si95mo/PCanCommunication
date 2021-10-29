@@ -36,6 +36,7 @@
         {
             this.scale = scale;
             this.offset = offset;
+            this.description = description;
             this.measureUnit = measureUnit;
         }
     }

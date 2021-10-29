@@ -417,7 +417,7 @@ namespace TestProgram
             this.btnReadLog.TabIndex = 10;
             this.btnReadLog.Text = "Read log";
             this.btnReadLog.UseVisualStyleBackColor = true;
-            this.btnReadLog.Click += new System.EventHandler(this.btnReadLog_Click);
+            this.btnReadLog.Click += new System.EventHandler(this.BtnReadLog_Click);
             // 
             // nudLogSize
             // 
