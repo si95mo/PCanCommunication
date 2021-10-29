@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TestProgram
@@ -24,6 +25,7 @@ namespace TestProgram
         private PeakCanResource resource;
 
         private string testPath;
+        private string variablePath;
         private string folderPath;
         private string resultPath;
 
@@ -32,6 +34,8 @@ namespace TestProgram
         private bool testFileSelected;
         private bool testFolderSelected;
         private bool testSelected;
+
+        private Dictionary<(ushort Index, ushort SubIndex), IndexedCanChannel> channelDictionary;
 
         /// <summary>
         /// Initialize user interface-related components
@@ -206,6 +210,7 @@ namespace TestProgram
             testFolderSelected = false;
             testSelected = false;
 
+            channelDictionary = new Dictionary<(ushort Index, ushort SubIndex), IndexedCanChannel>();
             VariableDictionary.Initialize();
         }
 
@@ -229,21 +234,20 @@ namespace TestProgram
 
         private void BtnSelectTest_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.InitialDirectory = "C:\\";
-            fileDialog.Filter = "csv files (*.csv)|*.csv|txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            fileDialog.FilterIndex = 0;
-            fileDialog.RestoreDirectory = false;
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
 
-            if (fileDialog.ShowDialog() == DialogResult.OK)
+            if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
             {
-                testPath = fileDialog.FileName;
+                testPath = Path.Combine(folderDialog.SelectedPath, "test.csv");
                 lblTestSelected.Text = testPath;
 
                 testFileSelected = true;
                 testSelected = testFileSelected && testFolderSelected;
 
                 scheduler = new Scheduler(testPath);
+
+                variablePath = Path.Combine(folderDialog.SelectedPath, "variables.csv");
+                VariableFileHandler.ReadTest(variablePath);
             }
         }
 
@@ -278,18 +282,54 @@ namespace TestProgram
 
         private void BtnCreate_Click(object sender, EventArgs e)
         {
-            int canId = (int)nudCanId.Value;
-            ushort index = (ushort)nudIndex.Value;
-            ushort subIndex = (ushort)nudSubIndex.Value;
+            //int canId = (int)nudCanId.Value;
+            //ushort index = (ushort)nudIndex.Value;
+            //ushort subIndex = (ushort)nudSubIndex.Value;
 
-            IndexedCanChannel channel = new IndexedCanChannel(canId, index, subIndex, resource);
-            DoubleVariable variable = new DoubleVariable(txbVariableName.Text, index, subIndex);
+            //IndexedCanChannel channel = new IndexedCanChannel(canId, index, subIndex, resource);
+            //DoubleVariable variable = new DoubleVariable(txbVariableName.Text, index, subIndex);
 
-            channel.DataChanged += (object _, DataChangedEventArgs __) =>
-                variable.Value = BitConverter.ToSingle(channel.CanFrame.Data, 4);
+            //channelDictionary.Add((channel.Index, channel.SubIndex), channel);
+            //channelDictionary[(channel.Index, channel.SubIndex)].CanFrameChanged += Channel_CanFrameChanged;
 
-            VariableDictionary.Add(variable);
+            //VariableDictionary.Add(variable);
+            //(VariableDictionary.Variables[variable.Name] as DoubleVariable).ValueChanged += Variable_ValueChanged;
+            
         }
+
+        private void Channel_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
+        {
+            IndexedCanChannel channel = (IndexedCanChannel)sender;
+
+            VariableDictionary.Variables
+                .Where(x =>
+                    x.Value.Index ==
+                    channelDictionary[(channel.Index, channel.SubIndex)].Index
+                    && x.Value.SubIndex == channelDictionary[(channel.Index, channel.SubIndex)].SubIndex
+                )
+                .Select(x =>
+                    x.Value.ValueAsObject =
+                    BitConverter.ToSingle(
+                        channelDictionary[(channel.Index, channel.SubIndex)].CanFrame.Data,
+                        4
+                    )
+                );
+        }
+
+        private void Variable_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            DoubleVariable variable = (DoubleVariable)sender;
+
+            channelDictionary.Values
+                .Where(x =>
+                    x.Index == (VariableDictionary.Variables[variable.Name] as DoubleVariable).Index &&
+                    x.SubIndex == (VariableDictionary.Variables[variable.Name] as DoubleVariable).SubIndex
+                )
+                .Select(x =>
+                    x.Data = BitConverter.GetBytes((float)variable.Value)
+                );
+        }
+
 
         private void BtnStart_Click(object sender, EventArgs e)
         {
@@ -370,6 +410,11 @@ namespace TestProgram
             str = str.Replace('h', ' ').Trim(' ');
 
             hardwareHandle = Convert.ToUInt16(str, 16);
+        }
+
+        private void btnReadLog_Click(object sender, EventArgs e)
+        {
+            txbLog.Text = resource?.ReadLog();
         }
     }
 }

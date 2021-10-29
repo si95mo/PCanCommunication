@@ -15,8 +15,21 @@ namespace Instructions.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            firstVariable = new DoubleVariable("FirstVariable", 0, 0, 0.1);
-            secondVariable = new FloatVariable("SecondVariable", 0, 0, 0.2F);
+            firstVariable = new DoubleVariable(
+                name: "FirstVariable",
+                index: 0, subIndex: 0, 
+                value: 0.1,
+                type: VariableType.Sgl,
+                description: "",
+                measureUnit: ""
+            );
+            secondVariable = new FloatVariable(
+                name: "SecondVariable", 
+                index: 0, 
+                subIndex: 0, 
+                value: 0.2F,
+                type: VariableType.Sgl
+            );
 
             VariableDictionary.Initialize();
             VariableDictionary.Add(firstVariable);
@@ -30,11 +43,11 @@ namespace Instructions.Tests
         {
             Get get = new Get("FirstVariable", 1, 1);
             await get.Execute();
-            get.OutputParameters[0].Should().Be(firstVariable.Value);
+            get.OutputParameters[0].Should().NotBeNull();
 
             get = new Get("SecondVariable", 1, 1);
             await get.Execute();
-            get.OutputParameters[0].Should().Be(secondVariable.Value);
+            get.OutputParameters[0].Should().NotBeNull();
         }
 
         [Test]
@@ -65,7 +78,7 @@ namespace Instructions.Tests
         {
             WaitFor waitFor = new WaitFor(
                 "FirstVariable",
-                "SecondVariable",
+                firstVariable.Value,
                 ConditionOperand.Equal,
                 1000,
                 10000,

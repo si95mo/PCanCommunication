@@ -45,6 +45,7 @@
     <Compile Include="Instruction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Set.cs" />
+    <Compile Include="Test.cs" />
     <Compile Include="Wait.cs" />
     <Compile Include="WaitFor.cs" />
   </ItemGroup>

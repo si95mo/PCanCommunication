@@ -37,7 +37,7 @@ namespace Instructions
     public class WaitFor : Instruction
     {
         private string firstVariableName;
-        private string secondVariableName;
+        private double value;
         private ConditionOperand operand;
         private int timeout;
         private int conditionTime;
@@ -49,25 +49,25 @@ namespace Instructions
         /// Create a new instance of <see cref="WaitFor"/>
         /// </summary>
         /// <param name="firstVariableName">The first variable in the condition name</param>
-        /// <param name="secondVariableName">The second variable in the condition name</param>
+        /// <param name="value">The value to test</param>
         /// <param name="operand">The <see cref="ConditionOperand"/></param>
         /// <param name="conditionTime">The time (in milliseconds) in which the condition must remain <see langword="true"/></param>
         /// <param name="timeout">The timeout (in milliseconds)</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
         /// <param name="pollingInterval">The polling interval (in milliseconds)</param>
-        public WaitFor(string firstVariableName, string secondVariableName, ConditionOperand operand,
+        public WaitFor(string firstVariableName, double value, ConditionOperand operand,
             int conditionTime, int timeout, int id, int order, int pollingInterval = 10) : base("WaitFor", id, order)
         {
             this.firstVariableName = firstVariableName;
-            this.secondVariableName = secondVariableName;
+            this.value = value;
             this.operand = operand;
             this.timeout = timeout;
             this.conditionTime = conditionTime;
             this.pollingInterval = pollingInterval;
 
             inputParameters.Add(this.firstVariableName);
-            inputParameters.Add(this.secondVariableName);
+            inputParameters.Add(this.value);
             inputParameters.Add(this.operand);
             inputParameters.Add(this.conditionTime);
             inputParameters.Add(timeout);
@@ -86,27 +86,25 @@ namespace Instructions
                 bool returnValue = false;
 
                 VariableDictionary.Get(firstVariableName, out IVariable firstVariable);
-                VariableDictionary.Get(secondVariableName, out IVariable secondVariable);
 
                 double firstValue = Convert.ToDouble(firstVariable.ValueAsObject);
-                double secondValue = Convert.ToDouble(secondVariable.ValueAsObject);
                 double threshold = 0.000001;
                 switch (operand)
                 {
                     case ConditionOperand.Equal:
-                        returnValue = Math.Abs(firstValue - secondValue) <= threshold;
+                        returnValue = Math.Abs(firstValue - value) <= threshold;
                         break;
 
                     case ConditionOperand.NotEqual:
-                        returnValue = Math.Abs(firstValue - secondValue) > threshold;
+                        returnValue = Math.Abs(firstValue - value) > threshold;
                         break;
 
                     case ConditionOperand.Greather:
-                        returnValue = firstValue > secondValue + threshold;
+                        returnValue = firstValue > value + threshold;
                         break;
 
                     case ConditionOperand.Lesser:
-                        returnValue = firstValue < secondValue - threshold;
+                        returnValue = firstValue < value - threshold;
                         break;
                 }
 

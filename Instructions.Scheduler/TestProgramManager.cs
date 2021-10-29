@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace Instructions.Scheduler
@@ -25,40 +26,53 @@ namespace Instructions.Scheduler
             string[][] testParsed = new string[testProgram.Length][];
 
             Instruction instruction;
-            for (int i = 0; i < testProgram.Length; i++)
+            for (int i = 1; i < testProgram.Length; i++) // No headers
             {
                 testParsed[i] = testProgram[i].Split(';');
 
-                switch (testParsed[i][1].Trim())
+                int.TryParse(testParsed[i][0].Trim(), out int id);
+                int.TryParse(testParsed[i][1].Trim(), out int order);
+                string variableName = testParsed[i][3].Trim();
+                double.TryParse(
+                    testParsed[i][4].TrimEnd(),
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out double value
+                );
+                string condition = testParsed[i][5].Trim();
+                double.TryParse(
+                    testParsed[i][6].Trim(),
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out double highLim
+                );
+                double.TryParse(
+                    testParsed[i][7].Trim(),
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out double lowLim
+                );
+                int.TryParse(testParsed[i][8].Trim(), out int time);
+                int.TryParse(testParsed[i][9].Trim(), out int timeout);
+
+                string instructionType = testParsed[i][2].Trim();
+                switch (instructionType)
                 {
                     case "GET":
-                        instruction = new Get(
-                            testParsed[i][3].Trim(),           // Variable name
-                            int.Parse(testParsed[i][0].Trim()),
-                            int.Parse(testParsed[i][2].Trim()) // Order
-                        );
+                        instruction = new Get(variableName, id, order);
                         break;
 
                     case "SET":
-                        instruction = new Set(
-                            testParsed[i][3].Trim(),               // Variable name
-                            double.Parse(testParsed[i][4].Trim()), // Value
-                            int.Parse(testParsed[i][0].Trim()),
-                            int.Parse(testParsed[i][2].Trim())     // Order
-                        );
+                        instruction = new Set(variableName, value, id, order);
                         break;
 
                     case "WAIT":
-                        instruction = new Wait(
-                            int.Parse(testParsed[i][3].Trim()), // Delay
-                            int.Parse(testParsed[i][0].Trim()),
-                            int.Parse(testParsed[i][2].Trim())  // Order
-                        );
+                        instruction = new Wait(time, id, order);
                         break;
 
                     case "WAIT_FOR":
                         ConditionOperand operand = ConditionOperand.Equal;
-                        switch (testParsed[i][5].Trim())
+                        switch (condition)
                         {
                             case "==":
                                 operand = ConditionOperand.Equal;
@@ -78,13 +92,13 @@ namespace Instructions.Scheduler
                         }
 
                         instruction = new WaitFor(
-                            testParsed[i][3].Trim(),            // First variable name
-                            testParsed[i][4].Trim(),            // Second variable name
-                            operand,                            // Operand
-                            int.Parse(testParsed[i][6].Trim()), // Condition time
-                            int.Parse(testParsed[i][7].Trim()), // Timeout
-                            int.Parse(testParsed[i][0].Trim()),
-                            int.Parse(testParsed[i][2].Trim())  // Order
+                            variableName,
+                            value,
+                            operand,
+                            time,
+                            timeout,
+                            id,
+                            order
                         );
                         break;
 

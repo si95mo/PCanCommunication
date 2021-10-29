@@ -41,6 +41,7 @@ namespace DataStructures.VariablesDictionary
         protected uint subIndex;
         protected T value;
         protected string description;
+        protected VariableType type;
 
         private object lockObject;
 
@@ -58,6 +59,8 @@ namespace DataStructures.VariablesDictionary
         /// The <see cref="Variable{T}"/> sub index
         /// </summary>
         public uint SubIndex => subIndex;
+
+        public VariableType Type { get => type; set => type = value; }
 
         /// <summary>
         /// The <see cref="Variable{T}"/> value
@@ -79,14 +82,20 @@ namespace DataStructures.VariablesDictionary
         /// </summary>
         public object ValueAsObject
         {
-            get => value;
-            set => this.value = (T)value;
-        }
+            get
+            {
+                object valueAsObject = value;
 
-        /// <summary>
-        /// The <see cref="Variable{T}"/> type, same as <see langword="typeof"/>(<see cref="T"/>)
-        /// </summary>
-        public Type Type => typeof(T);
+                if (type == VariableType.Int)
+                    valueAsObject = Convert.ToInt32(valueAsObject);
+                else
+                    valueAsObject = Convert.ToSingle(valueAsObject);
+
+                return valueAsObject;
+            }
+
+            set => Value = (T)value;
+        }
 
         /// <summary>
         /// The <see cref="Variable{T}"/> description
@@ -124,7 +133,8 @@ namespace DataStructures.VariablesDictionary
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
         /// <param name="description">The description</param>
-        protected Variable(string name, uint index, uint subIndex, string description = "") : this(name, index, subIndex, default, description)
+        protected Variable(string name, uint index, uint subIndex, VariableType type, 
+            string description = "") : this(name, index, subIndex, default, type, description)
         { }
 
         /// <summary>
@@ -135,12 +145,14 @@ namespace DataStructures.VariablesDictionary
         /// <param name="subIndex">THe sub index</param>
         /// <param name="value">The value</param>
         /// <param name="description">The description</param>
-        protected Variable(string name, uint index, uint subIndex, T value, string description = "")
+        protected Variable(string name, uint index, uint subIndex, T value,
+            VariableType type, string description = "")
         {
             this.name = name;
             this.index = index;
             this.subIndex = subIndex;
             this.value = value;
+            this.type = type;
             this.description = description;
 
             lockObject = new object();

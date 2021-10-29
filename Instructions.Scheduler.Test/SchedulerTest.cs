@@ -18,8 +18,23 @@ namespace Instructions.Scheduler.Test
         [OneTimeSetUp]
         public void Setup()
         {
-            firstVariable = new DoubleVariable("FirstVariable", 0, 0, 0.1);
-            secondVariable = new DoubleVariable("SecondVariable", 0, 0, 0.2);
+            firstVariable = new DoubleVariable(
+                name: "FirstVariable", 
+                index: 0, 
+                subIndex: 0, 
+                value: 0.1, 
+                type: VariableType.Sgl, 
+                description: "",
+                measureUnit: ""
+            );
+            secondVariable = new DoubleVariable(
+                name: "SecondVariable", index: 0, 
+                subIndex: 0, 
+                value: 0.2,
+                type: VariableType.Sgl,
+                description: "",
+                measureUnit: ""
+            );
 
             VariableDictionary.Initialize();
             VariableDictionary.Add(firstVariable);
