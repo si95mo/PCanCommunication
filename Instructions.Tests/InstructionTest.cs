@@ -17,16 +17,16 @@ namespace Instructions.Tests
         {
             firstVariable = new DoubleVariable(
                 name: "FirstVariable",
-                index: 0, subIndex: 0, 
+                index: 0, subIndex: 0,
                 value: 0.1,
                 type: VariableType.Sgl,
                 description: "",
                 measureUnit: ""
             );
             secondVariable = new FloatVariable(
-                name: "SecondVariable", 
-                index: 0, 
-                subIndex: 0, 
+                name: "SecondVariable",
+                index: 0,
+                subIndex: 0,
                 value: 0.2F,
                 type: VariableType.Sgl
             );

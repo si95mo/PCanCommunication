@@ -19,17 +19,17 @@ namespace Instructions.Scheduler.Test
         public void Setup()
         {
             firstVariable = new DoubleVariable(
-                name: "FirstVariable", 
-                index: 0, 
-                subIndex: 0, 
-                value: 0.1, 
-                type: VariableType.Sgl, 
+                name: "FirstVariable",
+                index: 0,
+                subIndex: 0,
+                value: 0.1,
+                type: VariableType.Sgl,
                 description: "",
                 measureUnit: ""
             );
             secondVariable = new DoubleVariable(
-                name: "SecondVariable", index: 0, 
-                subIndex: 0, 
+                name: "SecondVariable", index: 0,
+                subIndex: 0,
                 value: 0.2,
                 type: VariableType.Sgl,
                 description: "",

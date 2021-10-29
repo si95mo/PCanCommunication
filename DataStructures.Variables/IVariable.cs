@@ -41,7 +41,7 @@
         /// <summary>
         /// The representation of the <see cref="IVariable"/> <see cref="ValueAsObject"/>
         /// </summary>
-        VariableType Type { get; set; } 
+        VariableType Type { get; set; }
     }
 
     /// <summary>

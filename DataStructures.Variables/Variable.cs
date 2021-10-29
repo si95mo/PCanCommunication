@@ -133,7 +133,7 @@ namespace DataStructures.VariablesDictionary
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
         /// <param name="description">The description</param>
-        protected Variable(string name, uint index, uint subIndex, VariableType type, 
+        protected Variable(string name, uint index, uint subIndex, VariableType type,
             string description = "") : this(name, index, subIndex, default, type, description)
         { }
 
