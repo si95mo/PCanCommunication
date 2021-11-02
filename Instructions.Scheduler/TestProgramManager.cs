@@ -131,7 +131,23 @@ namespace Instructions.Scheduler
         internal static void SaveResult(string path, Instruction instruction)
         {
             lock (lockObject)
+            {
+                InitializeFile(path);
                 File.AppendAllText(path, $"{instruction}{Environment.NewLine}");
+            }
+        }
+
+        /// <summary>
+        /// Initialize the file by writing the headers
+        /// </summary>
+        /// <param name="path">The file path</param>
+        private static void InitializeFile(string path)
+        {
+            if(!File.Exists(path))
+                File.AppendAllText(
+                    path, 
+                    $"Name; ID; Order; Variable involved; Value; Condition to verify; Start time; Stop time; Result{Environment.NewLine}"
+                );
         }
     }
 }

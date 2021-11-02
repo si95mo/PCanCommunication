@@ -75,14 +75,14 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"Instruction name: {name}; " +
-                $"Instruction id: {id}; " +
-                $"Instruction order: {order}; " +
-                $"Involved variable: {variableName}; " +
-                $"Condition to verify: {variableName} ({valueGot}) is {operand} than {value}; " +
-                $"Instruction start time: {startTime:HH:mm:ss.fff}; " +
-                $"Instruction stop time: {stopTime:HH:mm:ss.fff}; " +
-                $"Result: {result}";
+            string description = $"{name}; " +
+                $"{id}; " +
+                $"{order}; " +
+                $"{variableName}; ; " +
+                $"{variableName} ({valueGot}) is {operand} than {value}; " +
+                $"{startTime:HH:mm:ss.fff}; " +
+                $"{stopTime:HH:mm:ss.fff}; " +
+                $"{result}";
             return description;
         }
     }
