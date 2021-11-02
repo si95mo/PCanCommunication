@@ -18,14 +18,14 @@ namespace TestProgram
             {
                 testParsed[i] = testProgram[i].Split(delimiter);
 
-                byte.TryParse(testParsed[i][0].Trim().TrimEnd(), out byte index);
-                ushort.TryParse(testParsed[i][1].Trim().TrimEnd(), out ushort subIndex);
-                name = testParsed[i][2];
-                description = testParsed[i][3].Trim().TrimEnd();
-                Enum.TryParse(testParsed[i][4].Trim().TrimEnd(), out VariableType type);
-                measureUnit = testParsed[i][5].Trim().TrimEnd();
-                double.TryParse(testParsed[i][6].Trim().TrimEnd(), NumberStyles.Any, CultureInfo.InvariantCulture, out double scale);
-                double.TryParse(testParsed[i][7].Trim().TrimEnd(), NumberStyles.Any, CultureInfo.InvariantCulture, out double offset);
+                byte.TryParse(testParsed[i][0].Trim(), out byte index);
+                ushort.TryParse(testParsed[i][1].Trim(), out ushort subIndex);
+                name = testParsed[i][2].Trim();
+                description = testParsed[i][3].Trim();
+                Enum.TryParse(testParsed[i][4].Trim(), out VariableType type);
+                measureUnit = testParsed[i][5].Trim();
+                double.TryParse(testParsed[i][6].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double scale);
+                double.TryParse(testParsed[i][7].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double offset);
 
                 variable = new DoubleVariable(name, index, subIndex, type, description, measureUnit, scale, offset);
                 VariableDictionary.Add(variable);
