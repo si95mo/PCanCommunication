@@ -109,7 +109,6 @@ namespace Instructions
                         break;
                 }
 
-                outputParameters.Add(valueGot);
                 return returnValue;
             }
 
@@ -132,7 +131,7 @@ namespace Instructions
             stopTime = DateTime.Now;
 
             outputParameters.Add(result);
-
+            outputParameters.Add(valueGot);
             outputParameters.Add(startTime);
             outputParameters.Add(stopTime);
         }
