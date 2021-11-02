@@ -138,7 +138,7 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"Instruction name: WaitFor; " +
+            string description = $"Instruction name: {name}; " +
                 $"Instruction id: {id}; " +
                 $"Instruction order: {order}; " +
                 $"Involved variable: {variableName}; " +

@@ -40,7 +40,7 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"Instruction name: Wait; " +
+            string description = $"Instruction name: {name}; " +
                 $"Instruction id: {id}; " +
                 $"Instruction order: {order}; " +
                 $"Instruction start time: {startTime:HH:mm:ss.fff}; " +

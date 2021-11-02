@@ -50,13 +50,13 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"Instruction name: Set; " +
+            string description = $"Instruction name: {name}; " +
                 $"Instruction id: {id}; " +
                 $"Instruction order: {order}; " +
                 $"Involved variable: {variableName}; " +
                 $"Value to set: {valueToSet}; " +
                 $"Instruction start time: {startTime:HH:mm:ss.fff}; " +
-                $"Instruction stop time: {stopTime:HH:mm:ss.fff};";
+                $"Instruction stop time: {stopTime:HH:mm:ss.fff}";
             return description;
         }
     }

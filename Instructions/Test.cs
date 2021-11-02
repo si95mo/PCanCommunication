@@ -19,7 +19,7 @@ namespace Instructions
         /// <param name="variableName">The variable name</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Test(string variableName, int id, int order, double value, ConditionOperand operand) : base("Get", id, order)
+        public Test(string variableName, int id, int order, double value, ConditionOperand operand) : base("Test", id, order)
         {
             this.variableName = variableName;
             this.value = value;
@@ -75,7 +75,7 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"Instruction name: Test; " +
+            string description = $"Instruction name: {name}; " +
                 $"Instruction id: {id}; " +
                 $"Instruction order: {order}; " +
                 $"Involved variable: {variableName}; " +
