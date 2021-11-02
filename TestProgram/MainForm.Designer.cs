@@ -133,7 +133,7 @@ namespace TestProgram
             this.groupBox2.Controls.Add(this.btnStartTest);
             this.groupBox2.Location = new System.Drawing.Point(12, 123);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 80);
+            this.groupBox2.Size = new System.Drawing.Size(465, 53);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Test options";
@@ -141,7 +141,7 @@ namespace TestProgram
             // btnStopTest
             // 
             this.btnStopTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopTest.Location = new System.Drawing.Point(6, 48);
+            this.btnStopTest.Location = new System.Drawing.Point(271, 19);
             this.btnStopTest.Name = "btnStopTest";
             this.btnStopTest.Size = new System.Drawing.Size(188, 23);
             this.btnStopTest.TabIndex = 2;
@@ -165,7 +165,7 @@ namespace TestProgram
             this.groupBox7.Controls.Add(this.txbLog);
             this.groupBox7.Location = new System.Drawing.Point(483, 12);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(342, 427);
+            this.groupBox7.Size = new System.Drawing.Size(342, 441);
             this.groupBox7.TabIndex = 15;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Log";
@@ -179,16 +179,16 @@ namespace TestProgram
             this.txbLog.Multiline = true;
             this.txbLog.Name = "txbLog";
             this.txbLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbLog.Size = new System.Drawing.Size(330, 401);
+            this.txbLog.Size = new System.Drawing.Size(330, 415);
             this.txbLog.TabIndex = 0;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.btnStop);
             this.groupBox3.Controls.Add(this.btnStart);
-            this.groupBox3.Location = new System.Drawing.Point(218, 125);
+            this.groupBox3.Location = new System.Drawing.Point(12, 182);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(207, 78);
+            this.groupBox3.Size = new System.Drawing.Size(465, 53);
             this.groupBox3.TabIndex = 17;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "CAN resource commands";
@@ -196,9 +196,9 @@ namespace TestProgram
             // btnStop
             // 
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStop.Location = new System.Drawing.Point(6, 48);
+            this.btnStop.Location = new System.Drawing.Point(271, 19);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(190, 23);
+            this.btnStop.Size = new System.Drawing.Size(188, 23);
             this.btnStop.TabIndex = 7;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -221,11 +221,11 @@ namespace TestProgram
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.cbxDeviceList);
-            this.groupBox4.Location = new System.Drawing.Point(11, 208);
+            this.groupBox4.Location = new System.Drawing.Point(12, 240);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox4.Size = new System.Drawing.Size(201, 71);
+            this.groupBox4.Size = new System.Drawing.Size(465, 53);
             this.groupBox4.TabIndex = 16;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "CAN resource settings";
@@ -233,7 +233,7 @@ namespace TestProgram
             // cbxBaudRate
             // 
             this.cbxBaudRate.FormattingEnabled = true;
-            this.cbxBaudRate.Location = new System.Drawing.Point(99, 41);
+            this.cbxBaudRate.Location = new System.Drawing.Point(363, 12);
             this.cbxBaudRate.Margin = new System.Windows.Forms.Padding(2);
             this.cbxBaudRate.Name = "cbxBaudRate";
             this.cbxBaudRate.Size = new System.Drawing.Size(96, 21);
@@ -243,7 +243,7 @@ namespace TestProgram
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(5, 44);
+            this.label6.Location = new System.Drawing.Point(269, 15);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 13);
             this.label6.TabIndex = 8;
@@ -343,9 +343,9 @@ namespace TestProgram
             this.groupBox8.Controls.Add(this.btnReadLog);
             this.groupBox8.Controls.Add(this.nudLogSize);
             this.groupBox8.Controls.Add(this.label9);
-            this.groupBox8.Location = new System.Drawing.Point(12, 284);
+            this.groupBox8.Location = new System.Drawing.Point(12, 298);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(413, 155);
+            this.groupBox8.Size = new System.Drawing.Size(465, 155);
             this.groupBox8.TabIndex = 20;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Log parameters";
@@ -353,9 +353,9 @@ namespace TestProgram
             // lbxFilteredCanId
             // 
             this.lbxFilteredCanId.FormattingEnabled = true;
-            this.lbxFilteredCanId.Location = new System.Drawing.Point(304, 14);
+            this.lbxFilteredCanId.Location = new System.Drawing.Point(304, 9);
             this.lbxFilteredCanId.Name = "lbxFilteredCanId";
-            this.lbxFilteredCanId.Size = new System.Drawing.Size(97, 134);
+            this.lbxFilteredCanId.Size = new System.Drawing.Size(155, 134);
             this.lbxFilteredCanId.TabIndex = 1;
             // 
             // btnRemoveFilter
@@ -455,11 +455,11 @@ namespace TestProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(832, 450);
+            this.ClientSize = new System.Drawing.Size(832, 459);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
