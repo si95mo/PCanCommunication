@@ -300,22 +300,21 @@ namespace TestProgram
             scheduler.StopAll();
         }
 
-        private void BtnCreate_Click(object sender, EventArgs e)
-        {
-            //int canId = (int)nudCanId.Value;
-            //ushort index = (ushort)nudIndex.Value;
-            //ushort subIndex = (ushort)nudSubIndex.Value;
+        //private void BtnCreate_Click(object sender, EventArgs e)
+        //{
+        //    int canId = (int)nudCanId.Value;
+        //    ushort index = (ushort)nudIndex.Value;
+        //    ushort subIndex = (ushort)nudSubIndex.Value;
 
-            //IndexedCanChannel channel = new IndexedCanChannel(canId, index, subIndex, resource);
-            //DoubleVariable variable = new DoubleVariable(txbVariableName.Text, index, subIndex);
+        //    IndexedCanChannel channel = new IndexedCanChannel(canId, index, subIndex, resource);
+        //    DoubleVariable variable = new DoubleVariable(txbVariableName.Text, index, subIndex);
 
-            //channelDictionary.Add((channel.Index, channel.SubIndex), channel);
-            //channelDictionary[(channel.Index, channel.SubIndex)].CanFrameChanged += Channel_CanFrameChanged;
+        //    channelDictionary.Add((channel.Index, channel.SubIndex), channel);
+        //    channelDictionary[(channel.Index, channel.SubIndex)].CanFrameChanged += Channel_CanFrameChanged;
 
-            //VariableDictionary.Add(variable);
-            //(VariableDictionary.Variables[variable.Name] as DoubleVariable).ValueChanged += Variable_ValueChanged;
-            
-        }
+        //    VariableDictionary.Add(variable);
+        //    (VariableDictionary.Variables[variable.Name] as DoubleVariable).ValueChanged += Variable_ValueChanged;
+        //}
 
         private void Channel_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
