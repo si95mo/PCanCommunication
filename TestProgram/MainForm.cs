@@ -36,6 +36,7 @@ namespace TestProgram
         private bool testSelected;
 
         private Dictionary<(ushort Index, ushort SubIndex), IndexedCanChannel> channelDictionary;
+        private IndexedCanChannel tx, rx;
 
         /// <summary>
         /// Initialize user interface-related components
@@ -101,6 +102,13 @@ namespace TestProgram
                 lblResourceStatus.ForeColor = stoppedColor;
             else
                 lblResourceStatus.ForeColor = startedColor;
+
+            rx = new IndexedCanChannel(canId: 0x200, index: 0x0, subIndex: 0x0, resource, 0);
+            rx.CanFrameChanged += Channel_CanFrameChanged;
+            tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, 1);
+
+            resource.AddFilteredCanId(0x200); // Rx
+            resource.AddFilteredCanId(0x100); // Tx
         }
 
         /// <summary>
@@ -234,6 +242,8 @@ namespace TestProgram
 
             // Update the filtered can id
             UpdateFilteredCanId();
+
+            resource?.Start();
         }
 
         private void BtnSelectTest_Click(object sender, EventArgs e)
@@ -252,6 +262,9 @@ namespace TestProgram
 
                 variablePath = Path.Combine(folderDialog.SelectedPath, "variables.csv");
                 VariableFileHandler.ReadTest(variablePath);
+
+                foreach(IVariable v in VariableDictionary.Variables.Values)
+                    (v as DoubleVariable).ValueChanged += Variable_ValueChanged;
             }
         }
 
@@ -267,7 +280,7 @@ namespace TestProgram
                 testFolderSelected = true;
                 testSelected = testFileSelected && testFolderSelected;
 
-                resultPath = Path.Combine(folderPath, "result.csv");
+                resultPath = Path.Combine(folderPath, $"{DateTime.Now:yyyyMMddHHmmss}_result.csv");
             }
         }
 
@@ -303,35 +316,43 @@ namespace TestProgram
 
         private void Channel_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
-            IndexedCanChannel channel = (IndexedCanChannel)sender;
-
             VariableDictionary.Variables
-                .Where(x =>
-                    x.Value.Index ==
-                    channelDictionary[(channel.Index, channel.SubIndex)].Index
-                    && x.Value.SubIndex == channelDictionary[(channel.Index, channel.SubIndex)].SubIndex
-                )
-                .Select(x =>
-                    x.Value.ValueAsObject =
-                    BitConverter.ToSingle(
-                        channelDictionary[(channel.Index, channel.SubIndex)].CanFrame.Data,
-                        4
-                    )
-                );
+                .Where(x => x.Value.Index == rx.Index && x.Value.SubIndex == rx.SubIndex)
+                .Select(x => x.Value.ValueAsObject = BitConverter.ToSingle(rx.CanFrame.Data, 4));
+
+            //IndexedCanChannel channel = (IndexedCanChannel)sender;
+
+            //VariableDictionary.Variables
+            //    .Where(x =>
+            //        x.Value.Index ==
+            //        channelDictionary[(channel.Index, channel.SubIndex)].Index
+            //        && x.Value.SubIndex == channelDictionary[(channel.Index, channel.SubIndex)].SubIndex
+            //    )
+            //    .Select(x =>
+            //        x.Value.ValueAsObject =
+            //        BitConverter.ToSingle(
+            //            channelDictionary[(channel.Index, channel.SubIndex)].CanFrame.Data,
+            //            4
+            //        )
+            //    );
         }
 
         private void Variable_ValueChanged(object sender, ValueChangedEventArgs e)
         {
             DoubleVariable variable = (DoubleVariable)sender;
 
-            channelDictionary.Values
-                .Where(x =>
-                    x.Index == (VariableDictionary.Variables[variable.Name] as DoubleVariable).Index &&
-                    x.SubIndex == (VariableDictionary.Variables[variable.Name] as DoubleVariable).SubIndex
-                )
-                .Select(x =>
-                    x.Data = BitConverter.GetBytes((float)variable.Value)
-                );
+            tx.Index = variable.Index;
+            tx.SubIndex = variable.SubIndex;
+            tx.Data = BitConverter.GetBytes((float)variable.Value);
+
+            //channelDictionary.Values
+            //    .Where(x =>
+            //        x.Index == (VariableDictionary.Variables[variable.Name] as DoubleVariable).Index &&
+            //        x.SubIndex == (VariableDictionary.Variables[variable.Name] as DoubleVariable).SubIndex
+            //    )
+            //    .Select(x =>
+            //        x.Data = BitConverter.GetBytes((float)variable.Value)
+            //    );
         }
 
 

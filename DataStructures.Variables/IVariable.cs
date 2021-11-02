@@ -26,12 +26,12 @@
         /// <summary>
         /// The <see cref="IVariable"/> index
         /// </summary>
-        uint Index { get; }
+        byte Index { get; }
 
         /// <summary>
         /// The <see cref="IVariable"/> sub index
         /// </summary>
-        uint SubIndex { get; }
+        ushort SubIndex { get; }
 
         /// <summary>
         /// The <see cref="IVariable"/> variable as <see cref="object"/>

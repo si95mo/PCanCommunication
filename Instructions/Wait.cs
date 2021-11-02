@@ -37,5 +37,15 @@ namespace Instructions
             outputParameters.Add(startTime);
             outputParameters.Add(stopTime);
         }
+
+        public override string ToString()
+        {
+            string description = $"Instruction name: Wait; " +
+                $"Instruction id: {id}; " +
+                $"Instruction order: {order}; " +
+                $"Instruction start time: {startTime:HH:mm:ss.fff}; " +
+                $"Instruction stop time: {stopTime:HH:mm:ss.fff}";
+            return description;
+        }
     }
 }

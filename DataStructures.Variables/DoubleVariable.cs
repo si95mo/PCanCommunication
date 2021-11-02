@@ -5,18 +5,15 @@
     /// </summary>
     public class DoubleVariable : Variable<double>
     {
-        private double scale, offset;
-        private string measureUnit;
-
         /// <summary>
         /// Create a new instance of <see cref="DoubleVariable"/>
         /// </summary>
         /// <param name="name">The name</param>
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
-        public DoubleVariable(string name, uint index, uint subIndex, VariableType type, string description,
+        public DoubleVariable(string name, byte index, ushort subIndex, VariableType type, string description,
             string measureUnit, double scale = 1d, double offset = 0d)
-            : base(name, index, subIndex, type, description)
+            : base(name, index, subIndex, type, scale, offset, description)
         {
             this.scale = scale;
             this.offset = offset;
@@ -30,9 +27,9 @@
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
         /// <param name="value">The value</param>
-        public DoubleVariable(string name, uint index, uint subIndex, double value,
+        public DoubleVariable(string name, byte index, ushort subIndex, double value,
             VariableType type, string description, string measureUnit, double scale = 1d, double offset = 0d)
-            : base(name, index, subIndex, value, type)
+            : base(name, index, subIndex, value, type, scale, offset, description)
         {
             this.scale = scale;
             this.offset = offset;

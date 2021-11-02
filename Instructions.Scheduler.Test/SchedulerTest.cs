@@ -77,7 +77,7 @@ namespace Instructions.Scheduler.Test
 
             scheduler.Instructions.Count.Should().Be(0);
             firstVariable.Value.Should().Be(-10d);
-            sw.Elapsed.TotalMilliseconds.Should().BeApproximately(2000, 200); // 1s Wait + 1s WaitFor
+            sw.Elapsed.TotalMilliseconds.Should().BeApproximately(2000, 500); // 1s Wait + 1s WaitFor
         }
     }
 }

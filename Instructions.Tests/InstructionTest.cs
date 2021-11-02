@@ -1,6 +1,7 @@
 ﻿using DataStructures.VariablesDictionary;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -87,7 +88,7 @@ namespace Instructions.Tests
             );
             Stopwatch sw = Stopwatch.StartNew();
 
-            secondVariable.Value = (float)firstVariable.Value;
+            secondVariable.Value = Convert.ToSingle(firstVariable.Value);
             await waitFor.Execute();
 
             bool result = (bool)waitFor.OutputParameters[0];
@@ -98,7 +99,7 @@ namespace Instructions.Tests
 
             sw = Stopwatch.StartNew();
 
-            secondVariable.Value = 2F * secondVariable.Value;
+            firstVariable.Value = 10d * secondVariable.Value;
             await waitFor.Execute();
 
             result = (bool)waitFor.OutputParameters[0];

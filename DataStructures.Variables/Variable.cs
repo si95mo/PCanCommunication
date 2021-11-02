@@ -37,11 +37,13 @@ namespace DataStructures.VariablesDictionary
     public class Variable<T> : IVariable<T>
     {
         protected string name;
-        protected uint index;
-        protected uint subIndex;
+        protected byte index;
+        protected ushort subIndex;
         protected T value;
         protected string description;
         protected VariableType type;
+        protected double scale, offset;
+        protected string measureUnit;
 
         private object lockObject;
 
@@ -53,12 +55,12 @@ namespace DataStructures.VariablesDictionary
         /// <summary>
         /// The <see cref="Variable{T}"/> index
         /// </summary>
-        public uint Index => index;
+        public byte Index => index;
 
         /// <summary>
         /// The <see cref="Variable{T}"/> sub index
         /// </summary>
-        public uint SubIndex => subIndex;
+        public ushort SubIndex => subIndex;
 
         public VariableType Type { get => type; set => type = value; }
 
@@ -67,11 +69,22 @@ namespace DataStructures.VariablesDictionary
         /// </summary>
         public T Value
         {
-            get => value;
+            get
+            {
+                dynamic a = value;
+                dynamic b = scale;
+                dynamic c = offset;
+
+                return (T)(a * b + c);
+            }
             set
             {
+                dynamic a = value;
+                dynamic b = scale;
+                dynamic c = offset;
+
                 T oldValue = this.value;
-                this.value = value;
+                this.value = (T)((a - c) / b);
 
                 OnValueChanged(new ValueChangedEventArgs(oldValue, this.value));
             }
@@ -84,7 +97,7 @@ namespace DataStructures.VariablesDictionary
         {
             get
             {
-                object valueAsObject = value;
+                object valueAsObject = Value;
 
                 if (type == VariableType.Int)
                     valueAsObject = Convert.ToInt32(valueAsObject);
@@ -133,8 +146,9 @@ namespace DataStructures.VariablesDictionary
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
         /// <param name="description">The description</param>
-        protected Variable(string name, uint index, uint subIndex, VariableType type,
-            string description = "") : this(name, index, subIndex, default, type, description)
+        protected Variable(string name, byte index, ushort subIndex, VariableType type,
+            double scale = 1d, double offset = 0d, string description = "") 
+            : this(name, index, subIndex, default, type, scale, offset, description)
         { }
 
         /// <summary>
@@ -145,14 +159,16 @@ namespace DataStructures.VariablesDictionary
         /// <param name="subIndex">THe sub index</param>
         /// <param name="value">The value</param>
         /// <param name="description">The description</param>
-        protected Variable(string name, uint index, uint subIndex, T value,
-            VariableType type, string description = "")
+        protected Variable(string name, byte index, ushort subIndex, T value,
+            VariableType type, double scale = 1d, double offset = 0d, string description = "")
         {
             this.name = name;
             this.index = index;
             this.subIndex = subIndex;
             this.value = value;
             this.type = type;
+            this.scale = scale;
+            this.offset = offset;
             this.description = description;
 
             lockObject = new object();

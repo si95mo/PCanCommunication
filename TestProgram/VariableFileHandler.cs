@@ -18,8 +18,8 @@ namespace TestProgram
             {
                 testParsed[i] = testProgram[i].Split(delimiter);
 
-                uint.TryParse(testParsed[i][0].Trim().TrimEnd(), out uint index);
-                uint.TryParse(testParsed[i][1].Trim().TrimEnd(), out uint subIndex);
+                byte.TryParse(testParsed[i][0].Trim().TrimEnd(), out byte index);
+                ushort.TryParse(testParsed[i][1].Trim().TrimEnd(), out ushort subIndex);
                 name = testParsed[i][2];
                 description = testParsed[i][3].Trim().TrimEnd();
                 Enum.TryParse(testParsed[i][4].Trim().TrimEnd(), out VariableType type);

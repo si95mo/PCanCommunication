@@ -25,6 +25,7 @@ namespace Instructions.Scheduler
             string[] testProgram = File.ReadAllLines(path);
             string[][] testParsed = new string[testProgram.Length][];
 
+
             Instruction instruction;
             for (int i = 1; i < testProgram.Length; i++) // No headers
             {
@@ -70,31 +71,15 @@ namespace Instructions.Scheduler
                         instruction = new Wait(time, id, order);
                         break;
 
+                    case "TEST":
+                        instruction = new Test(variableName, id, order, value, ParseOperand(condition));
+                        break;
+
                     case "WAIT_FOR":
-                        ConditionOperand operand = ConditionOperand.Equal;
-                        switch (condition)
-                        {
-                            case "==":
-                                operand = ConditionOperand.Equal;
-                                break;
-
-                            case "!=":
-                                operand = ConditionOperand.NotEqual;
-                                break;
-
-                            case "<":
-                                operand = ConditionOperand.Lesser;
-                                break;
-
-                            case ">":
-                                operand = ConditionOperand.Greather;
-                                break;
-                        }
-
                         instruction = new WaitFor(
                             variableName,
                             value,
-                            operand,
+                            ParseOperand(condition),
                             time,
                             timeout,
                             id,
@@ -113,6 +98,31 @@ namespace Instructions.Scheduler
             return instructions;
         }
 
+        private static ConditionOperand ParseOperand(string condition)
+        {
+            ConditionOperand operand = ConditionOperand.Equal;
+            switch (condition)
+            {
+                case "==":
+                    operand = ConditionOperand.Equal;
+                    break;
+
+                case "!=":
+                    operand = ConditionOperand.NotEqual;
+                    break;
+
+                case "<":
+                    operand = ConditionOperand.Lesser;
+                    break;
+
+                case ">":
+                    operand = ConditionOperand.Greather;
+                    break;
+            }
+
+            return operand;
+        }
+
         /// <summary>
         /// Append an <see cref="Instruction"/> result to disk
         /// </summary>
@@ -120,40 +130,8 @@ namespace Instructions.Scheduler
         /// <param name="instruction">The <see cref="Instruction"/> of which save the result</param>
         internal static void SaveResult(string path, Instruction instruction)
         {
-            string result = "";
-
-            if (instruction is Get)
-                result += "GET; ";
-
-            if (instruction is Set)
-                result += "SET; ";
-
-            if (instruction is Wait)
-                result += "WAIT; ";
-
-            if (instruction is WaitFor)
-                result += "WAIT_FOR; ";
-
-            result += $"id: {instruction.Id}; ";
-            result += $"order: {instruction.Order}; ";
-
-            foreach (object o in instruction.InputParameters)
-                result += $"in: {o}; ";
-
-            foreach (object o in instruction.OutputParameters)
-            {
-                if (o is DateTime time)
-                    result += $"out: {time:HH:mm:ss:fff}; ";
-                else
-                    result += $"out: {o}; ";
-            }
-
-            result.Trim();
-            result.Remove(result.Length - 1);
-            result += Environment.NewLine;
-
             lock (lockObject)
-                File.AppendAllText(path, result);
+                File.AppendAllText(path, $"{instruction}{Environment.NewLine}");
         }
     }
 }

@@ -72,5 +72,18 @@ namespace Instructions
             outputParameters.Add(startTime);
             outputParameters.Add(stopTime);
         }
+
+        public override string ToString()
+        {
+            string description = $"Instruction name: Test; " +
+                $"Instruction id: {id}; " +
+                $"Instruction order: {order}; " +
+                $"Involved variable: {variableName}; " +
+                $"Condition to verify: {variableName} ({valueGot}) is {operand} than {value}; " +
+                $"Instruction start time: {startTime:HH:mm:ss.fff}; " +
+                $"Instruction stop time: {stopTime:HH:mm:ss.fff}; " +
+                $"Result: {result}";
+            return description;
+        }
     }
 }

@@ -11,7 +11,8 @@
         /// <param name="name">The name</param>
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
-        public FloatVariable(string name, uint index, uint subIndex, VariableType type) : base(name, index, subIndex, type)
+        public FloatVariable(string name, byte index, ushort subIndex, VariableType type) 
+            : base(name, index, subIndex, type)
         { }
 
         /// <summary>
@@ -21,7 +22,8 @@
         /// <param name="index">The index</param>
         /// <param name="subIndex">The sub index</param>
         /// <param name="value">The value</param>
-        public FloatVariable(string name, uint index, uint subIndex, VariableType type, float value) : base(name, index, subIndex, value, type)
+        public FloatVariable(string name, byte index, ushort subIndex, VariableType type, float value) 
+            : base(name, index, subIndex, value, type)
         { }
     }
 }

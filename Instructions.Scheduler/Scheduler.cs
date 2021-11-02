@@ -72,7 +72,7 @@ namespace Instructions.Scheduler
             if (path.CompareTo("") == 0)
                 path = System.IO.Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                    "result.csv"
+                    $"{DateTime.Now:yyyy-MM-dd:HH:mm:ss}_result.csv"
                 );
 
             int order = instructions.Keys.Min();
