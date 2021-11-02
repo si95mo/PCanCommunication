@@ -50,7 +50,7 @@ namespace Hardware.Can
         /// <remarks>
         /// <see cref="Data"/> is an 8 <see cref="byte"/>
         /// long array, but the first 4 elements are
-        /// <see cref="Index"/> and <see cref="SubIndex"/>), <br/>
+        /// <see cref="Cmd"/>, <see cref="Index"/> and <see cref="SubIndex"/>, <br/>
         /// while the actual data are stored in the last 4 elements.
         /// So, the array passed in the setter must have a length of 4! <br/>
         /// <b>This property is used for writing to the can bus</b>
@@ -91,7 +91,7 @@ namespace Hardware.Can
         /// </summary>
         /// <remarks>
         /// <see cref="CanFrame.Data"/> must be an 8 <see cref="byte"/>
-        /// long array (the first 4 elements are
+        /// long array (the first 4 elements are <see cref="Cmd"/>
         /// <see cref="Index"/> and <see cref="SubIndex"/>, the last 4
         /// the <see cref="CanFrame.Data"/>)! <br/>
         /// <b>This property is used for reading from the can bus</b>
