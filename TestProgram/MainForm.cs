@@ -284,12 +284,15 @@ namespace TestProgram
             }
         }
 
-        private void BtnStartTest_Click(object sender, EventArgs e)
+        private async void BtnStartTest_Click(object sender, EventArgs e)
         {
             if (testSelected)
-                scheduler?.ExecuteAll(resultPath);
+            {
+                await scheduler?.ExecuteAll(resultPath);
+                MessageBox.Show("Test completed!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             else
-                MessageBox.Show("No test selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void BtnStopTest_Click(object sender, EventArgs e)
