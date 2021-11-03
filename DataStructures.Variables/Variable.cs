@@ -147,7 +147,7 @@ namespace DataStructures.VariablesDictionary
         /// <param name="subIndex">The sub index</param>
         /// <param name="description">The description</param>
         protected Variable(string name, byte index, ushort subIndex, VariableType type,
-            double scale = 1d, double offset = 0d, string description = "") 
+            double scale = 1d, double offset = 0d, string description = "")
             : this(name, index, subIndex, default, type, scale, offset, description)
         { }
 

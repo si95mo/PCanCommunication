@@ -25,7 +25,6 @@ namespace Instructions.Scheduler
             string[] testProgram = File.ReadAllLines(path);
             string[][] testParsed = new string[testProgram.Length][];
 
-
             Instruction instruction;
             for (int i = 1; i < testProgram.Length; i++) // No headers
             {
@@ -143,9 +142,9 @@ namespace Instructions.Scheduler
         /// <param name="path">The file path</param>
         private static void InitializeFile(string path)
         {
-            if(!File.Exists(path))
+            if (!File.Exists(path))
                 File.AppendAllText(
-                    path, 
+                    path,
                     $"Name; ID; Order; Variable involved; Value; Condition to verify; Start time; Stop time; Result{Environment.NewLine}"
                 );
         }

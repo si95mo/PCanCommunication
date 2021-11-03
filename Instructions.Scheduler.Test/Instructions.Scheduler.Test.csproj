@@ -69,6 +69,10 @@
       <Project>{9B4C98EF-8522-48E3-A224-282F8BC1655D}</Project>
       <Name>DataStructures.Variables</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Hardware.Can\Hardware.Can.csproj">
+      <Project>{12360666-20BA-42C9-BC06-5F3766B11BB7}</Project>
+      <Name>Hardware.Can</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Instructions.Scheduler\Instructions.Scheduler.csproj">
       <Project>{0be77aaa-58ce-49aa-8851-49b87a25063b}</Project>
       <Name>Instructions.Scheduler</Name>

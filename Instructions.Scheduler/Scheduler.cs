@@ -1,4 +1,5 @@
 ﻿using Dasync.Collections;
+using Hardware.Can;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +66,7 @@ namespace Instructions.Scheduler
         /// </summary>
         /// <param name="path">The result path (if not specified,
         /// file will be saved in Desktop)</param>
-        public async Task ExecuteAll(string path = "")
+        public async Task ExecuteAll(string path = "", IndexedCanChannel tx = null)
         {
             stop = false;
 
@@ -86,6 +87,17 @@ namespace Instructions.Scheduler
                 await instructionList.ParallelForEachAsync(
                     async (x) =>
                     {
+                        if (tx != null && x is Set)
+                            tx.Cmd = 1;
+                        else
+                        {
+                            if (tx != null && x is Get)
+                            {
+                                tx.Data = new byte[] { 0, 0, 0, 0 };
+                                tx.Cmd = 0;
+                            }
+                        }
+
                         await x.Execute();
                         TestProgramManager.SaveResult(path, x);
                     }
