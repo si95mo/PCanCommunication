@@ -1,4 +1,5 @@
 ﻿using DataStructures.VariablesDictionary;
+using Hardware.Can;
 using System;
 using System.Threading.Tasks;
 
@@ -18,7 +19,8 @@ namespace Instructions
         /// <param name="variableName">The variable name</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Get(string variableName, int id, int order) : base("Get", id, order)
+        public Get(string variableName, int id, int order, int timeout = 1000, IndexedCanChannel rx = null,
+            IndexedCanChannel tx = null) : base("Get", id, order, timeout, rx, tx)
         {
             this.variableName = variableName;
 
@@ -33,14 +35,28 @@ namespace Instructions
             startTime = DateTime.Now;
             outputParameters.Clear();
 
-            await Task.Run(() =>
-                {
-                    VariableDictionary.Get(variableName, out IVariable variable);
-                    valueGot = Convert.ToDouble(variable.ValueAsObject);
+            if (tx != null)
+            {
+                tx.Data = new byte[] { 0, 0, 0, 0 };
+                tx.Cmd = 0;
+            }
 
-                    outputParameters.Add(valueGot);
-                }
-            );
+            // Timeout handling
+            Task t = await Task.WhenAny(waitTask, Task.Delay(timeout));
+            result = waitTask == t;
+
+            // Get instruction
+            if (result)
+            {
+                await Task.Run(() =>
+                    {
+                        VariableDictionary.Get(variableName, out IVariable variable);
+                        valueGot = Convert.ToDouble(variable.ValueAsObject);
+
+                        outputParameters.Add(valueGot);
+                    }
+                );
+            }
 
             stopTime = DateTime.Now;
 
@@ -56,7 +72,8 @@ namespace Instructions
                 $"{variableName}; " +
                 $"{valueGot}; ; " +
                 $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; "; ;
+                $"{stopTime:HH:mm:ss.fff}; " +
+                $"{result}"; 
             return description;
         }
     }

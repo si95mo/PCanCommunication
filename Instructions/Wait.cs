@@ -45,7 +45,7 @@ namespace Instructions
                 $"{order}; " +
                 $" ; ; ; " +
                 $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; ";
+                $"{stopTime:HH:mm:ss.fff}; "; 
             return description;
         }
     }

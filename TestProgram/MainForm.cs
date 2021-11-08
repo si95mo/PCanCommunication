@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TestProgram
@@ -35,8 +36,9 @@ namespace TestProgram
         private bool testFolderSelected;
         private bool testSelected;
 
-        private Dictionary<(ushort Index, ushort SubIndex), IndexedCanChannel> channelDictionary;
         private IndexedCanChannel tx, rx;
+
+        private int totalSteps;
 
         /// <summary>
         /// Initialize user interface-related components
@@ -103,9 +105,9 @@ namespace TestProgram
             else
                 lblResourceStatus.ForeColor = startedColor;
 
-            rx = new IndexedCanChannel(canId: 0x200, index: 0x0, subIndex: 0x0, resource, 0);
+            rx = new IndexedCanChannel(canId: 0x200, index: 0x0, subIndex: 0x0, resource, cmd: 0);
             rx.CanFrameChanged += Channel_CanFrameChanged;
-            tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, 1);
+            tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, cmd: 1);
 
             resource.AddFilteredCanId(0x200); // Rx
             resource.AddFilteredCanId(0x100); // Tx
@@ -222,7 +224,6 @@ namespace TestProgram
             testFolderSelected = false;
             testSelected = false;
 
-            channelDictionary = new Dictionary<(ushort Index, ushort SubIndex), IndexedCanChannel>();
             VariableDictionary.Initialize();
         }
 
@@ -244,6 +245,7 @@ namespace TestProgram
             UpdateFilteredCanId();
 
             resource?.Start();
+            resource?.EnableLog();
         }
 
         private void BtnSelectTest_Click(object sender, EventArgs e)
@@ -259,11 +261,12 @@ namespace TestProgram
                 testSelected = testFileSelected && testFolderSelected;
 
                 scheduler = new Scheduler(testPath);
+                totalSteps = scheduler.Instructions.Count;
 
                 variablePath = Path.Combine(folderDialog.SelectedPath, "variables.csv");
-                VariableFileHandler.ReadTest(variablePath);
+                VariableFileHandler.ReadTest(variablePath, '\t');
 
-                foreach(IVariable v in VariableDictionary.Variables.Values)
+                foreach (IVariable v in VariableDictionary.Variables.Values)
                     (v as DoubleVariable).ValueChanged += Variable_ValueChanged;
             }
         }
@@ -278,9 +281,19 @@ namespace TestProgram
                 lblFolderSelected.Text = folderPath;
 
                 testFolderSelected = true;
-                testSelected = testFileSelected && testFolderSelected;
+                testSelected = testFileSelected && testFolderSelected;                
+            }
+        }
 
-                resultPath = Path.Combine(folderPath, $"{DateTime.Now:yyyyMMddHHmmss}_result.csv");
+        private bool doUpdateSteps;
+        private async Task UpdateSteps()
+        {
+            string str = "";
+            while(doUpdateSteps)
+            {
+                str = $"{scheduler.Instructions.Count}/{totalSteps}";
+                lblSchedulerStepDone.Invoke(new MethodInvoker(() => lblSchedulerStepDone.Text = str));
+                await Task.Delay(10);
             }
         }
 
@@ -288,8 +301,27 @@ namespace TestProgram
         {
             if (testSelected)
             {
-                await scheduler?.ExecuteAll(resultPath);
+                doUpdateSteps = true;
+
+                string[] files = Directory.GetFiles(folderPath);
+
+                string fileName = $"result_{files.Length}";
+                if (txbSerialNumber.Text.CompareTo("") != 0)
+                    fileName += $"_{txbSerialNumber.Text}";
+
+                resultPath = Path.Combine(folderPath, $"{fileName}.csv");
+                await Task.WhenAny(scheduler?.ExecuteAll(resultPath, tx, rx), UpdateSteps());
+                //await UpdateSteps();
+
+                //await scheduler?.ExecuteAll();
+
+                await Task.Delay(100);
+                doUpdateSteps = false;
+
                 MessageBox.Show("Test completed!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                scheduler = new Scheduler(testPath);
+                totalSteps = scheduler.Instructions.Count;
             }
             else
                 MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -356,7 +388,6 @@ namespace TestProgram
             //        x.Data = BitConverter.GetBytes((float)variable.Value)
             //    );
         }
-
 
         private void BtnStart_Click(object sender, EventArgs e)
         {

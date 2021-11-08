@@ -128,6 +128,8 @@ namespace Hardware.Can
             this.index = index;
             this.subIndex = subIndex;
             this.cmd = cmd;
+
+            resource.Channels.Add(this);
         }
     }
 }

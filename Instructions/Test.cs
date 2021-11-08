@@ -11,8 +11,6 @@ namespace Instructions
         protected double value;
         protected ConditionOperand operand;
 
-        protected bool result;
-
         /// <summary>
         /// Create a new instance of <see cref="Test"/>
         /// </summary>
@@ -37,15 +35,34 @@ namespace Instructions
             startTime = DateTime.Now;
             outputParameters.Clear();
 
-            await Task.Run(() =>
-                {
-                    VariableDictionary.Get(variableName, out IVariable variable);
-                    valueGot = Convert.ToDouble(variable.ValueAsObject);
+            // Timeout handling
+            Task t = await Task.WhenAny(waitTask, Task.Delay(timeout));
+            result = waitTask == t;
 
-                    outputParameters.Add(valueGot);
-                }
-            );
+            // Test instruction
+            if (result)
+            {
+                await Task.Run(() =>
+                    {
+                        VariableDictionary.Get(variableName, out IVariable variable);
+                        valueGot = Convert.ToDouble(variable.ValueAsObject);
 
+                        outputParameters.Add(valueGot);
+                    }
+                );
+
+                TestValueGot();
+            }
+
+            stopTime = DateTime.Now;
+
+            outputParameters.Add(result);
+            outputParameters.Add(startTime);
+            outputParameters.Add(stopTime);
+        }
+
+        private void TestValueGot()
+        {
             double threshold = 0.000001;
             switch (operand)
             {
@@ -65,12 +82,6 @@ namespace Instructions
                     result = valueGot < value - threshold;
                     break;
             }
-
-            stopTime = DateTime.Now;
-
-            outputParameters.Add(result);
-            outputParameters.Add(startTime);
-            outputParameters.Add(stopTime);
         }
 
         public override string ToString()

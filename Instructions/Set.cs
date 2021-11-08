@@ -18,7 +18,7 @@ namespace Instructions
         /// <param name="valueToSet">The value to set</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Set(string variableName, double valueToSet, int id, int order) : base("Set", id, order)
+        public Set(string variableName, double valueToSet, int id, int order, int timeout = 1000) : base("Set", id, order, timeout)
         {
             this.variableName = variableName;
             this.valueToSet = valueToSet;
@@ -35,13 +35,24 @@ namespace Instructions
             startTime = System.DateTime.Now;
             outputParameters.Clear();
 
-            await Task.Run(() =>
-                {
-                    VariableDictionary.Get(variableName, out IVariable variable);
-                    variable.ValueAsObject = valueToSet;
-                }
-            );
+            if (tx != null)
+                tx.Cmd = 1;
 
+            // Timeout handling
+            Task t = await Task.WhenAny(waitTask, Task.Delay(timeout));
+            result = waitTask == t;
+
+            // Set instruction
+            if (result)
+            {
+                await Task.Run(() =>
+                    {
+                        VariableDictionary.Get(variableName, out IVariable variable);
+                        variable.ValueAsObject = valueToSet;
+                    }
+                );
+            }
+            
             stopTime = System.DateTime.Now;
 
             outputParameters.Add(startTime);
@@ -50,13 +61,14 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"{name}; " +
-                $"{id}; " +
-                $"{order}; " +
-                $"{variableName}; " +
-                $"{valueToSet}; ; " +
-                $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; ";
+            string description = $"{name}\t" +
+                $"{id}\t" +
+                $"{order}\t" +
+                $"{variableName}\t" +
+                $"{valueToSet}\t\t" +
+                $"{startTime:HH:mm:ss.fff}\t" +
+                $"{stopTime:HH:mm:ss.fff}\t" +
+                $"{result}";
             return description;
         }
     }

@@ -44,8 +44,6 @@ namespace Instructions
         private int conditionTime;
         private int pollingInterval;
 
-        private bool result;
-
         /// <summary>
         /// Create a new instance of <see cref="WaitFor"/>
         /// </summary>

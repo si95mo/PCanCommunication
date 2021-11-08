@@ -54,6 +54,10 @@
       <Project>{9B4C98EF-8522-48E3-A224-282F8BC1655D}</Project>
       <Name>DataStructures.Variables</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Hardware.Can\Hardware.Can.csproj">
+      <Project>{12360666-20ba-42c9-bc06-5f3766b11bb7}</Project>
+      <Name>Hardware.Can</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

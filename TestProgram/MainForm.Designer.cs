@@ -36,6 +36,7 @@ namespace TestProgram
             this.btnSelectFolder = new System.Windows.Forms.Button();
             this.lblTestSelected = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblSchedulerStepDone = new System.Windows.Forms.Label();
             this.btnStopTest = new System.Windows.Forms.Button();
             this.btnStartTest = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -63,6 +64,8 @@ namespace TestProgram
             this.btnReadLog = new System.Windows.Forms.Button();
             this.nudLogSize = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
+            this.txbSerialNumber = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -87,13 +90,15 @@ namespace TestProgram
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.txbSerialNumber);
             this.groupBox1.Controls.Add(this.lblFolderSelected);
             this.groupBox1.Controls.Add(this.btnSelectFolder);
             this.groupBox1.Controls.Add(this.lblTestSelected);
             this.groupBox1.Controls.Add(this.btnSelectTest);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 105);
+            this.groupBox1.Size = new System.Drawing.Size(200, 142);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "File options";
@@ -129,14 +134,24 @@ namespace TestProgram
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lblSchedulerStepDone);
             this.groupBox2.Controls.Add(this.btnStopTest);
             this.groupBox2.Controls.Add(this.btnStartTest);
-            this.groupBox2.Location = new System.Drawing.Point(12, 123);
+            this.groupBox2.Location = new System.Drawing.Point(12, 160);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(465, 53);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Test options";
+            // 
+            // lblSchedulerStepDone
+            // 
+            this.lblSchedulerStepDone.AutoSize = true;
+            this.lblSchedulerStepDone.Location = new System.Drawing.Point(208, 24);
+            this.lblSchedulerStepDone.Name = "lblSchedulerStepDone";
+            this.lblSchedulerStepDone.Size = new System.Drawing.Size(24, 13);
+            this.lblSchedulerStepDone.TabIndex = 3;
+            this.lblSchedulerStepDone.Text = "--/--";
             // 
             // btnStopTest
             // 
@@ -145,7 +160,7 @@ namespace TestProgram
             this.btnStopTest.Name = "btnStopTest";
             this.btnStopTest.Size = new System.Drawing.Size(188, 23);
             this.btnStopTest.TabIndex = 2;
-            this.btnStopTest.Text = "Stop test";
+            this.btnStopTest.Text = "Pause test";
             this.btnStopTest.UseVisualStyleBackColor = true;
             this.btnStopTest.Click += new System.EventHandler(this.BtnStopTest_Click);
             // 
@@ -165,7 +180,7 @@ namespace TestProgram
             this.groupBox7.Controls.Add(this.txbLog);
             this.groupBox7.Location = new System.Drawing.Point(483, 12);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(342, 441);
+            this.groupBox7.Size = new System.Drawing.Size(342, 478);
             this.groupBox7.TabIndex = 15;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Log";
@@ -179,14 +194,14 @@ namespace TestProgram
             this.txbLog.Multiline = true;
             this.txbLog.Name = "txbLog";
             this.txbLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbLog.Size = new System.Drawing.Size(330, 415);
+            this.txbLog.Size = new System.Drawing.Size(330, 447);
             this.txbLog.TabIndex = 0;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.btnStop);
             this.groupBox3.Controls.Add(this.btnStart);
-            this.groupBox3.Location = new System.Drawing.Point(12, 182);
+            this.groupBox3.Location = new System.Drawing.Point(12, 219);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(465, 53);
             this.groupBox3.TabIndex = 17;
@@ -221,7 +236,7 @@ namespace TestProgram
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.cbxDeviceList);
-            this.groupBox4.Location = new System.Drawing.Point(12, 240);
+            this.groupBox4.Location = new System.Drawing.Point(12, 277);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
@@ -233,7 +248,7 @@ namespace TestProgram
             // cbxBaudRate
             // 
             this.cbxBaudRate.FormattingEnabled = true;
-            this.cbxBaudRate.Location = new System.Drawing.Point(363, 12);
+            this.cbxBaudRate.Location = new System.Drawing.Point(365, 17);
             this.cbxBaudRate.Margin = new System.Windows.Forms.Padding(2);
             this.cbxBaudRate.Name = "cbxBaudRate";
             this.cbxBaudRate.Size = new System.Drawing.Size(96, 21);
@@ -243,7 +258,7 @@ namespace TestProgram
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(269, 15);
+            this.label6.Location = new System.Drawing.Point(268, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 13);
             this.label6.TabIndex = 8;
@@ -264,7 +279,7 @@ namespace TestProgram
             this.cbxDeviceList.Location = new System.Drawing.Point(99, 17);
             this.cbxDeviceList.Margin = new System.Windows.Forms.Padding(2);
             this.cbxDeviceList.Name = "cbxDeviceList";
-            this.cbxDeviceList.Size = new System.Drawing.Size(96, 21);
+            this.cbxDeviceList.Size = new System.Drawing.Size(133, 21);
             this.cbxDeviceList.TabIndex = 0;
             this.cbxDeviceList.SelectedIndexChanged += new System.EventHandler(this.CbxDeviceList_SelectedIndexChanged);
             // 
@@ -277,7 +292,7 @@ namespace TestProgram
             this.groupBox6.Controls.Add(this.label8);
             this.groupBox6.Location = new System.Drawing.Point(218, 12);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(259, 105);
+            this.groupBox6.Size = new System.Drawing.Size(259, 142);
             this.groupBox6.TabIndex = 19;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "CAN resource info";
@@ -316,7 +331,7 @@ namespace TestProgram
             this.chbLogEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chbLogEnabled.Checked = true;
             this.chbLogEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbLogEnabled.Location = new System.Drawing.Point(1, 69);
+            this.chbLogEnabled.Location = new System.Drawing.Point(5, 119);
             this.chbLogEnabled.Name = "chbLogEnabled";
             this.chbLogEnabled.Size = new System.Drawing.Size(85, 17);
             this.chbLogEnabled.TabIndex = 11;
@@ -343,7 +358,7 @@ namespace TestProgram
             this.groupBox8.Controls.Add(this.btnReadLog);
             this.groupBox8.Controls.Add(this.nudLogSize);
             this.groupBox8.Controls.Add(this.label9);
-            this.groupBox8.Location = new System.Drawing.Point(12, 298);
+            this.groupBox8.Location = new System.Drawing.Point(12, 335);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(465, 155);
             this.groupBox8.TabIndex = 20;
@@ -451,11 +466,27 @@ namespace TestProgram
             this.label9.TabIndex = 13;
             this.label9.Text = "Maximum log size";
             // 
+            // txbSerialNumber
+            // 
+            this.txbSerialNumber.Location = new System.Drawing.Point(94, 116);
+            this.txbSerialNumber.Name = "txbSerialNumber";
+            this.txbSerialNumber.Size = new System.Drawing.Size(100, 20);
+            this.txbSerialNumber.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 120);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(71, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Serial number";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(832, 459);
+            this.ClientSize = new System.Drawing.Size(832, 502);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox6);
@@ -472,6 +503,7 @@ namespace TestProgram
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -522,6 +554,9 @@ namespace TestProgram
         private System.Windows.Forms.Button btnReadLog;
         private System.Windows.Forms.NumericUpDown nudLogSize;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblSchedulerStepDone;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txbSerialNumber;
     }
 }
 

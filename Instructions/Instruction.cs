@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Hardware.Can;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Instructions
@@ -14,9 +16,18 @@ namespace Instructions
         protected List<object> outputParameters;
         protected int order;
         protected int id;
+        protected bool result;
+        protected int timeout;
 
         protected DateTime startTime;
         protected DateTime stopTime;
+
+        protected IndexedCanChannel rx;
+        protected IndexedCanChannel tx;
+
+        protected bool received;
+
+        protected Task waitTask;
 
         /// <summary>
         /// The <see cref="Instruction"/> order index
@@ -54,19 +65,58 @@ namespace Instructions
         public DateTime StopTime => StopTime;
 
         /// <summary>
+        /// The <see cref="Instruction"/> execution result
+        /// </summary>
+        public bool Result
+        {
+            get => result;
+            set => result = value;
+        }
+
+        /// <summary>
+        /// The <see cref="Instruction"/> timeout
+        /// </summary>
+        public int Timeout => timeout;
+
+        /// <summary>
         /// Initialize the <see cref="Instruction"/> attributes
         /// </summary>
         /// <param name="name">The name</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        protected Instruction(string name, int id, int order)
+        /// <param name="timeout">The timeout (in milliseconds)</param>
+        /// <param name="rx">The RX <see cref="IndexedCanChannel"/></param>
+        /// <param name="tx">The TX <see cref="IndexedCanChannel"/></param>
+        protected Instruction(string name, int id, int order, int timeout = 1000, IndexedCanChannel rx = null, IndexedCanChannel tx = null)
         {
             this.name = name;
             this.id = id;
             this.order = order;
+            this.timeout = timeout;
+
+            this.rx = rx;
+            this.tx = tx;
+
+            received = false;
 
             inputParameters = new List<object>();
             outputParameters = new List<object>();
+
+            waitTask = Task.Run(async () =>
+                {
+                    // Spin wait until condition is met
+                    while (!Condition())
+                        await Task.Delay(10);
+
+                    // Spin wait until timeout occurred
+                    Stopwatch sw = Stopwatch.StartNew();
+                    while (sw.Elapsed.TotalMilliseconds < timeout == !Condition())
+                        await Task.Delay(10);
+                }
+            );
+
+            if (rx != null)
+                rx.CanFrameChanged += Rx_CanFrameChanged;
         }
 
         /// <summary>
@@ -74,5 +124,10 @@ namespace Instructions
         /// </summary>
         /// <returns></returns>
         public abstract Task Execute();
+
+        private void Rx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
+            => received = true;
+
+        protected bool Condition() => received;
     }
 }

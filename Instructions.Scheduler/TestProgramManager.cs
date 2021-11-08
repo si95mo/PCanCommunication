@@ -25,7 +25,6 @@ namespace Instructions.Scheduler
             string[] testProgram = File.ReadAllLines(path);
             string[][] testParsed = new string[testProgram.Length][];
 
-
             Instruction instruction;
             for (int i = 1; i < testProgram.Length; i++) // No headers
             {
@@ -56,43 +55,48 @@ namespace Instructions.Scheduler
                 int.TryParse(testParsed[i][8].Trim(), out int time);
                 int.TryParse(testParsed[i][9].Trim(), out int timeout);
 
-                string instructionType = testParsed[i][2].Trim();
-                switch (instructionType)
+                bool skip = testParsed[i][10].Trim().CompareTo("") != 0; // "" then do not skip, anything else then skip the instruction
+
+                if (!skip)
                 {
-                    case "GET":
-                        instruction = new Get(variableName, id, order);
-                        break;
+                    string instructionType = testParsed[i][2].Trim();
+                    switch (instructionType)
+                    {
+                        case "GET":
+                            instruction = new Get(variableName, id, order, timeout);
+                            break;
 
-                    case "SET":
-                        instruction = new Set(variableName, value, id, order);
-                        break;
+                        case "SET":
+                            instruction = new Set(variableName, value, id, order, timeout);
+                            break;
 
-                    case "WAIT":
-                        instruction = new Wait(time, id, order);
-                        break;
+                        case "WAIT":
+                            instruction = new Wait(time, id, order);
+                            break;
 
-                    case "TEST":
-                        instruction = new Test(variableName, id, order, value, ParseOperand(condition));
-                        break;
+                        case "TEST":
+                            instruction = new Test(variableName, id, order, value, ParseOperand(condition));
+                            break;
 
-                    case "WAIT_FOR":
-                        instruction = new WaitFor(
-                            variableName,
-                            value,
-                            ParseOperand(condition),
-                            time,
-                            timeout,
-                            id,
-                            order
-                        );
-                        break;
+                        case "WAIT_FOR":
+                            instruction = new WaitFor(
+                                variableName,
+                                value,
+                                ParseOperand(condition),
+                                time,
+                                timeout,
+                                id,
+                                order
+                            );
+                            break;
 
-                    default:
-                        instruction = null;
-                        break; // ?
+                        default:
+                            instruction = null;
+                            break; // ?
+                    }
+
+                    instructions.Add(instruction);
                 }
-
-                instructions.Add(instruction);
             }
 
             return instructions;
@@ -143,9 +147,9 @@ namespace Instructions.Scheduler
         /// <param name="path">The file path</param>
         private static void InitializeFile(string path)
         {
-            if(!File.Exists(path))
+            if (!File.Exists(path))
                 File.AppendAllText(
-                    path, 
+                    path,
                     $"Name; ID; Order; Variable involved; Value; Condition to verify; Start time; Stop time; Result{Environment.NewLine}"
                 );
         }

@@ -1,6 +1,8 @@
 ﻿using Dasync.Collections;
+using Hardware.Can;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,7 +15,7 @@ namespace Instructions.Scheduler
     public class Scheduler
     {
         private SortedDictionary<int, Queue<Instruction>> instructions;
-        private bool stop;
+        private bool stop, received;
 
         /// <summary>
         /// The subscribed <see cref="Instruction"/>
@@ -38,9 +40,10 @@ namespace Instructions.Scheduler
         public Scheduler(string path)
         {
             instructions = new SortedDictionary<int, Queue<Instruction>>();
-            TestProgramManager.ReadTest(path).ForEach(x => Add(x));
+            TestProgramManager.ReadTest(path, '\t').ForEach(x => Add(x));
 
             stop = false;
+            received = false;
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace Instructions.Scheduler
         /// </summary>
         /// <param name="path">The result path (if not specified,
         /// file will be saved in Desktop)</param>
-        public async Task ExecuteAll(string path = "")
+        public async Task ExecuteAll(string path = "", IndexedCanChannel tx = null, IndexedCanChannel rx = null)
         {
             stop = false;
 
@@ -85,8 +88,9 @@ namespace Instructions.Scheduler
 
                 await instructionList.ParallelForEachAsync(
                     async (x) =>
-                    {
+                    {                       
                         await x.Execute();
+
                         TestProgramManager.SaveResult(path, x);
                     }
                 );
