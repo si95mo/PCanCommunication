@@ -310,7 +310,7 @@ namespace TestProgram
                     fileName += $"_{txbSerialNumber.Text}";
 
                 resultPath = Path.Combine(folderPath, $"{fileName}.csv");
-                await Task.WhenAny(scheduler?.ExecuteAll(resultPath, tx, rx), UpdateSteps());
+                await Task.WhenAny(scheduler?.ExecuteAll(resultPath), UpdateSteps());
                 //await UpdateSteps();
 
                 //await scheduler?.ExecuteAll();

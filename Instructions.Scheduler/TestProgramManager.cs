@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardware.Can;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -18,7 +19,7 @@ namespace Instructions.Scheduler
         /// <param name="path">The test program path</param>
         /// <param name="delimeter">The delimiter <see cref="char"/></param>
         /// <returns>A <see cref="List"/> with the retrieved <see cref="Instruction"/></returns>
-        internal static List<Instruction> ReadTest(string path, char delimiter = ';')
+        internal static List<Instruction> ReadTest(string path, IndexedCanChannel rx, IndexedCanChannel tx,char delimiter = ';')
         {
             List<Instruction> instructions = new List<Instruction>();
 
@@ -63,11 +64,11 @@ namespace Instructions.Scheduler
                     switch (instructionType)
                     {
                         case "GET":
-                            instruction = new Get(variableName, id, order, timeout);
+                            instruction = new Get(variableName, id, order, timeout, rx, tx);
                             break;
 
                         case "SET":
-                            instruction = new Set(variableName, value, id, order, timeout);
+                            instruction = new Set(variableName, value, id, order, timeout, rx, tx);
                             break;
 
                         case "WAIT":
@@ -75,7 +76,7 @@ namespace Instructions.Scheduler
                             break;
 
                         case "TEST":
-                            instruction = new Test(variableName, id, order, value, ParseOperand(condition));
+                            instruction = new Test(variableName, id, order, value, ParseOperand(condition), timeout, rx, tx);
                             break;
 
                         case "WAIT_FOR":
@@ -86,7 +87,10 @@ namespace Instructions.Scheduler
                                 time,
                                 timeout,
                                 id,
-                                order
+                                order,
+                                pollingInterval: 50,
+                                rx,
+                                tx
                             );
                             break;
 

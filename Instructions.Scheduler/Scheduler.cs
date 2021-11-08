@@ -15,7 +15,7 @@ namespace Instructions.Scheduler
     public class Scheduler
     {
         private SortedDictionary<int, Queue<Instruction>> instructions;
-        private bool stop, received;
+        private bool stop;
 
         /// <summary>
         /// The subscribed <see cref="Instruction"/>
@@ -37,13 +37,14 @@ namespace Instructions.Scheduler
         /// Create a new instance of <see cref="Scheduler"/>
         /// </summary>
         /// <param name="path">The test program file path</param>
-        public Scheduler(string path)
+        /// <param name="rx">The RX <see cref="IndexedCanChannel"/></param>
+        /// <param name="tx">The TX <see cref="IndexedCanChannel"/></param>
+        public Scheduler(string path, IndexedCanChannel rx = null, IndexedCanChannel tx = null)
         {
             instructions = new SortedDictionary<int, Queue<Instruction>>();
-            TestProgramManager.ReadTest(path, '\t').ForEach(x => Add(x));
+            TestProgramManager.ReadTest(path, rx, tx, delimiter: '\t').ForEach(x => Add(x));
 
             stop = false;
-            received = false;
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace Instructions.Scheduler
         /// </summary>
         /// <param name="path">The result path (if not specified,
         /// file will be saved in Desktop)</param>
-        public async Task ExecuteAll(string path = "", IndexedCanChannel tx = null, IndexedCanChannel rx = null)
+        public async Task ExecuteAll(string path = "")
         {
             stop = false;
 

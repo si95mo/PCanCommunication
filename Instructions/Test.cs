@@ -1,4 +1,5 @@
 ﻿using DataStructures.VariablesDictionary;
+using Hardware.Can;
 using System;
 using System.Threading.Tasks;
 
@@ -17,7 +18,8 @@ namespace Instructions
         /// <param name="variableName">The variable name</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Test(string variableName, int id, int order, double value, ConditionOperand operand) : base("Test", id, order)
+        public Test(string variableName, int id, int order, double value, ConditionOperand operand,
+            int timeout = 1000, IndexedCanChannel rx = null, IndexedCanChannel tx = null) : base("Test", id, order, timeout, rx, tx)
         {
             this.variableName = variableName;
             this.value = value;
@@ -86,13 +88,13 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"{name}; " +
-                $"{id}; " +
-                $"{order}; " +
-                $"{variableName}; ; " +
-                $"{variableName} ({valueGot}) is {operand} than {value}; " +
-                $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; " +
+            string description = $"{name}\t" +
+                $"{id}\t" +
+                $"{order}\t" +
+                $"{variableName}\t\t" +
+                $"{variableName} ({valueGot}) is {operand} than {value}\t" +
+                $"{startTime:HH:mm:ss.fff}\t" +
+                $"{stopTime:HH:mm:ss.fff}\t" +
                 $"{result}";
             return description;
         }

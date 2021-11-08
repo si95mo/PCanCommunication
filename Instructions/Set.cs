@@ -1,4 +1,5 @@
 ﻿using DataStructures.VariablesDictionary;
+using Hardware.Can;
 using System.Threading.Tasks;
 
 namespace Instructions
@@ -18,7 +19,8 @@ namespace Instructions
         /// <param name="valueToSet">The value to set</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Set(string variableName, double valueToSet, int id, int order, int timeout = 1000) : base("Set", id, order, timeout)
+        public Set(string variableName, double valueToSet, int id, int order, int timeout = 1000,
+            IndexedCanChannel rx = null, IndexedCanChannel tx = null) : base("Set", id, order, timeout, rx, tx)
         {
             this.variableName = variableName;
             this.valueToSet = valueToSet;

@@ -58,7 +58,8 @@ namespace Instructions.Tests
             Set set = new Set("FirstVariable", value, 1, 1);
 
             await set.Execute();
-            firstVariable.Value.Should().Be(value);
+            if(set.Result)
+                firstVariable.Value.Should().Be(value);
         }
 
         [Test]

@@ -40,12 +40,12 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"{name}; " +
-                $"{id}; " +
-                $"{order}; " +
-                $" ; ; ; " +
-                $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; "; 
+            string description = $"{name}\t" +
+                $"{id}\t" +
+                $"{order}\t" +
+                $"\t\t\t" +
+                $"{startTime:HH:mm:ss.fff}\t" +
+                $"{stopTime:HH:mm:ss.fff}\t"; 
             return description;
         }
     }

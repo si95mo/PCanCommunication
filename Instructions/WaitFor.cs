@@ -1,4 +1,5 @@
 ﻿using DataStructures.VariablesDictionary;
+using Hardware.Can;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -40,7 +41,6 @@ namespace Instructions
         private double value;
         protected double valueGot;
         private ConditionOperand operand;
-        private int timeout;
         private int conditionTime;
         private int pollingInterval;
 
@@ -56,7 +56,8 @@ namespace Instructions
         /// <param name="order">The order index</param>
         /// <param name="pollingInterval">The polling interval (in milliseconds)</param>
         public WaitFor(string variableName, double value, ConditionOperand operand,
-            int conditionTime, int timeout, int id, int order, int pollingInterval = 10) : base("WaitFor", id, order)
+            int conditionTime, int timeout, int id, int order, int pollingInterval = 50,
+            IndexedCanChannel rx = null, IndexedCanChannel tx = null) : base("WaitFor", id, order, timeout, rx, tx)
         {
             this.variableName = variableName;
             this.value = value;
@@ -110,6 +111,7 @@ namespace Instructions
                 return returnValue;
             }
 
+            Get get = new Get(variableName, id, order, pollingInterval, rx, tx);
             Task waitTask = Task.Run(async () =>
                 {
                     while (!condition())
@@ -117,7 +119,10 @@ namespace Instructions
 
                     Stopwatch sw = Stopwatch.StartNew();
                     while (sw.Elapsed.TotalMilliseconds < conditionTime != !condition())
+                    {
+                        await get.Execute();
                         await Task.Delay(pollingInterval);
+                    }
                 }
             );
 
@@ -136,13 +141,13 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"{name}; " +
-                $"{id}; " +
-                $"{order}; " +
-                $"{variableName}; ; " +
-                $"{variableName} ({valueGot}) is {operand} than {value}; " +
-                $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; " +
+            string description = $"{name}\t" +
+                $"{id}\t" +
+                $"{order}\t" +
+                $"{variableName}\t\t" +
+                $"{variableName} ({valueGot}) is {operand} than {value}\t" +
+                $"{startTime:HH:mm:ss.fff}\t" +
+                $"{stopTime:HH:mm:ss.fff}\t" +
                 $"{result}";
             return description;
         }
