@@ -2,7 +2,6 @@
 using Hardware.Can;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -67,35 +66,38 @@ namespace Instructions.Scheduler
         /// Execute all the subscribed <see cref="Instruction"/>
         /// and remove them from <see cref="Instructions"/>
         /// </summary>
-        /// <param name="path">The result path (if not specified,
-        /// file will be saved in Desktop)</param>
+        /// <param name="path">The result path (if not specified, file will be saved in Desktop)</param>
         public async Task ExecuteAll(string path = "")
         {
             stop = false;
 
+            // Result test
             if (path.CompareTo("") == 0)
                 path = System.IO.Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                     "result.csv"
                 );
 
+            // First instruction order to execute
             int order = instructions.Keys.Min();
             List<Instruction> instructionList = new List<Instruction>();
 
             while (instructions.Count > 0 && !stop)
             {
+                // Instruction order handling
                 while (instructions[order].Count > 0)
                     instructionList.Add(instructions[order].Dequeue());
 
+                // Parallel execution of the instruction with the same order
                 await instructionList.ParallelForEachAsync(
                     async (x) =>
-                    {                       
+                    {
                         await x.Execute();
-
                         TestProgramManager.SaveResult(path, x);
                     }
                 );
 
+                // Remove the order of executed instruction and update it with the new one
                 instructions.Remove(order);
                 order = instructions.Count > 0 ? instructions.Keys.Min() : 0;
                 instructionList.Clear();
@@ -103,7 +105,7 @@ namespace Instructions.Scheduler
         }
 
         /// <summary>
-        /// Stop the current execution
+        /// Stop (pause) the current execution
         /// </summary>
         public void StopAll() => stop = true;
     }

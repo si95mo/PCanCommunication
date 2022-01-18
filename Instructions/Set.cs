@@ -54,7 +54,7 @@ namespace Instructions
                     }
                 );
             }
-            
+
             stopTime = System.DateTime.Now;
 
             outputParameters.Add(startTime);

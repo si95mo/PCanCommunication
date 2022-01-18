@@ -37,8 +37,8 @@ namespace Instructions
 
             if (tx != null)
             {
-                tx.Data = new byte[] { 0, 0, 0, 0 };
                 tx.Cmd = 0;
+                tx.Data = new byte[] { 0, 0, 0, 0 };
             }
 
             // Timeout handling
@@ -73,7 +73,7 @@ namespace Instructions
                 $"{valueGot}\t\t" +
                 $"{startTime:HH:mm:ss.fff}\t" +
                 $"{stopTime:HH:mm:ss.fff}\t" +
-                $"{result}"; 
+                $"{result}";
             return description;
         }
     }

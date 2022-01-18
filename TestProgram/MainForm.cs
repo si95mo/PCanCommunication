@@ -281,15 +281,16 @@ namespace TestProgram
                 lblFolderSelected.Text = folderPath;
 
                 testFolderSelected = true;
-                testSelected = testFileSelected && testFolderSelected;                
+                testSelected = testFileSelected && testFolderSelected;
             }
         }
 
         private bool doUpdateSteps;
+
         private async Task UpdateSteps()
         {
             string str = "";
-            while(doUpdateSteps)
+            while (doUpdateSteps)
             {
                 str = $"{scheduler.Instructions.Count}/{totalSteps}";
                 lblSchedulerStepDone.Invoke(new MethodInvoker(() => lblSchedulerStepDone.Text = str));
@@ -397,9 +398,9 @@ namespace TestProgram
             resource?.EnableLog();
 
             // Update UI
-            btnStart.FlatAppearance.BorderColor = startedColor;
+            btnStart.FlatAppearance.BorderColor = resource?.Status == 0 ? startedColor : stoppedColor;
             btnStop.FlatAppearance.BorderColor = Color.Black;
-            pnlResourceStarted.BackColor = startedColor;
+            pnlResourceStarted.BackColor = resource?.Status == 0 ? startedColor : stoppedColor;
         }
 
         private void BtnStop_Click(object sender, EventArgs e)

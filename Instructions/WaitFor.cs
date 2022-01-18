@@ -120,7 +120,7 @@ namespace Instructions
                     Stopwatch sw = Stopwatch.StartNew();
                     while (sw.Elapsed.TotalMilliseconds < conditionTime != !condition())
                     {
-                        await get.Execute();
+                        await get.Execute(); // Query the CAN bus every [pollingInterval] milliseconds
                         await Task.Delay(pollingInterval);
                     }
                 }

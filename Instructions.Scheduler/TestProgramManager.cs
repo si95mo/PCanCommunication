@@ -19,7 +19,7 @@ namespace Instructions.Scheduler
         /// <param name="path">The test program path</param>
         /// <param name="delimeter">The delimiter <see cref="char"/></param>
         /// <returns>A <see cref="List"/> with the retrieved <see cref="Instruction"/></returns>
-        internal static List<Instruction> ReadTest(string path, IndexedCanChannel rx, IndexedCanChannel tx,char delimiter = ';')
+        internal static List<Instruction> ReadTest(string path, IndexedCanChannel rx, IndexedCanChannel tx, char delimiter = ';')
         {
             List<Instruction> instructions = new List<Instruction>();
 

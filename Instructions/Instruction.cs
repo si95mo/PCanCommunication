@@ -102,9 +102,10 @@ namespace Instructions
             inputParameters = new List<object>();
             outputParameters = new List<object>();
 
+            // The waiting task
             waitTask = Task.Run(async () =>
                 {
-                    // Spin wait until condition is met
+                    // Spin wait until condition is met (something has been received from the CAN bus)
                     while (!Condition())
                         await Task.Delay(10);
 
@@ -113,7 +114,7 @@ namespace Instructions
                     while (sw.Elapsed.TotalMilliseconds < timeout == !Condition())
                         await Task.Delay(10);
                 }
-            );
+             );
 
             if (rx != null)
                 rx.CanFrameChanged += Rx_CanFrameChanged;
@@ -125,9 +126,18 @@ namespace Instructions
         /// <returns></returns>
         public abstract Task Execute();
 
+        /// <summary>
+        /// Something has been received from the CAN bus
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Rx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
             => received = true;
 
+        /// <summary>
+        /// True if somathing has been received from the CAN bus
+        /// </summary>
+        /// <returns></returns>
         protected bool Condition() => received;
     }
 }
