@@ -36,10 +36,11 @@ namespace TestProgram
             this.btnSelectFolder = new System.Windows.Forms.Button();
             this.lblTestSelected = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnStopTest = new System.Windows.Forms.Button();
+            this.lblInstructionDescription = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblSchedulerStepDone = new System.Windows.Forms.Label();
             this.btnStartTest = new System.Windows.Forms.Button();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.txbLog = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
@@ -63,15 +64,20 @@ namespace TestProgram
             this.btnReadLog = new System.Windows.Forms.Button();
             this.nudLogSize = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
+            this.txbTestLog = new System.Windows.Forms.TextBox();
+            this.btnStopTest = new System.Windows.Forms.Button();
+            this.lblTestResult = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.dgvVariables = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLogSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVariables)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSelectTest
@@ -91,7 +97,7 @@ namespace TestProgram
             this.groupBox1.Controls.Add(this.btnSelectFolder);
             this.groupBox1.Controls.Add(this.lblTestSelected);
             this.groupBox1.Controls.Add(this.btnSelectTest);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(489, 17);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(200, 105);
             this.groupBox1.TabIndex = 1;
@@ -129,25 +135,55 @@ namespace TestProgram
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lblTestResult);
+            this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.btnStopTest);
+            this.groupBox2.Controls.Add(this.lblInstructionDescription);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.lblSchedulerStepDone);
             this.groupBox2.Controls.Add(this.btnStartTest);
-            this.groupBox2.Location = new System.Drawing.Point(12, 123);
+            this.groupBox2.Location = new System.Drawing.Point(489, 128);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(465, 53);
+            this.groupBox2.Size = new System.Drawing.Size(200, 212);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Test options";
             // 
-            // btnStopTest
+            // lblInstructionDescription
             // 
-            this.btnStopTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopTest.Location = new System.Drawing.Point(271, 19);
-            this.btnStopTest.Name = "btnStopTest";
-            this.btnStopTest.Size = new System.Drawing.Size(188, 23);
-            this.btnStopTest.TabIndex = 2;
-            this.btnStopTest.Text = "Stop test";
-            this.btnStopTest.UseVisualStyleBackColor = true;
-            this.btnStopTest.Click += new System.EventHandler(this.BtnStopTest_Click);
+            this.lblInstructionDescription.Location = new System.Drawing.Point(113, 124);
+            this.lblInstructionDescription.Name = "lblInstructionDescription";
+            this.lblInstructionDescription.Size = new System.Drawing.Size(81, 58);
+            this.lblInstructionDescription.TabIndex = 6;
+            this.lblInstructionDescription.Text = "--";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 124);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(91, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Actual instruction:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 93);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(101, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Actual step number:";
+            // 
+            // lblSchedulerStepDone
+            // 
+            this.lblSchedulerStepDone.AutoSize = true;
+            this.lblSchedulerStepDone.Location = new System.Drawing.Point(113, 93);
+            this.lblSchedulerStepDone.Name = "lblSchedulerStepDone";
+            this.lblSchedulerStepDone.Size = new System.Drawing.Size(24, 13);
+            this.lblSchedulerStepDone.TabIndex = 3;
+            this.lblSchedulerStepDone.Text = "--/--";
             // 
             // btnStartTest
             // 
@@ -160,35 +196,13 @@ namespace TestProgram
             this.btnStartTest.UseVisualStyleBackColor = true;
             this.btnStartTest.Click += new System.EventHandler(this.BtnStartTest_Click);
             // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.txbLog);
-            this.groupBox7.Location = new System.Drawing.Point(483, 12);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(342, 441);
-            this.groupBox7.TabIndex = 15;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Log";
-            // 
-            // txbLog
-            // 
-            this.txbLog.BackColor = System.Drawing.SystemColors.MenuText;
-            this.txbLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txbLog.ForeColor = System.Drawing.SystemColors.Info;
-            this.txbLog.Location = new System.Drawing.Point(6, 19);
-            this.txbLog.Multiline = true;
-            this.txbLog.Name = "txbLog";
-            this.txbLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbLog.Size = new System.Drawing.Size(330, 415);
-            this.txbLog.TabIndex = 0;
-            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.btnStop);
             this.groupBox3.Controls.Add(this.btnStart);
-            this.groupBox3.Location = new System.Drawing.Point(12, 182);
+            this.groupBox3.Location = new System.Drawing.Point(18, 79);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(465, 53);
+            this.groupBox3.Size = new System.Drawing.Size(206, 100);
             this.groupBox3.TabIndex = 17;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "CAN resource commands";
@@ -196,9 +210,9 @@ namespace TestProgram
             // btnStop
             // 
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStop.Location = new System.Drawing.Point(271, 19);
+            this.btnStop.Location = new System.Drawing.Point(6, 56);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(188, 23);
+            this.btnStop.Size = new System.Drawing.Size(190, 23);
             this.btnStop.TabIndex = 7;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -221,7 +235,7 @@ namespace TestProgram
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.cbxDeviceList);
-            this.groupBox4.Location = new System.Drawing.Point(12, 240);
+            this.groupBox4.Location = new System.Drawing.Point(18, 17);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
@@ -233,17 +247,17 @@ namespace TestProgram
             // cbxBaudRate
             // 
             this.cbxBaudRate.FormattingEnabled = true;
-            this.cbxBaudRate.Location = new System.Drawing.Point(363, 12);
+            this.cbxBaudRate.Location = new System.Drawing.Point(347, 17);
             this.cbxBaudRate.Margin = new System.Windows.Forms.Padding(2);
             this.cbxBaudRate.Name = "cbxBaudRate";
-            this.cbxBaudRate.Size = new System.Drawing.Size(96, 21);
+            this.cbxBaudRate.Size = new System.Drawing.Size(112, 21);
             this.cbxBaudRate.TabIndex = 1;
             this.cbxBaudRate.SelectedIndexChanged += new System.EventHandler(this.CbxBaudRate_SelectedIndexChanged);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(269, 15);
+            this.label6.Location = new System.Drawing.Point(269, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 13);
             this.label6.TabIndex = 8;
@@ -264,7 +278,7 @@ namespace TestProgram
             this.cbxDeviceList.Location = new System.Drawing.Point(99, 17);
             this.cbxDeviceList.Margin = new System.Windows.Forms.Padding(2);
             this.cbxDeviceList.Name = "cbxDeviceList";
-            this.cbxDeviceList.Size = new System.Drawing.Size(96, 21);
+            this.cbxDeviceList.Size = new System.Drawing.Size(165, 21);
             this.cbxDeviceList.TabIndex = 0;
             this.cbxDeviceList.SelectedIndexChanged += new System.EventHandler(this.CbxDeviceList_SelectedIndexChanged);
             // 
@@ -275,9 +289,9 @@ namespace TestProgram
             this.groupBox6.Controls.Add(this.label7);
             this.groupBox6.Controls.Add(this.chbLogEnabled);
             this.groupBox6.Controls.Add(this.label8);
-            this.groupBox6.Location = new System.Drawing.Point(218, 12);
+            this.groupBox6.Location = new System.Drawing.Point(230, 79);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(259, 105);
+            this.groupBox6.Size = new System.Drawing.Size(253, 100);
             this.groupBox6.TabIndex = 19;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "CAN resource info";
@@ -287,7 +301,7 @@ namespace TestProgram
             this.lblResourceStatus.Location = new System.Drawing.Point(96, 50);
             this.lblResourceStatus.Name = "lblResourceStatus";
             this.lblResourceStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblResourceStatus.Size = new System.Drawing.Size(157, 19);
+            this.lblResourceStatus.Size = new System.Drawing.Size(151, 19);
             this.lblResourceStatus.TabIndex = 3;
             this.lblResourceStatus.Text = "00000000";
             this.lblResourceStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -296,7 +310,7 @@ namespace TestProgram
             // 
             this.pnlResourceStarted.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.pnlResourceStarted.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlResourceStarted.Location = new System.Drawing.Point(237, 31);
+            this.pnlResourceStarted.Location = new System.Drawing.Point(231, 31);
             this.pnlResourceStarted.Name = "pnlResourceStarted";
             this.pnlResourceStarted.Size = new System.Drawing.Size(16, 16);
             this.pnlResourceStarted.TabIndex = 2;
@@ -343,7 +357,7 @@ namespace TestProgram
             this.groupBox8.Controls.Add(this.btnReadLog);
             this.groupBox8.Controls.Add(this.nudLogSize);
             this.groupBox8.Controls.Add(this.label9);
-            this.groupBox8.Location = new System.Drawing.Point(12, 298);
+            this.groupBox8.Location = new System.Drawing.Point(18, 185);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(465, 155);
             this.groupBox8.TabIndex = 20;
@@ -417,7 +431,6 @@ namespace TestProgram
             this.btnReadLog.TabIndex = 10;
             this.btnReadLog.Text = "Read log";
             this.btnReadLog.UseVisualStyleBackColor = true;
-            this.btnReadLog.Click += new System.EventHandler(this.BtnReadLog_Click);
             // 
             // nudLogSize
             // 
@@ -451,16 +464,67 @@ namespace TestProgram
             this.label9.TabIndex = 13;
             this.label9.Text = "Maximum log size";
             // 
+            // txbTestLog
+            // 
+            this.txbTestLog.BackColor = System.Drawing.SystemColors.MenuText;
+            this.txbTestLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txbTestLog.ForeColor = System.Drawing.SystemColors.Info;
+            this.txbTestLog.Location = new System.Drawing.Point(20, 346);
+            this.txbTestLog.Multiline = true;
+            this.txbTestLog.Name = "txbTestLog";
+            this.txbTestLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txbTestLog.Size = new System.Drawing.Size(1292, 452);
+            this.txbTestLog.TabIndex = 0;
+            // 
+            // btnStopTest
+            // 
+            this.btnStopTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStopTest.Location = new System.Drawing.Point(6, 48);
+            this.btnStopTest.Name = "btnStopTest";
+            this.btnStopTest.Size = new System.Drawing.Size(188, 23);
+            this.btnStopTest.TabIndex = 7;
+            this.btnStopTest.Text = "Stop test";
+            this.btnStopTest.UseVisualStyleBackColor = true;
+            this.btnStopTest.Click += new System.EventHandler(this.BtnStopTest_Click);
+            // 
+            // lblTestResult
+            // 
+            this.lblTestResult.AutoSize = true;
+            this.lblTestResult.Location = new System.Drawing.Point(113, 182);
+            this.lblTestResult.Name = "lblTestResult";
+            this.lblTestResult.Size = new System.Drawing.Size(13, 13);
+            this.lblTestResult.TabIndex = 9;
+            this.lblTestResult.Text = "--";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 182);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "Test result:";
+            // 
+            // dgvVariables
+            // 
+            this.dgvVariables.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dgvVariables.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvVariables.Location = new System.Drawing.Point(695, 20);
+            this.dgvVariables.Name = "dgvVariables";
+            this.dgvVariables.Size = new System.Drawing.Size(617, 320);
+            this.dgvVariables.TabIndex = 21;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(832, 459);
+            this.ClientSize = new System.Drawing.Size(1329, 802);
+            this.Controls.Add(this.dgvVariables);
+            this.Controls.Add(this.txbTestLog);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -468,12 +532,12 @@ namespace TestProgram
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Test program";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
+            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -483,7 +547,9 @@ namespace TestProgram
             this.groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudFilter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLogSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVariables)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -495,10 +561,7 @@ namespace TestProgram
         private System.Windows.Forms.Button btnSelectFolder;
         private System.Windows.Forms.Label lblTestSelected;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btnStopTest;
         private System.Windows.Forms.Button btnStartTest;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.TextBox txbLog;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Button btnStart;
@@ -522,6 +585,15 @@ namespace TestProgram
         private System.Windows.Forms.Button btnReadLog;
         private System.Windows.Forms.NumericUpDown nudLogSize;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblSchedulerStepDone;
+        private System.Windows.Forms.Label lblInstructionDescription;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txbTestLog;
+        private System.Windows.Forms.Button btnStopTest;
+        private System.Windows.Forms.Label lblTestResult;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.DataGridView dgvVariables;
     }
 }
 

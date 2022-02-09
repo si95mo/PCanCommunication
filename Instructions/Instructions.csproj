@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CanRaw.cs" />
     <Compile Include="Get.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,6 +54,10 @@
     <ProjectReference Include="..\DataStructures.Variables\DataStructures.Variables.csproj">
       <Project>{9B4C98EF-8522-48E3-A224-282F8BC1655D}</Project>
       <Name>DataStructures.Variables</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hardware.Can\Hardware.Can.csproj">
+      <Project>{12360666-20BA-42C9-BC06-5F3766B11BB7}</Project>
+      <Name>Hardware.Can</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,9 +15,11 @@ namespace Instructions
         /// <param name="delay">The delay (in milliseconds)</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Wait(int delay, int id, int order) : base("Wait", id, order)
+        /// <param name="description">The description</param>
+        public Wait(int delay, int id, int order, string description = "") : base("Wait", id, order, description: description)
         {
             this.delay = delay;
+            result = true;
 
             inputParameters.Add(delay);
         }
@@ -40,12 +42,12 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"{name}; " +
-                $"{id}; " +
-                $"{order}; " +
-                $" ; ; ; " +
-                $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; ";
+            string description = $"{name}\t " +
+                $"{id}\t " +
+                $"{order}\t " +
+                $" \t \t \t " +
+                $"{startTime:HH:mm:ss.fff}\t " +
+                $"{stopTime:HH:mm:ss.fff}\t "; 
             return description;
         }
     }

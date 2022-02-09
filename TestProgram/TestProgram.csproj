@@ -97,6 +97,10 @@
       <Project>{0BE77AAA-58CE-49AA-8851-49B87A25063B}</Project>
       <Name>Instructions.Scheduler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Instructions\Instructions.csproj">
+      <Project>{B539EC3D-3A1F-495D-B012-D187996055C7}</Project>
+      <Name>Instructions</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

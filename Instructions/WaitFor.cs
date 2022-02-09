@@ -1,4 +1,5 @@
 ﻿using DataStructures.VariablesDictionary;
+using Hardware.Can;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -44,8 +45,6 @@ namespace Instructions
         private int conditionTime;
         private int pollingInterval;
 
-        private bool result;
-
         /// <summary>
         /// Create a new instance of <see cref="WaitFor"/>
         /// </summary>
@@ -57,8 +56,9 @@ namespace Instructions
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
         /// <param name="pollingInterval">The polling interval (in milliseconds)</param>
+        /// <param name="description">The description</param>
         public WaitFor(string variableName, double value, ConditionOperand operand,
-            int conditionTime, int timeout, int id, int order, int pollingInterval = 10) : base("WaitFor", id, order)
+            int conditionTime, int timeout, int id, int order, int pollingInterval = 200, string description = "") : base("WaitFor", id, order, description: description)
         {
             this.variableName = variableName;
             this.value = value;
@@ -79,6 +79,8 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
+            Rx.CanFrameChanged += LocalRx_CanFrameChanged;
+
             startTime = DateTime.Now;
             outputParameters.Clear();
 
@@ -112,23 +114,46 @@ namespace Instructions
                 return returnValue;
             }
 
-            Task waitTask = Task.Run(async () =>
+            Task<bool> waitTask = Task.Run(async () =>
                 {
-                    while (!condition())
-                        await Task.Delay(pollingInterval);
+                    bool cond = false;
 
-                    Stopwatch sw = Stopwatch.StartNew();
-                    while (sw.Elapsed.TotalMilliseconds < conditionTime != !condition())
-                        await Task.Delay(pollingInterval);
+                    VariableDictionary.Get(variableName, out IVariable variable);
+                    Tx.Cmd = 0;
+
+                    Stopwatch time = Stopwatch.StartNew();
+                    while (!cond && time.Elapsed.TotalMilliseconds <= timeout)
+                    {
+                        received = false;
+                        (variable as Variable<double>).UpdateVariable(Tx);
+
+                        while (!received && time.Elapsed.TotalMilliseconds <= timeout)
+                            await Task.Delay(pollingInterval);
+
+                        cond = condition();
+
+                        if (cond)
+                            return true;
+                    }
+
+                    time.Stop();
+                    return false;
+
+                    //Stopwatch sw = Stopwatch.StartNew();
+                    //while (sw.Elapsed.TotalMilliseconds < conditionTime != !cond)
+                    //{
+                    //    await getTask;
+                    //    await Task.Delay(pollingInterval);
+
+                    //    cond = condition();
+                    //}
                 }
             );
 
-            if (waitTask != await Task.WhenAny(waitTask, Task.Delay(timeout)))
-                result = false;
-            else
-                result = true;
-
+            result = await waitTask;
             stopTime = DateTime.Now;
+
+            Rx.CanFrameChanged -= LocalRx_CanFrameChanged;
 
             outputParameters.Add(result);
             outputParameters.Add(valueGot);
@@ -136,15 +161,26 @@ namespace Instructions
             outputParameters.Add(stopTime);
         }
 
+        private void LocalRx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
+        {
+            VariableDictionary.Get(variableName, out IVariable variable);
+            (variable as DoubleVariable).Value = variable.Type == VariableType.Sgl ?
+                BitConverter.ToSingle((e.NewCanFrame as CanFrame).Data, 4) : BitConverter.ToInt32((e.NewCanFrame as CanFrame).Data, 4);
+
+            valueGot = Convert.ToDouble(variable.ValueAsObject);
+
+            received = true;
+        }
+
         public override string ToString()
         {
-            string description = $"{name}; " +
-                $"{id}; " +
-                $"{order}; " +
-                $"{variableName}; ; " +
-                $"{variableName} ({valueGot}) is {operand} than {value}; " +
-                $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; " +
+            string description = $"{name}\t" +
+                $"{id}\t" +
+                $"{order}\t" +
+                $"{variableName}\t \t " +
+                $"{variableName} ({valueGot}) is {operand} than {value}\t " +
+                $"{startTime:HH:mm:ss.fff}\t " +
+                $"{stopTime:HH:mm:ss.fff}\t " +
                 $"{result}";
             return description;
         }

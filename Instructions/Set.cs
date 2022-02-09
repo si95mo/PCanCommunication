@@ -1,4 +1,6 @@
 ﻿using DataStructures.VariablesDictionary;
+using Hardware.Can;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Instructions
@@ -18,7 +20,9 @@ namespace Instructions
         /// <param name="valueToSet">The value to set</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        public Set(string variableName, double valueToSet, int id, int order) : base("Set", id, order)
+        /// <param name="timeout">The timeout (in ms)</param>
+        /// <param name="description">The description</param>
+        public Set(string variableName, double valueToSet, int id, int order, int timeout = 1000, string description = "") : base("Set", id, order, timeout, description)
         {
             this.variableName = variableName;
             this.valueToSet = valueToSet;
@@ -32,6 +36,8 @@ namespace Instructions
         /// </summary>
         public override async Task Execute()
         {
+            Rx.CanFrameChanged += LocalRx_CanFrameChanged;
+
             startTime = System.DateTime.Now;
             outputParameters.Clear();
 
@@ -39,24 +45,57 @@ namespace Instructions
                 {
                     VariableDictionary.Get(variableName, out IVariable variable);
                     variable.ValueAsObject = valueToSet;
+
+                    Tx.Cmd = 1;
+                    (variable as Variable<double>).UpdateVariable(Tx);
                 }
             );
 
+            Task<bool> waitTask = Task.Run(async () =>
+                {
+                    VariableDictionary.Get(variableName, out IVariable variable);
+                    Tx.Cmd = 1;
+
+                    Stopwatch time = Stopwatch.StartNew();
+
+                    received = false;
+                    (variable as Variable<double>).UpdateVariable(Tx);
+
+                    while (!received && time.Elapsed.TotalMilliseconds <= timeout)
+                        await Task.Delay(50);
+
+                    time.Stop();
+
+                    return received;
+                }
+            );
+
+            result = await waitTask;
+            Result = result;
+
             stopTime = System.DateTime.Now;
+
+            Rx.CanFrameChanged -= LocalRx_CanFrameChanged;
 
             outputParameters.Add(startTime);
             outputParameters.Add(stopTime);
         }
 
+        private void LocalRx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
+        {
+            received = true;
+        }
+
         public override string ToString()
         {
-            string description = $"{name}; " +
-                $"{id}; " +
-                $"{order}; " +
-                $"{variableName}; " +
-                $"{valueToSet}; ; " +
-                $"{startTime:HH:mm:ss.fff}; " +
-                $"{stopTime:HH:mm:ss.fff}; ";
+            string description = $"{name}\t " +
+                $"{id}\t " +
+                $"{order}\t " +
+                $"{variableName}\t " +
+                $"{valueToSet}\t \t " +
+                $"{startTime:HH:mm:ss.fff}\t " +
+                $"{stopTime:HH:mm:ss.fff}\t " +
+                $"{result}";
             return description;
         }
     }

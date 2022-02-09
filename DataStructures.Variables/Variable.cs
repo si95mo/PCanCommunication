@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardware.Can;
+using System;
 
 namespace DataStructures.VariablesDictionary
 {
@@ -147,7 +148,7 @@ namespace DataStructures.VariablesDictionary
         /// <param name="subIndex">The sub index</param>
         /// <param name="description">The description</param>
         protected Variable(string name, byte index, ushort subIndex, VariableType type,
-            double scale = 1d, double offset = 0d, string description = "") 
+            double scale = 1d, double offset = 0d, string description = "")
             : this(name, index, subIndex, default, type, scale, offset, description)
         { }
 
@@ -180,5 +181,30 @@ namespace DataStructures.VariablesDictionary
         /// <param name="e">The <see cref="ValueChangedEventArgs"/></param>
         protected virtual void OnValueChanged(ValueChangedEventArgs e)
             => ValueChangedHandler?.Invoke(this, e);
+
+        public void UpdateVariable(IndexedCanChannel tx)
+        {
+            tx.Index = Index;
+            tx.SubIndex = SubIndex;
+
+            byte[] data = Type == VariableType.Int ? BitConverter.GetBytes(Convert.ToInt32(Value))
+                : BitConverter.GetBytes(Convert.ToSingle(Value));
+
+            tx.Data = data;
+
+            // UpdateDataGridItems();
+        }
+
+        public override string ToString()
+        {
+            string description = $"{name}, ";
+
+            if (description.CompareTo("") != 0)
+                description += $"({Description}), ";
+
+            description += $"{value}";
+
+            return description;
+        }
     }
 }

@@ -81,7 +81,9 @@ namespace Hardware.Can
                 data = firstHalf.Concat(value).ToArray(); // Should be 4 bytes + 4 bytes = 8 bytes
                 OnDataChanged(new DataChangedEventArgs(oldData, data));
 
-                CanFrame = new CanFrame(canId, data); // Trigger the event
+                CanFrame.Id = canId;
+                CanFrame.Data = data; // Trigger the event
+
                 resource.Send(canFrame);
             }
         }
@@ -110,6 +112,8 @@ namespace Hardware.Can
                 index = canFrame.Data[1];
                 subIndex = BitConverter.ToUInt16(canFrame.Data, 2);
                 Array.Copy(canFrame.Data, 4, data, 4, 4);
+
+                data = canFrame.Data;
             }
         }
 
@@ -128,6 +132,8 @@ namespace Hardware.Can
             this.index = index;
             this.subIndex = subIndex;
             this.cmd = cmd;
+
+            resource.Channels.Add(this);
         }
     }
 }

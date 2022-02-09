@@ -356,37 +356,40 @@ namespace Hardware.Can
                     out TPCANMsg message,
                     out TPCANTimestamp t
                 );
-                canFrame = new CanFrame(
-                    (int)message.ID,
-                    message.DATA,
-                    (t.micros + 1000 * t.millis + 0x100000000 * 1000 * t.millis_overflow) / 1000
-                );
 
-                if (logEnabled)
+                if (message.MSGTYPE == TPCANMessageType.PCAN_MESSAGE_STANDARD && message.LEN != 0)
                 {
-                    if (filteredCanId.TryGetValue(canFrame.Id, out bool enabled))
-                    {
-                        if (enabled)
-                        {
-                            lock (logLock)
-                            {
-                                if (logQueue.Count >= maxLogSize)
-                                    logQueue.Dequeue();
+                    canFrame = new CanFrame(
+                        (int)message.ID,
+                        message.DATA,
+                        (t.micros + 1000 * t.millis + 0x100000000 * 1000 * t.millis_overflow) / 1000
+                    );
 
-                                logQueue.Enqueue(canFrame);
+                    if (logEnabled)
+                    {
+                        if (filteredCanId.TryGetValue(canFrame.Id, out bool enabled))
+                        {
+                            if (enabled)
+                            {
+                                lock (logLock)
+                                {
+                                    if (logQueue.Count >= maxLogSize)
+                                        logQueue.Dequeue();
+
+                                    logQueue.Enqueue(canFrame);
+                                }
                             }
                         }
                     }
-                }
 
-                for (int i = 0; i < channels.Count && !channelFound; i++)
-                {
-                    channel = channels.ElementAt(i);
-                    if (channel.CanId == message.ID)
+                    for (int i = 0; i < channels.Count && !channelFound; i++)
                     {
-                        channelFound = true;
-                        channel.Data = canFrame.Data;
-                        channel.CanFrame = canFrame;
+                        channel = channels.ElementAt(i);
+                        if (channel.CanId == message.ID)
+                        {
+                            channelFound = true;
+                            channel.CanFrame = canFrame;
+                        }
                     }
                 }
             } while (started && !Convert.ToBoolean(readResult & TPCANStatus.PCAN_ERROR_QRCVEMPTY));

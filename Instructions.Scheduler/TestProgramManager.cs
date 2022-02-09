@@ -25,7 +25,6 @@ namespace Instructions.Scheduler
             string[] testProgram = File.ReadAllLines(path);
             string[][] testParsed = new string[testProgram.Length][];
 
-
             Instruction instruction;
             for (int i = 1; i < testProgram.Length; i++) // No headers
             {
@@ -33,13 +32,32 @@ namespace Instructions.Scheduler
 
                 int.TryParse(testParsed[i][0].Trim(), out int id);
                 int.TryParse(testParsed[i][1].Trim(), out int order);
+                string instructionType = testParsed[i][2].Trim();
                 string variableName = testParsed[i][3].Trim();
-                double.TryParse(
-                    testParsed[i][4].TrimEnd(),
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out double value
-                );
+
+                double value = 0d;
+                int canId = 0;
+                byte[] payload = new byte[8];
+                if (instructionType.CompareTo("CAN_RAW") != 0)
+                {
+                    double.TryParse(
+                        testParsed[i][4].TrimEnd(),
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out value
+                    );
+                }
+                else
+                {
+                    string valueAsString = testParsed[i][4];
+                    string[] valueAsStringSplitted = valueAsString.Split('|');
+                    int.TryParse(valueAsStringSplitted[0], out canId);
+
+                    string[] payloadAsString = valueAsStringSplitted[1].Split(' ');
+                    for (int j = 0; j < 8; j++)
+                        byte.TryParse(payloadAsString[j], out payload[j]);
+                }
+
                 string condition = testParsed[i][5].Trim();
                 double.TryParse(
                     testParsed[i][6].Trim(),
@@ -56,43 +74,65 @@ namespace Instructions.Scheduler
                 int.TryParse(testParsed[i][8].Trim(), out int time);
                 int.TryParse(testParsed[i][9].Trim(), out int timeout);
 
-                string instructionType = testParsed[i][2].Trim();
-                switch (instructionType)
+                bool skip = testParsed[i][10].Trim().CompareTo("") != 0; // "" then do not skip, anything else then skip the instruction
+                string description = "";
+                try
                 {
-                    case "GET":
-                        instruction = new Get(variableName, id, order);
-                        break;
-
-                    case "SET":
-                        instruction = new Set(variableName, value, id, order);
-                        break;
-
-                    case "WAIT":
-                        instruction = new Wait(time, id, order);
-                        break;
-
-                    case "TEST":
-                        instruction = new Test(variableName, id, order, value, ParseOperand(condition));
-                        break;
-
-                    case "WAIT_FOR":
-                        instruction = new WaitFor(
-                            variableName,
-                            value,
-                            ParseOperand(condition),
-                            time,
-                            timeout,
-                            id,
-                            order
-                        );
-                        break;
-
-                    default:
-                        instruction = null;
-                        break; // ?
+                    description = testParsed[i][11].Trim();
                 }
+                catch { }
 
-                instructions.Add(instruction);
+                if (!skip)
+                {
+                    switch (instructionType)
+                    {
+                        case "GET":
+                            instruction = new Get(variableName, id, order, timeout, description);
+                            break;
+
+                        case "SET":
+                            instruction = new Set(variableName, value, id, order, timeout, description);
+                            break;
+
+                        case "WAIT":
+                            instruction = new Wait(time, id, order, description);
+                            break;
+
+                        case "TEST":
+                            instruction = new Test(variableName, id, order, value, ParseOperand(condition), description);
+                            break;
+
+                        case "WAIT_FOR":
+                            instruction = new WaitFor(
+                                variableName,
+                                value,
+                                ParseOperand(condition),
+                                time,
+                                timeout,
+                                id,
+                                order, 
+                                description: description
+                            );
+                            break;
+
+                        case "CAN_RAW":
+                            instruction = new CanRaw(
+                                variableName,
+                                id,
+                                order,
+                                canId,
+                                payload,
+                                description: description
+                            );
+                            break;
+
+                        default:
+                            instruction = null;
+                            break; // ?
+                    }
+
+                    instructions.Add(instruction);
+                }
             }
 
             return instructions;
@@ -143,10 +183,10 @@ namespace Instructions.Scheduler
         /// <param name="path">The file path</param>
         private static void InitializeFile(string path)
         {
-            if(!File.Exists(path))
+            if (!File.Exists(path))
                 File.AppendAllText(
-                    path, 
-                    $"Name; ID; Order; Variable involved; Value; Condition to verify; Start time; Stop time; Result{Environment.NewLine}"
+                    path,
+                    $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}"
                 );
         }
     }

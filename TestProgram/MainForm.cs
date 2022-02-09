@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TestProgram
@@ -35,8 +36,9 @@ namespace TestProgram
         private bool testFolderSelected;
         private bool testSelected;
 
-        private Dictionary<(ushort Index, ushort SubIndex), IndexedCanChannel> channelDictionary;
         private IndexedCanChannel tx, rx;
+
+        private int totalSteps;
 
         /// <summary>
         /// Initialize user interface-related components
@@ -80,7 +82,7 @@ namespace TestProgram
             };
             cbxBaudRate.DataSource = bs;
 
-            cbxBaudRate.SelectedIndex = 2; // 500 kbit/s
+            cbxBaudRate.SelectedIndex = 0; // 1000 kbit/s
             cbxBaudRate.SelectedIndexChanged += CbxBaudRate_SelectedIndexChanged;
         }
 
@@ -103,9 +105,9 @@ namespace TestProgram
             else
                 lblResourceStatus.ForeColor = startedColor;
 
-            rx = new IndexedCanChannel(canId: 0x200, index: 0x0, subIndex: 0x0, resource, 0);
+            rx = new IndexedCanChannel(canId: 0x200, index: 0x0, subIndex: 0x0, resource, cmd: 0);
             rx.CanFrameChanged += Channel_CanFrameChanged;
-            tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, 1);
+            tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, cmd: 1);
 
             resource.AddFilteredCanId(0x200); // Rx
             resource.AddFilteredCanId(0x100); // Tx
@@ -222,7 +224,6 @@ namespace TestProgram
             testFolderSelected = false;
             testSelected = false;
 
-            channelDictionary = new Dictionary<(ushort Index, ushort SubIndex), IndexedCanChannel>();
             VariableDictionary.Initialize();
         }
 
@@ -235,15 +236,8 @@ namespace TestProgram
             // Initialize other UI components
             InitializeUserInterface();
 
-            // Initialize can-related objects
-            // This operation is performed in the Load event because
-            // a call to the Invoke method is performed in the code below
-            InitializeCanCommunication();
-
-            // Update the filtered can id
-            UpdateFilteredCanId();
-
-            resource?.Start();
+            StartPosition = FormStartPosition.Manual;
+            Location = new Point(2, 2);
         }
 
         private void BtnSelectTest_Click(object sender, EventArgs e)
@@ -259,13 +253,25 @@ namespace TestProgram
                 testSelected = testFileSelected && testFolderSelected;
 
                 scheduler = new Scheduler(testPath);
+                totalSteps = scheduler.Instructions.Count;
 
                 variablePath = Path.Combine(folderDialog.SelectedPath, "variables.csv");
-                VariableFileHandler.ReadTest(variablePath);
+                VariableFileHandler.ReadTest(variablePath, '\t');
 
-                foreach(IVariable v in VariableDictionary.Variables.Values)
+                foreach (IVariable v in VariableDictionary.Variables.Values)
                     (v as DoubleVariable).ValueChanged += Variable_ValueChanged;
+
+                UpdateDataGridItems();
             }
+        }
+
+        private void UpdateDataGridItems()
+        {
+            BindingSource bs = new BindingSource
+            {
+                DataSource = VariableDictionary.Variables.Values.ToList()
+            };
+            dgvVariables.Invoke(new MethodInvoker(() => dgvVariables.DataSource = bs.DataSource));
         }
 
         private void BtnSelectFolder_Click(object sender, EventArgs e)
@@ -278,26 +284,82 @@ namespace TestProgram
                 lblFolderSelected.Text = folderPath;
 
                 testFolderSelected = true;
-                testSelected = testFileSelected && testFolderSelected;
-
-                resultPath = Path.Combine(folderPath, $"{DateTime.Now:yyyyMMddHHmmss}_result.csv");
+                testSelected = testFileSelected && testFolderSelected;                
             }
+        }
+
+        private bool doUpdateSteps;
+        private async Task UpdateSteps()
+        {
+            txbTestLog.Invoke(new MethodInvoker(() =>
+                txbTestLog.Text = $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}".Replace("\t", "  "))
+            );
+
+            string str = "";
+            while(doUpdateSteps)
+            {
+                str = $"{totalSteps - scheduler.Instructions.Count}/{totalSteps}";
+                lblSchedulerStepDone.Invoke(new MethodInvoker(() => lblSchedulerStepDone.Text = str));
+
+                lblInstructionDescription.Invoke(new MethodInvoker(() => lblInstructionDescription.Text = scheduler.ActualInstructionDescription));
+
+                await Task.Delay(10);
+            }
+
+            txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += Environment.NewLine));
+        }
+
+        private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
+        {
+            txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += scheduler.InstructionLog + Environment.NewLine));
         }
 
         private async void BtnStartTest_Click(object sender, EventArgs e)
         {
             if (testSelected)
             {
-                await scheduler?.ExecuteAll(resultPath);
-                MessageBox.Show("Test completed!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                doUpdateSteps = true;
+
+                if (scheduler != null)
+                    scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
+
+                string[] files = Directory.GetFiles(folderPath);
+                resultPath = Path.Combine(folderPath, $"result_{files.Length}.csv");
+                await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps());
+
+                lblTestResult.Invoke(new MethodInvoker(() =>
+                        {
+                            Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                            lblTestResult.ForeColor = textColor;
+
+                            lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                        }
+                    )
+                );
+                //await UpdateSteps();
+
+                //await scheduler?.ExecuteAll();
+
+                await Task.Delay(100);
+                doUpdateSteps = false;
+
+                // MessageBox.Show("Test completed!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                scheduler = new Scheduler(testPath);
+                totalSteps = scheduler.Instructions.Count;
             }
             else
                 MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
+        private void BtnPauseTest_Click(object sender, EventArgs e)
+        {
+            scheduler?.Stop();
+        }
+
         private void BtnStopTest_Click(object sender, EventArgs e)
         {
-            scheduler.StopAll();
+            scheduler?.Stop();
         }
 
         //private void BtnCreate_Click(object sender, EventArgs e)
@@ -320,7 +382,8 @@ namespace TestProgram
         {
             VariableDictionary.Variables
                 .Where(x => x.Value.Index == rx.Index && x.Value.SubIndex == rx.SubIndex)
-                .Select(x => x.Value.ValueAsObject = BitConverter.ToSingle(rx.CanFrame.Data, 4));
+                .Select(x => x.Value.ValueAsObject = BitConverter.ToSingle(rx.CanFrame.Data, 4)
+            );
 
             //IndexedCanChannel channel = (IndexedCanChannel)sender;
 
@@ -341,28 +404,20 @@ namespace TestProgram
 
         private void Variable_ValueChanged(object sender, ValueChangedEventArgs e)
         {
-            DoubleVariable variable = (DoubleVariable)sender;
-
-            tx.Index = variable.Index;
-            tx.SubIndex = variable.SubIndex;
-            tx.Data = BitConverter.GetBytes((float)variable.Value);
-
-            //channelDictionary.Values
-            //    .Where(x =>
-            //        x.Index == (VariableDictionary.Variables[variable.Name] as DoubleVariable).Index &&
-            //        x.SubIndex == (VariableDictionary.Variables[variable.Name] as DoubleVariable).SubIndex
-            //    )
-            //    .Select(x =>
-            //        x.Data = BitConverter.GetBytes((float)variable.Value)
-            //    );
+            UpdateDataGridItems();
         }
-
 
         private void BtnStart_Click(object sender, EventArgs e)
         {
-            // Start the resource
+            // Initialize can-related objects
+            // This operation is performed in the Load event because
+            // a call to the Invoke method is performed in the code below
+            InitializeCanCommunication();
+
+            // Update the filtered can id
+            UpdateFilteredCanId();
+
             resource?.Start();
-            // Enable the log
             resource?.EnableLog();
 
             // Update UI
@@ -439,9 +494,9 @@ namespace TestProgram
             hardwareHandle = Convert.ToUInt16(str, 16);
         }
 
-        private void BtnReadLog_Click(object sender, EventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            txbLog.Text = resource?.ReadLog();
+            resource?.Stop();
         }
     }
 }

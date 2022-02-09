@@ -1,11 +1,41 @@
 ﻿using Dasync.Collections;
+using Hardware.Can;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Instructions.Scheduler
 {
+    /// <summary>
+    /// Handles the property instruction log event.
+    /// See also <see cref="EventArgs"/>
+    /// </summary>
+    public class InstructionLogChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The old value
+        /// </summary>changed
+        public readonly string OldValue;
+
+        /// <summary>
+        /// The new value
+        /// </summary>
+        public readonly string NewValue;
+
+        /// <summary>
+        /// Create a new instance of <see cref="InstructionLogChangedEventArgs"/>
+        /// </summary>
+        /// <param name="oldValue">The old value</param>
+        /// <param name="newValue">The new value</param>
+        public InstructionLogChangedEventArgs(string oldValue, string newValue)
+        {
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
+    }
+
     /// <summary>
     /// Implement a simple <see cref="Instruction"/> scheduler
     /// that will execute all the subscribed elements sequentially
@@ -13,7 +43,26 @@ namespace Instructions.Scheduler
     public class Scheduler
     {
         private SortedDictionary<int, Queue<Instruction>> instructions;
-        private bool stop;
+        private bool stop, received;
+        private object objectLock = new object();
+        private string instructionLog = "";
+
+        public string ActualInstructionDescription { get; private set; } = "";
+        public string InstructionLog 
+        {
+            get => instructionLog; 
+            private set
+            {
+                if(instructionLog.CompareTo(value) != 0)
+                {
+                    string lastLog = instructionLog;
+                    instructionLog = value;
+                    OnStatusChanged(new InstructionLogChangedEventArgs(lastLog, instructionLog));
+                }
+            }
+        }
+
+        public bool TestResult { get; private set; } = false;
 
         /// <summary>
         /// The subscribed <see cref="Instruction"/>
@@ -32,15 +81,49 @@ namespace Instructions.Scheduler
         }
 
         /// <summary>
+        /// The <see cref="StatusChanged"/> handler
+        /// </summary>
+        protected EventHandler<InstructionLogChangedEventArgs> InstructionLogChangedHandler;
+
+        /// <summary>
+        /// The <see cref="InstructionLogChangedEventArgs"/> event handler
+        /// for the <see cref="Status"/> property
+        /// </summary>
+        public event EventHandler<InstructionLogChangedEventArgs> InstructionLogChanged
+        {
+            add
+            {
+                lock (objectLock)
+                    InstructionLogChangedHandler += value;
+            }
+            remove
+            {
+                lock (objectLock)
+                    InstructionLogChangedHandler -= value;
+            }
+        }
+
+        /// <summary>
+        /// On status changed event
+        /// </summary>
+        /// <param name="e">The <see cref="InstructionLogChanged"/></param>
+        protected virtual void OnStatusChanged(InstructionLogChangedEventArgs e)
+            => InstructionLogChangedHandler?.Invoke(this, e);
+
+        /// <summary>
         /// Create a new instance of <see cref="Scheduler"/>
         /// </summary>
         /// <param name="path">The test program file path</param>
         public Scheduler(string path)
         {
             instructions = new SortedDictionary<int, Queue<Instruction>>();
-            TestProgramManager.ReadTest(path).ForEach(x => Add(x));
+
+            TestProgramManager.ReadTest(path, '\t').ForEach(x => Add(x));
 
             stop = false;
+            received = false;
+
+            instructionLog = "";
         }
 
         /// <summary>
@@ -65,9 +148,10 @@ namespace Instructions.Scheduler
         /// </summary>
         /// <param name="path">The result path (if not specified,
         /// file will be saved in Desktop)</param>
-        public async Task ExecuteAll(string path = "")
+        public async Task ExecuteAll(string path = "", ICanResource resource = null, IndexedCanChannel tx = null, IndexedCanChannel rx = null)
         {
             stop = false;
+            bool instructionResult = true;
 
             if (path.CompareTo("") == 0)
                 path = System.IO.Path.Combine(
@@ -81,12 +165,42 @@ namespace Instructions.Scheduler
             while (instructions.Count > 0 && !stop)
             {
                 while (instructions[order].Count > 0)
-                    instructionList.Add(instructions[order].Dequeue());
+                {
+                    Instruction instruction = instructions[order].Dequeue();
+                    instructionList.Add(instruction);
+                }
 
                 await instructionList.ParallelForEachAsync(
                     async (x) =>
                     {
-                        await x.Execute();
+                        if (instructionResult)
+                        {
+                            // Link dei canali can
+                            x.Tx = tx;
+                            x.Rx = rx;
+
+                            // Link della risorsa can
+                            x.Resource = resource;
+
+                            //if (tx != null && x is Set)
+                            //    tx.Cmd = 1;
+                            //else
+                            //{
+                            //    if (tx != null && x is Get)
+                            //    {
+                            //        tx.Data = new byte[] { 0, 0, 0, 0 };
+                            //        tx.Cmd = 0;
+                            //    }
+                            //}                            
+
+                            await x.Execute();
+                        }
+
+                        instructionResult &= x.Result;
+
+                        ActualInstructionDescription = x.Description;
+                        InstructionLog = x.ToString();
+
                         TestProgramManager.SaveResult(path, x);
                     }
                 );
@@ -94,12 +208,19 @@ namespace Instructions.Scheduler
                 instructions.Remove(order);
                 order = instructions.Count > 0 ? instructions.Keys.Min() : 0;
                 instructionList.Clear();
+
+                TestResult = instructionResult;
             }
+        }
+
+        private void Rx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
+        {
+            received = true;
         }
 
         /// <summary>
         /// Stop the current execution
         /// </summary>
-        public void StopAll() => stop = true;
+        public void Stop() => stop = true;
     }
 }
