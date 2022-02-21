@@ -141,21 +141,19 @@ namespace Instructions
 
                         cond = condition();
 
+                        Stopwatch sw = Stopwatch.StartNew();
+                        do
+                        {
+                            cond = condition();
+                            await Task.Delay(pollingInterval);
+                        } while (sw.Elapsed.TotalMilliseconds < conditionTime != !cond);
+
                         if (cond)
                             return true;
                     }
 
                     time.Stop();
                     return false;
-
-                    //Stopwatch sw = Stopwatch.StartNew();
-                    //while (sw.Elapsed.TotalMilliseconds < conditionTime != !cond)
-                    //{
-                    //    await getTask;
-                    //    await Task.Delay(pollingInterval);
-
-                    //    cond = condition();
-                    //}
                 }
             );
 
