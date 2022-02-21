@@ -373,8 +373,6 @@ namespace TestProgram
                 if (scheduler != null)
                     scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
 
-                // MessageBox.Show("Test completed!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                 scheduler = new Scheduler(testPath);
                 totalSteps = scheduler.Instructions.Count;
             }
