@@ -22,7 +22,8 @@ namespace Instructions
         /// <param name="value">The value</param>
         /// <param name="operand">The <see cref="ConditionOperand"/></param>
         /// <param name="description">The description</param>
-        public Test(string variableName, int id, int order, double value, ConditionOperand operand, string description = "") : base("Test", id, order, description: description)
+        public Test(string variableName, int id, int order, double value, ConditionOperand operand, string description = "") 
+            : base("Test", id, order, description: description)
         {
             this.variableName = variableName;
             this.value = value;
@@ -93,6 +94,10 @@ namespace Instructions
 
                     case ConditionOperand.Lesser:
                         result &= valueGot < value - threshold;
+                        break;
+
+                    case ConditionOperand.Included:
+                        result &= (valueGot < value - threshold) && (valueGot > value + threshold);
                         break;
                 }
             }

@@ -16,50 +16,56 @@ namespace TestProgram
     {
         // Color "constants"
         private readonly Color startedColor = Color.Green;
-
         private readonly Color stoppedColor = Color.Red;
         private readonly Color unknowkColor = Color.DarkGray;
 
         // Can resource variables
         private ushort hardwareHandle = 0; // The hardware handle (changed in InitializeCanCommunication)
-
         private PeakCanResource resource;
+        private IndexedCanChannel tx, rx;
 
+        // File-related variables
         private string testPath;
         private string variablePath;
         private string folderPath;
         private string resultPath;
 
+        // Scheduler-related variables
         private Scheduler scheduler;
+        private int totalSteps; 
+        private bool doUpdateSteps; // Used in the updating step task
 
+        // Test selected logic-related variables
         private bool testFileSelected;
         private bool testFolderSelected;
         private bool testSelected;
-
-        private IndexedCanChannel tx, rx;
-
-        private int totalSteps;
 
         /// <summary>
         /// Initialize user interface-related components
         /// </summary>
         private void InitializeUserInterface()
         {
+            // DataGridView initialization
+            dgvVariables.ReadOnly = true;
+            dgvVariables.RowsDefaultCellStyle.BackColor = Color.FromArgb(0x58, 0x58, 0x54);
+            dgvVariables.AlternatingRowsDefaultCellStyle.BackColor = ControlPaint.Light(Color.FromArgb(0x58, 0x58, 0x54));
+            dgvVariables.ForeColor = Color.White;
+
             // Set the resource started led to a default color
             pnlResourceStarted.BackColor = unknowkColor;
             // Set the log button border color to stopped
             btnReadLog.FlatAppearance.BorderColor = startedColor;
 
+            // Get available hardware
             List<string> hardwareNames = PeakCanResource.GetAvailableHardware();
-
             BindingSource bs = new BindingSource
             {
                 DataSource = hardwareNames
             };
-
             cbxDeviceList.DataSource = bs.DataSource;
             cbxDeviceList.SelectedIndex = cbxDeviceList.Items.Count > 0 ? 0 : -1;
 
+            // Available baud-rates
             bs = new BindingSource
             {
                 DataSource = new string[]
@@ -81,7 +87,6 @@ namespace TestProgram
                 }
             };
             cbxBaudRate.DataSource = bs;
-
             cbxBaudRate.SelectedIndex = 0; // 1000 kbit/s
             cbxBaudRate.SelectedIndexChanged += CbxBaudRate_SelectedIndexChanged;
         }
@@ -122,20 +127,20 @@ namespace TestProgram
         {
             // Update the UI component (different thread)
             lblResourceStatus.Invoke(new MethodInvoker(() =>
-            {
-                lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+                    {
+                        lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
 
-                if (lblResourceStatus.Text.CompareTo("PCAN_ERROR_OK") != 0) // PCAN_ERROR_OK is for no error
-                    lblResourceStatus.ForeColor = Color.Red;
-                else
-                    lblResourceStatus.ForeColor = Color.Black;
-            }
+                        if (lblResourceStatus.Text.CompareTo("PCAN_ERROR_OK") != 0) // PCAN_ERROR_OK is for no error
+                            lblResourceStatus.ForeColor = Color.Red;
+                        else
+                            lblResourceStatus.ForeColor = Color.Black;
+                    }
                 )
             );
         }
 
         private void CbxBaudRate_SelectedIndexChanged(object sender, EventArgs e)
-            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
+            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString())); // Update the can resource baud rate
 
         /// <summary>
         /// Convert a textual representation of a <see cref="BaudRate"/>
@@ -216,6 +221,7 @@ namespace TestProgram
         {
             InitializeComponent();
 
+            // Variables initialization
             testPath = "";
             folderPath = "";
             resultPath = "";
@@ -236,26 +242,31 @@ namespace TestProgram
             // Initialize other UI components
             InitializeUserInterface();
 
+            // Form position
             StartPosition = FormStartPosition.Manual;
-            Location = new Point(2, 2);
+            Location = new Point(8, 8);
         }
 
+        // Select the test file
         private void BtnSelectTest_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
 
             if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
             {
-                testPath = Path.Combine(folderDialog.SelectedPath, "test.csv");
+                testPath = Path.Combine(folderDialog.SelectedPath, "main.tp");
                 lblTestSelected.Text = testPath;
 
                 testFileSelected = true;
                 testSelected = testFileSelected && testFolderSelected;
 
+                // Initialize the scheduler (the test file read is done inside)
                 scheduler = new Scheduler(testPath);
                 totalSteps = scheduler.Instructions.Count;
 
+                // Read the variable file
                 variablePath = Path.Combine(folderDialog.SelectedPath, "variables.csv");
+                VariableDictionary.Variables.Clear();
                 VariableFileHandler.ReadTest(variablePath, '\t');
 
                 foreach (IVariable v in VariableDictionary.Variables.Values)
@@ -265,6 +276,9 @@ namespace TestProgram
             }
         }
 
+        /// <summary>
+        /// Update the DataGridView with all the variables found in the relative file
+        /// </summary>
         private void UpdateDataGridItems()
         {
             BindingSource bs = new BindingSource
@@ -274,6 +288,7 @@ namespace TestProgram
             dgvVariables.Invoke(new MethodInvoker(() => dgvVariables.DataSource = bs.DataSource));
         }
 
+        // Select the result folder
         private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
@@ -288,13 +303,21 @@ namespace TestProgram
             }
         }
 
-        private bool doUpdateSteps;
+        /// <summary>
+        /// Update the actual steps done by the scheduler
+        /// </summary>
+        /// <returns>The (async) <see cref="Task"/></returns>
         private async Task UpdateSteps()
         {
+            // Log header
             txbTestLog.Invoke(new MethodInvoker(() =>
-                txbTestLog.Text = $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}".Replace("\t", "  "))
+                    txbTestLog.Text = 
+                        $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}"
+                            .Replace("\t", "  ")
+                )
             );
 
+            // Steps done and instruction executed
             string str = "";
             while(doUpdateSteps)
             {
@@ -309,11 +332,13 @@ namespace TestProgram
             txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += Environment.NewLine));
         }
 
+        // Update the log
         private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
         {
             txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += scheduler.InstructionLog + Environment.NewLine));
         }
 
+        // Start the test
         private async void BtnStartTest_Click(object sender, EventArgs e)
         {
             if (testSelected)
@@ -325,7 +350,7 @@ namespace TestProgram
 
                 string[] files = Directory.GetFiles(folderPath);
                 resultPath = Path.Combine(folderPath, $"result_{files.Length}.csv");
-                await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps());
+                await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
 
                 lblTestResult.Invoke(new MethodInvoker(() =>
                         {
@@ -336,12 +361,12 @@ namespace TestProgram
                         }
                     )
                 );
-                //await UpdateSteps();
-
-                //await scheduler?.ExecuteAll();
 
                 await Task.Delay(100);
                 doUpdateSteps = false;
+
+                if (scheduler != null)
+                    scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
 
                 // MessageBox.Show("Test completed!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -352,61 +377,28 @@ namespace TestProgram
                 MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        private void BtnPauseTest_Click(object sender, EventArgs e)
-        {
-            scheduler?.Stop();
-        }
-
+        // Stop the test
         private void BtnStopTest_Click(object sender, EventArgs e)
         {
             scheduler?.Stop();
         }
 
-        //private void BtnCreate_Click(object sender, EventArgs e)
-        //{
-        //    int canId = (int)nudCanId.Value;
-        //    ushort index = (ushort)nudIndex.Value;
-        //    ushort subIndex = (ushort)nudSubIndex.Value;
-
-        //    IndexedCanChannel channel = new IndexedCanChannel(canId, index, subIndex, resource);
-        //    DoubleVariable variable = new DoubleVariable(txbVariableName.Text, index, subIndex);
-
-        //    channelDictionary.Add((channel.Index, channel.SubIndex), channel);
-        //    channelDictionary[(channel.Index, channel.SubIndex)].CanFrameChanged += Channel_CanFrameChanged;
-
-        //    VariableDictionary.Add(variable);
-        //    (VariableDictionary.Variables[variable.Name] as DoubleVariable).ValueChanged += Variable_ValueChanged;
-        //}
-
+        // Rx has changed -> Update the variable
         private void Channel_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
             VariableDictionary.Variables
                 .Where(x => x.Value.Index == rx.Index && x.Value.SubIndex == rx.SubIndex)
                 .Select(x => x.Value.ValueAsObject = BitConverter.ToSingle(rx.CanFrame.Data, 4)
             );
-
-            //IndexedCanChannel channel = (IndexedCanChannel)sender;
-
-            //VariableDictionary.Variables
-            //    .Where(x =>
-            //        x.Value.Index ==
-            //        channelDictionary[(channel.Index, channel.SubIndex)].Index
-            //        && x.Value.SubIndex == channelDictionary[(channel.Index, channel.SubIndex)].SubIndex
-            //    )
-            //    .Select(x =>
-            //        x.Value.ValueAsObject =
-            //        BitConverter.ToSingle(
-            //            channelDictionary[(channel.Index, channel.SubIndex)].CanFrame.Data,
-            //            4
-            //        )
-            //    );
         }
 
+        // The variable has changed -> Update the DataGridView
         private void Variable_ValueChanged(object sender, ValueChangedEventArgs e)
         {
             UpdateDataGridItems();
         }
 
+        // Start the can resource
         private void BtnStart_Click(object sender, EventArgs e)
         {
             // Initialize can-related objects
@@ -421,11 +413,12 @@ namespace TestProgram
             resource?.EnableLog();
 
             // Update UI
-            btnStart.FlatAppearance.BorderColor = startedColor;
-            btnStop.FlatAppearance.BorderColor = Color.Black;
+            btnStartResource.FlatAppearance.BorderColor = startedColor;
+            btnStopResource.FlatAppearance.BorderColor = Color.Black;
             pnlResourceStarted.BackColor = startedColor;
         }
 
+        // Stop the can resource
         private void BtnStop_Click(object sender, EventArgs e)
         {
             // Stop the resource.
@@ -434,11 +427,12 @@ namespace TestProgram
             resource?.Stop();
 
             // Update UI
-            btnStart.FlatAppearance.BorderColor = Color.Black;
-            btnStop.FlatAppearance.BorderColor = stoppedColor;
+            btnStartResource.FlatAppearance.BorderColor = Color.Black;
+            btnStopResource.FlatAppearance.BorderColor = stoppedColor;
             pnlResourceStarted.BackColor = stoppedColor;
         }
 
+        // Unable/disable the can log
         private void CbxLogEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (chbLogEnabled.Checked)
@@ -473,18 +467,21 @@ namespace TestProgram
             }
         }
 
+        // Add a filetered can id to the log
         private void BtnAddFiltered_Click(object sender, EventArgs e)
         {
             resource?.AddFilteredCanId((int)nudFilter.Value);
             UpdateFilteredCanId();
         }
 
+        // Remove a filtered can id from the log
         private void BtnRemoveFilter_Click(object sender, EventArgs e)
         {
             resource?.RemoveFilteredCanId((int)nudFilter.Value);
             UpdateFilteredCanId();
         }
 
+        // Update the hardware handle for the can resource
         private void CbxDeviceList_SelectedIndexChanged(object sender, EventArgs e)
         {
             string str = cbxDeviceList.Text;
@@ -494,6 +491,7 @@ namespace TestProgram
             hardwareHandle = Convert.ToUInt16(str, 16);
         }
 
+        // Form closing -> stop the scheduler
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             resource?.Stop();

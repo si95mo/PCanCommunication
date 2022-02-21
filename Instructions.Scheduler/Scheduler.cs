@@ -2,7 +2,6 @@
 using Hardware.Can;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,7 +42,7 @@ namespace Instructions.Scheduler
     public class Scheduler
     {
         private SortedDictionary<int, Queue<Instruction>> instructions;
-        private bool stop, received;
+        private bool stop;
         private object objectLock = new object();
         private string instructionLog = "";
 
@@ -118,10 +117,9 @@ namespace Instructions.Scheduler
         {
             instructions = new SortedDictionary<int, Queue<Instruction>>();
 
-            TestProgramManager.ReadTest(path, '\t').ForEach(x => Add(x));
+            TestProgramManager.ReadMain(path, pathString: "->", delimiter: '\t').ForEach(x => Add(x));
 
             stop = false;
-            received = false;
 
             instructionLog = "";
         }
@@ -175,24 +173,14 @@ namespace Instructions.Scheduler
                     {
                         if (instructionResult)
                         {
-                            // Link dei canali can
+                            // Can channels link
                             x.Tx = tx;
                             x.Rx = rx;
 
-                            // Link della risorsa can
+                            // Can resource link
                             x.Resource = resource;
-
-                            //if (tx != null && x is Set)
-                            //    tx.Cmd = 1;
-                            //else
-                            //{
-                            //    if (tx != null && x is Get)
-                            //    {
-                            //        tx.Data = new byte[] { 0, 0, 0, 0 };
-                            //        tx.Cmd = 0;
-                            //    }
-                            //}                            
-
+                            
+                            // Execute instruction
                             await x.Execute();
                         }
 
@@ -211,11 +199,6 @@ namespace Instructions.Scheduler
 
                 TestResult = instructionResult;
             }
-        }
-
-        private void Rx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
-        {
-            received = true;
         }
 
         /// <summary>

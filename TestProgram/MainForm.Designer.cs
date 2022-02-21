@@ -42,8 +42,8 @@ namespace TestProgram
             this.lblSchedulerStepDone = new System.Windows.Forms.Label();
             this.btnStartTest = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.btnStop = new System.Windows.Forms.Button();
-            this.btnStart = new System.Windows.Forms.Button();
+            this.btnStopResource = new System.Windows.Forms.Button();
+            this.btnStartResource = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.cbxBaudRate = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -85,7 +85,7 @@ namespace TestProgram
             this.btnSelectTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSelectTest.Location = new System.Drawing.Point(6, 19);
             this.btnSelectTest.Name = "btnSelectTest";
-            this.btnSelectTest.Size = new System.Drawing.Size(188, 23);
+            this.btnSelectTest.Size = new System.Drawing.Size(241, 23);
             this.btnSelectTest.TabIndex = 0;
             this.btnSelectTest.Text = "Select test folder";
             this.btnSelectTest.UseVisualStyleBackColor = true;
@@ -99,26 +99,25 @@ namespace TestProgram
             this.groupBox1.Controls.Add(this.btnSelectTest);
             this.groupBox1.Location = new System.Drawing.Point(489, 17);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 105);
+            this.groupBox1.Size = new System.Drawing.Size(253, 162);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "File options";
             // 
             // lblFolderSelected
             // 
-            this.lblFolderSelected.AutoSize = true;
-            this.lblFolderSelected.Location = new System.Drawing.Point(6, 87);
+            this.lblFolderSelected.Location = new System.Drawing.Point(6, 112);
             this.lblFolderSelected.Name = "lblFolderSelected";
-            this.lblFolderSelected.Size = new System.Drawing.Size(97, 13);
+            this.lblFolderSelected.Size = new System.Drawing.Size(240, 33);
             this.lblFolderSelected.TabIndex = 3;
             this.lblFolderSelected.Text = "Folder selected: ----";
             // 
             // btnSelectFolder
             // 
             this.btnSelectFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSelectFolder.Location = new System.Drawing.Point(6, 61);
+            this.btnSelectFolder.Location = new System.Drawing.Point(6, 86);
             this.btnSelectFolder.Name = "btnSelectFolder";
-            this.btnSelectFolder.Size = new System.Drawing.Size(188, 23);
+            this.btnSelectFolder.Size = new System.Drawing.Size(241, 23);
             this.btnSelectFolder.TabIndex = 2;
             this.btnSelectFolder.Text = "Select report folder";
             this.btnSelectFolder.UseVisualStyleBackColor = true;
@@ -126,10 +125,9 @@ namespace TestProgram
             // 
             // lblTestSelected
             // 
-            this.lblTestSelected.AutoSize = true;
             this.lblTestSelected.Location = new System.Drawing.Point(6, 45);
             this.lblTestSelected.Name = "lblTestSelected";
-            this.lblTestSelected.Size = new System.Drawing.Size(89, 13);
+            this.lblTestSelected.Size = new System.Drawing.Size(241, 29);
             this.lblTestSelected.TabIndex = 1;
             this.lblTestSelected.Text = "Test selected: ----";
             // 
@@ -143,25 +141,25 @@ namespace TestProgram
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.lblSchedulerStepDone);
             this.groupBox2.Controls.Add(this.btnStartTest);
-            this.groupBox2.Location = new System.Drawing.Point(489, 128);
+            this.groupBox2.Location = new System.Drawing.Point(489, 185);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 212);
+            this.groupBox2.Size = new System.Drawing.Size(253, 155);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Test options";
             // 
             // lblInstructionDescription
             // 
-            this.lblInstructionDescription.Location = new System.Drawing.Point(113, 124);
+            this.lblInstructionDescription.Location = new System.Drawing.Point(113, 89);
             this.lblInstructionDescription.Name = "lblInstructionDescription";
-            this.lblInstructionDescription.Size = new System.Drawing.Size(81, 58);
+            this.lblInstructionDescription.Size = new System.Drawing.Size(134, 34);
             this.lblInstructionDescription.TabIndex = 6;
             this.lblInstructionDescription.Text = "--";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 124);
+            this.label2.Location = new System.Drawing.Point(6, 89);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(91, 13);
             this.label2.TabIndex = 5;
@@ -170,7 +168,7 @@ namespace TestProgram
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 93);
+            this.label1.Location = new System.Drawing.Point(6, 76);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(101, 13);
             this.label1.TabIndex = 4;
@@ -179,7 +177,7 @@ namespace TestProgram
             // lblSchedulerStepDone
             // 
             this.lblSchedulerStepDone.AutoSize = true;
-            this.lblSchedulerStepDone.Location = new System.Drawing.Point(113, 93);
+            this.lblSchedulerStepDone.Location = new System.Drawing.Point(113, 76);
             this.lblSchedulerStepDone.Name = "lblSchedulerStepDone";
             this.lblSchedulerStepDone.Size = new System.Drawing.Size(24, 13);
             this.lblSchedulerStepDone.TabIndex = 3;
@@ -188,9 +186,9 @@ namespace TestProgram
             // btnStartTest
             // 
             this.btnStartTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStartTest.Location = new System.Drawing.Point(6, 19);
+            this.btnStartTest.Location = new System.Drawing.Point(6, 21);
             this.btnStartTest.Name = "btnStartTest";
-            this.btnStartTest.Size = new System.Drawing.Size(188, 23);
+            this.btnStartTest.Size = new System.Drawing.Size(241, 23);
             this.btnStartTest.TabIndex = 0;
             this.btnStartTest.Text = "Start test";
             this.btnStartTest.UseVisualStyleBackColor = true;
@@ -198,8 +196,8 @@ namespace TestProgram
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.btnStop);
-            this.groupBox3.Controls.Add(this.btnStart);
+            this.groupBox3.Controls.Add(this.btnStopResource);
+            this.groupBox3.Controls.Add(this.btnStartResource);
             this.groupBox3.Location = new System.Drawing.Point(18, 79);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(206, 100);
@@ -207,27 +205,27 @@ namespace TestProgram
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "CAN resource commands";
             // 
-            // btnStop
+            // btnStopResource
             // 
-            this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStop.Location = new System.Drawing.Point(6, 56);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(190, 23);
-            this.btnStop.TabIndex = 7;
-            this.btnStop.Text = "Stop";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.BtnStop_Click);
+            this.btnStopResource.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStopResource.Location = new System.Drawing.Point(6, 56);
+            this.btnStopResource.Name = "btnStopResource";
+            this.btnStopResource.Size = new System.Drawing.Size(190, 23);
+            this.btnStopResource.TabIndex = 7;
+            this.btnStopResource.Text = "Stop";
+            this.btnStopResource.UseVisualStyleBackColor = true;
+            this.btnStopResource.Click += new System.EventHandler(this.BtnStop_Click);
             // 
-            // btnStart
+            // btnStartResource
             // 
-            this.btnStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStart.Location = new System.Drawing.Point(6, 19);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(190, 23);
-            this.btnStart.TabIndex = 2;
-            this.btnStart.Text = "Start";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
+            this.btnStartResource.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStartResource.Location = new System.Drawing.Point(6, 19);
+            this.btnStartResource.Name = "btnStartResource";
+            this.btnStartResource.Size = new System.Drawing.Size(190, 23);
+            this.btnStartResource.TabIndex = 2;
+            this.btnStartResource.Text = "Start";
+            this.btnStartResource.UseVisualStyleBackColor = true;
+            this.btnStartResource.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // groupBox4
             // 
@@ -473,15 +471,15 @@ namespace TestProgram
             this.txbTestLog.Multiline = true;
             this.txbTestLog.Name = "txbTestLog";
             this.txbTestLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbTestLog.Size = new System.Drawing.Size(1292, 452);
+            this.txbTestLog.Size = new System.Drawing.Size(1292, 444);
             this.txbTestLog.TabIndex = 0;
             // 
             // btnStopTest
             // 
             this.btnStopTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopTest.Location = new System.Drawing.Point(6, 48);
+            this.btnStopTest.Location = new System.Drawing.Point(6, 50);
             this.btnStopTest.Name = "btnStopTest";
-            this.btnStopTest.Size = new System.Drawing.Size(188, 23);
+            this.btnStopTest.Size = new System.Drawing.Size(241, 23);
             this.btnStopTest.TabIndex = 7;
             this.btnStopTest.Text = "Stop test";
             this.btnStopTest.UseVisualStyleBackColor = true;
@@ -490,7 +488,7 @@ namespace TestProgram
             // lblTestResult
             // 
             this.lblTestResult.AutoSize = true;
-            this.lblTestResult.Location = new System.Drawing.Point(113, 182);
+            this.lblTestResult.Location = new System.Drawing.Point(113, 130);
             this.lblTestResult.Name = "lblTestResult";
             this.lblTestResult.Size = new System.Drawing.Size(13, 13);
             this.lblTestResult.TabIndex = 9;
@@ -499,7 +497,7 @@ namespace TestProgram
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 182);
+            this.label4.Location = new System.Drawing.Point(6, 130);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 13);
             this.label4.TabIndex = 8;
@@ -509,9 +507,9 @@ namespace TestProgram
             // 
             this.dgvVariables.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dgvVariables.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVariables.Location = new System.Drawing.Point(695, 20);
+            this.dgvVariables.Location = new System.Drawing.Point(748, 20);
             this.dgvVariables.Name = "dgvVariables";
-            this.dgvVariables.Size = new System.Drawing.Size(617, 320);
+            this.dgvVariables.Size = new System.Drawing.Size(564, 320);
             this.dgvVariables.TabIndex = 21;
             // 
             // MainForm
@@ -535,7 +533,6 @@ namespace TestProgram
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -563,8 +560,8 @@ namespace TestProgram
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnStartTest;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnStopResource;
+        private System.Windows.Forms.Button btnStartResource;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ComboBox cbxBaudRate;
         private System.Windows.Forms.Label label6;

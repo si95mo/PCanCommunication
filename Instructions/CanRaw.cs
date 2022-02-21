@@ -24,15 +24,31 @@ namespace Instructions
         /// <param name="payload">The payload</param>
         /// <param name="resource">The <see cref="ICanResource"/></param>
         /// <param name="description">The description</param>
-        public CanRaw(string name, int id, int order, int canId, byte[] payload, string description = "")
-            : base(name, id, order, timeout: 0, description: description)
+        public CanRaw(int id, int order, int canId, byte[] payload, string description = "")
+            : base("CanRaw", id, order, timeout: 0, description: description)
         {
             canFrame = new CanFrame(canId, payload);
         }
 
         public override async Task Execute()
         {
-            await Task.Run(() => Resource.Send(canFrame));
+            startTime = DateTime.Now;
+            await Task.Run(() => result = Resource.Send(canFrame));
+            stopTime = DateTime.Now;
+        }
+
+        public override string ToString()
+        {
+            string[] canFrameAsString = canFrame.ToString().Split(';');
+            string description = $"{name}\t " +
+                  $"{id}\t " +
+                  $"{order}\t " +
+                  $"\t " +
+                  $"{canFrameAsString[1].Trim()}; {canFrameAsString[2].Trim()}\t \t " +
+                  $"{startTime:HH:mm:ss.fff}\t " +
+                  $"{stopTime:HH:mm:ss.fff}\t " +
+                  $"{result}";
+            return description;
         }
     }
 }

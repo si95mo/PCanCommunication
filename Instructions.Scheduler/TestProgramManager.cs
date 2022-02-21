@@ -13,12 +13,85 @@ namespace Instructions.Scheduler
         private static object lockObject = new object();
 
         /// <summary>
+        /// Read the main file and parse each sub-test file contained
+        /// </summary>
+        /// <param name="path">The main file path</param>
+        /// <param name="pathString">The delimiter of the sub-test file path inside the main</param>
+        /// <param name="delimiter">The sub-file char delimiter (<see cref="ReadTest(string, char)"/>)</param>
+        /// <returns>The <see cref="List{T}"/> with all the parsed <see cref="Instruction"/></returns>
+        internal static List<Instruction> ReadMain(string path, string pathString = "->", char delimiter = '\t')
+        {
+            List<Instruction> instructions = new List<Instruction>();
+
+            // Read the main file
+            string[] mainText = File.ReadAllLines(path);
+            string basePath = Path.GetDirectoryName(path);
+            string fullFileAbsolutePath = Path.Combine(basePath, "test.csv");
+
+            // Delete previous created file, if exists
+            if (File.Exists(fullFileAbsolutePath))
+                File.Delete(fullFileAbsolutePath);
+
+            int n = 0;
+            int counter = 0;
+            for(int i = 0; i < mainText.Length; i++)
+            {
+                // If the line contains a sub-test file path
+                if(mainText[i].StartsWith(pathString))
+                {
+                    // Parse it
+                    string fileRelativePath = mainText[i].Replace(pathString, "").Trim();
+                    string fileAbsolutePath = Path.Combine(basePath, fileRelativePath);
+
+                    // Save the sub-test in the full-test file
+                    n = SaveTest(fileAbsolutePath, ++n);
+                }
+            }
+
+            instructions.AddRange(ReadTest(fullFileAbsolutePath, delimiter));
+
+            return instructions;
+        }
+
+        internal static int SaveTest(string subTestPath, int counter, string fullTestFileName = "test.csv", char delimiter = '\t')
+        {
+            int n;
+            string basePath = Path.GetDirectoryName(subTestPath);
+            string fullTestAbsolutePath = Path.Combine(basePath, fullTestFileName);
+
+            // If the file does not exists, create it and write the headers
+            if (!File.Exists(fullTestAbsolutePath))
+            {
+                File.WriteAllText(
+                    fullTestAbsolutePath,
+                    $"ID{delimiter}Order{delimiter}Type{delimiter}Variable Name{delimiter}Value{delimiter}Condition{delimiter}" +
+                        $"High Lim{delimiter}Low Lim{delimiter}Time [ms]{delimiter}Timeout [ms]{delimiter}Skip{delimiter}Description" +
+                            $"{Environment.NewLine}"
+                );
+            }
+
+            // Append the sub-test to the full-test file
+            string[] instructions = File.ReadAllLines(subTestPath);
+            n = instructions.Length - 1; // Remove headers
+
+            // i = 1 -> Skip header
+            for(int i = 1; i < n + 1; i++)
+            {
+                // Prepend the incremental id and order to the instruction
+                string line = $"{counter + i - 1}{delimiter}{counter + i - 1}{delimiter}{instructions[i]}{Environment.NewLine}";
+                File.AppendAllText(fullTestAbsolutePath, line);
+            }
+
+            return n;
+        }
+
+        /// <summary>
         /// Load a test program from disk
         /// </summary>
         /// <param name="path">The test program path</param>
         /// <param name="delimeter">The delimiter <see cref="char"/></param>
         /// <returns>A <see cref="List"/> with the retrieved <see cref="Instruction"/></returns>
-        internal static List<Instruction> ReadTest(string path, char delimiter = ';')
+        internal static List<Instruction> ReadTest(string path, char delimiter = '\t')
         {
             List<Instruction> instructions = new List<Instruction>();
 
@@ -51,11 +124,11 @@ namespace Instructions.Scheduler
                 {
                     string valueAsString = testParsed[i][4];
                     string[] valueAsStringSplitted = valueAsString.Split('|');
-                    int.TryParse(valueAsStringSplitted[0], out canId);
+                    canId = Convert.ToInt32(valueAsStringSplitted[0], 16);
 
                     string[] payloadAsString = valueAsStringSplitted[1].Split(' ');
                     for (int j = 0; j < 8; j++)
-                        byte.TryParse(payloadAsString[j], out payload[j]);
+                        payload[j] = Convert.ToByte(payloadAsString[j], 16);
                 }
 
                 string condition = testParsed[i][5].Trim();
@@ -117,7 +190,6 @@ namespace Instructions.Scheduler
 
                         case "CAN_RAW":
                             instruction = new CanRaw(
-                                variableName,
                                 id,
                                 order,
                                 canId,
@@ -157,6 +229,10 @@ namespace Instructions.Scheduler
 
                 case ">":
                     operand = ConditionOperand.Greather;
+                    break;
+
+                case "<>":
+                    operand = ConditionOperand.Included;
                     break;
             }
 

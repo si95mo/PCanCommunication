@@ -22,7 +22,8 @@ namespace Instructions
         /// <param name="order">The order index</param>
         /// <param name="timeout">The timeout (in ms)</param>
         /// <param name="description">The description</param>
-        public Get(string variableName, int id, int order, int timeout = 1000, string description = "") : base("Get", id, order, timeout, description)
+        public Get(string variableName, int id, int order, int timeout = 1000, string description = "") 
+            : base("Get", id, order, timeout, description)
         {
             this.variableName = variableName;
 

@@ -29,7 +29,12 @@ namespace Instructions
         /// <summary>
         /// '<' operand
         /// </summary>
-        Lesser = 3
+        Lesser = 3,
+
+        /// <summary>
+        /// '<' operand
+        /// </summary>
+        Included = 4
     }
 
     /// <summary>
@@ -41,7 +46,6 @@ namespace Instructions
         private double value;
         protected double valueGot;
         private ConditionOperand operand;
-        private int timeout;
         private int conditionTime;
         private int pollingInterval;
 
@@ -58,7 +62,8 @@ namespace Instructions
         /// <param name="pollingInterval">The polling interval (in milliseconds)</param>
         /// <param name="description">The description</param>
         public WaitFor(string variableName, double value, ConditionOperand operand,
-            int conditionTime, int timeout, int id, int order, int pollingInterval = 200, string description = "") : base("WaitFor", id, order, description: description)
+            int conditionTime, int timeout, int id, int order, int pollingInterval = 200, string description = "") 
+            : base("WaitFor", id, order, description: description)
         {
             this.variableName = variableName;
             this.value = value;
@@ -108,6 +113,10 @@ namespace Instructions
 
                     case ConditionOperand.Lesser:
                         returnValue = valueGot < value - threshold;
+                        break;
+
+                    case ConditionOperand.Included:
+                        returnValue = (valueGot < value - threshold) && (valueGot > value - threshold);
                         break;
                 }
 
