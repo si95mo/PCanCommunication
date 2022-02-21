@@ -62,7 +62,7 @@ namespace Instructions
         /// <param name="pollingInterval">The polling interval (in milliseconds)</param>
         /// <param name="description">The description</param>
         public WaitFor(string variableName, double value, ConditionOperand operand,
-            int conditionTime, int timeout, int id, int order, int pollingInterval = 200, string description = "") 
+            int conditionTime, int timeout, int id, int order, int pollingInterval = 200, string description = "")
             : base("WaitFor", id, order, description: description)
         {
             this.variableName = variableName;

@@ -34,10 +34,10 @@ namespace Instructions.Scheduler
 
             int n = 0;
             int counter = 0;
-            for(int i = 0; i < mainText.Length; i++)
+            for (int i = 0; i < mainText.Length; i++)
             {
                 // If the line contains a sub-test file path
-                if(mainText[i].StartsWith(pathString))
+                if (mainText[i].StartsWith(pathString))
                 {
                     // Parse it
                     string fileRelativePath = mainText[i].Replace(pathString, "").Trim();
@@ -75,7 +75,7 @@ namespace Instructions.Scheduler
             n = instructions.Length - 1; // Remove headers
 
             // i = 1 -> Skip header
-            for(int i = 1; i < n + 1; i++)
+            for (int i = 1; i < n + 1; i++)
             {
                 // Prepend the incremental id and order to the instruction
                 string line = $"{counter + i - 1}{delimiter}{counter + i - 1}{delimiter}{instructions[i]}{Environment.NewLine}";
@@ -183,7 +183,7 @@ namespace Instructions.Scheduler
                                 time,
                                 timeout,
                                 id,
-                                order, 
+                                order,
                                 description: description
                             );
                             break;

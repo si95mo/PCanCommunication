@@ -47,7 +47,7 @@ namespace Instructions
                 $"{order}\t " +
                 $" \t \t \t " +
                 $"{startTime:HH:mm:ss.fff}\t " +
-                $"{stopTime:HH:mm:ss.fff}\t "; 
+                $"{stopTime:HH:mm:ss.fff}\t ";
             return description;
         }
     }

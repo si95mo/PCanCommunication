@@ -16,27 +16,32 @@ namespace TestProgram
     {
         // Color "constants"
         private readonly Color startedColor = Color.Green;
+
         private readonly Color stoppedColor = Color.Red;
         private readonly Color unknowkColor = Color.DarkGray;
 
         // Can resource variables
         private ushort hardwareHandle = 0; // The hardware handle (changed in InitializeCanCommunication)
+
         private PeakCanResource resource;
         private IndexedCanChannel tx, rx;
 
         // File-related variables
         private string testPath;
+
         private string variablePath;
         private string folderPath;
         private string resultPath;
 
         // Scheduler-related variables
         private Scheduler scheduler;
-        private int totalSteps; 
+
+        private int totalSteps;
         private bool doUpdateSteps; // Used in the updating step task
 
         // Test selected logic-related variables
         private bool testFileSelected;
+
         private bool testFolderSelected;
         private bool testSelected;
 
@@ -299,7 +304,7 @@ namespace TestProgram
                 lblFolderSelected.Text = folderPath;
 
                 testFolderSelected = true;
-                testSelected = testFileSelected && testFolderSelected;                
+                testSelected = testFileSelected && testFolderSelected;
             }
         }
 
@@ -311,7 +316,7 @@ namespace TestProgram
         {
             // Log header
             txbTestLog.Invoke(new MethodInvoker(() =>
-                    txbTestLog.Text = 
+                    txbTestLog.Text =
                         $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}"
                             .Replace("\t", "  ")
                 )
@@ -319,7 +324,7 @@ namespace TestProgram
 
             // Steps done and instruction executed
             string str = "";
-            while(doUpdateSteps)
+            while (doUpdateSteps)
             {
                 str = $"{totalSteps - scheduler.Instructions.Count}/{totalSteps}";
                 lblSchedulerStepDone.Invoke(new MethodInvoker(() => lblSchedulerStepDone.Text = str));

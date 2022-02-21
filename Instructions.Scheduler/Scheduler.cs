@@ -47,12 +47,13 @@ namespace Instructions.Scheduler
         private string instructionLog = "";
 
         public string ActualInstructionDescription { get; private set; } = "";
-        public string InstructionLog 
+
+        public string InstructionLog
         {
-            get => instructionLog; 
+            get => instructionLog;
             private set
             {
-                if(instructionLog.CompareTo(value) != 0)
+                if (instructionLog.CompareTo(value) != 0)
                 {
                     string lastLog = instructionLog;
                     instructionLog = value;
@@ -179,7 +180,7 @@ namespace Instructions.Scheduler
 
                             // Can resource link
                             x.Resource = resource;
-                            
+
                             // Execute instruction
                             await x.Execute();
                         }

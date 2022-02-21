@@ -22,7 +22,7 @@ namespace Instructions
         /// <param name="order">The order index</param>
         /// <param name="timeout">The timeout (in ms)</param>
         /// <param name="description">The description</param>
-        public Get(string variableName, int id, int order, int timeout = 1000, string description = "") 
+        public Get(string variableName, int id, int order, int timeout = 1000, string description = "")
             : base("Get", id, order, timeout, description)
         {
             this.variableName = variableName;
@@ -66,7 +66,7 @@ namespace Instructions
 
                     time.Stop();
 
-                    return received;                 
+                    return received;
                 }
             );
 
@@ -90,7 +90,7 @@ namespace Instructions
                 $"{valueGot}\t \t " +
                 $"{startTime:HH:mm:ss.fff}\t " +
                 $"{stopTime:HH:mm:ss.fff}\t " +
-                $"{result}"; 
+                $"{result}";
             return description;
         }
 
