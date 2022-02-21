@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCanCommunication", "PCanCommunication\PCanCommunication.csproj", "{5FFCAB1C-457C-4877-A14C-5F4E08E038C9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hardware.Can", "Hardware.Can\Hardware.Can.csproj", "{12360666-20BA-42C9-BC06-5F3766B11BB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hardware.Can.Peak", "Hardware.Can.Peak\Hardware.Can.Peak.csproj", "{589DA018-3B3A-4E20-95C8-3A8F046B598D}"
@@ -29,10 +27,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5FFCAB1C-457C-4877-A14C-5F4E08E038C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5FFCAB1C-457C-4877-A14C-5F4E08E038C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5FFCAB1C-457C-4877-A14C-5F4E08E038C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5FFCAB1C-457C-4877-A14C-5F4E08E038C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{12360666-20BA-42C9-BC06-5F3766B11BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{12360666-20BA-42C9-BC06-5F3766B11BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12360666-20BA-42C9-BC06-5F3766B11BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
