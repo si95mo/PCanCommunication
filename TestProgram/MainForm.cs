@@ -346,38 +346,43 @@ namespace TestProgram
         // Start the test
         private async void BtnStartTest_Click(object sender, EventArgs e)
         {
-            if (testSelected)
-            {
-                doUpdateSteps = true;
-
-                if (scheduler != null)
-                    scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
-
-                string[] files = Directory.GetFiles(folderPath);
-                resultPath = Path.Combine(folderPath, $"result_{files.Length}.csv");
-                await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
-
-                lblTestResult.Invoke(new MethodInvoker(() =>
-                        {
-                            Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                            lblTestResult.ForeColor = textColor;
-
-                            lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-                        }
-                    )
-                );
-
-                await Task.Delay(100);
-                doUpdateSteps = false;
-
-                if (scheduler != null)
-                    scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
-
-                scheduler = new Scheduler(testPath);
-                totalSteps = scheduler.Instructions.Count;
-            }
+            if (!CheckTextBoxes())
+                MessageBox.Show("Enter the required information first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else
-                MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            {
+                if (testSelected)
+                {
+                    doUpdateSteps = true;
+
+                    if (scheduler != null)
+                        scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
+
+                    string[] files = Directory.GetFiles(folderPath);
+                    resultPath = Path.Combine(folderPath, $"result_{files.Length}.csv");
+                    await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
+
+                    lblTestResult.Invoke(new MethodInvoker(() =>
+                            {
+                                Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                                lblTestResult.ForeColor = textColor;
+
+                                lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                            }
+                        )
+                    );
+
+                    await Task.Delay(100);
+                    doUpdateSteps = false;
+
+                    if (scheduler != null)
+                        scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
+
+                    scheduler = new Scheduler(testPath);
+                    totalSteps = scheduler.Instructions.Count;
+                }
+                else
+                    MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         // Stop the test
@@ -498,6 +503,39 @@ namespace TestProgram
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             resource?.Stop();
+        }
+
+        /// <summary>
+        /// Check whether the form text boxes are valorized (no empty string)
+        /// </summary>
+        /// <returns><see langword="true"/> if all is ok, <see langword="false"/> otherwise</returns>
+        private bool CheckTextBoxes()
+        {
+            bool check = true;
+
+            if(txbUser.Text.CompareTo("") == 0)
+            {
+                check = false;
+                txbUser.Focus();
+            }
+            else
+            {
+                if(txbOperatingSite.Text.CompareTo("") == 0)
+                {
+                    check = false;
+                    txbOperatingSite.Focus();
+                }
+                else
+                {
+                    if(txbBatch.Text.CompareTo("") == 0)
+                    {
+                        check = false;
+                        txbBatch.Focus();
+                    }
+                }
+            }
+
+            return check;
         }
     }
 }

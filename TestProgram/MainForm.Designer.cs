@@ -36,6 +36,9 @@ namespace TestProgram
             this.btnSelectFolder = new System.Windows.Forms.Button();
             this.lblTestSelected = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblTestResult = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btnStopTest = new System.Windows.Forms.Button();
             this.lblInstructionDescription = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -65,10 +68,14 @@ namespace TestProgram
             this.nudLogSize = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.txbTestLog = new System.Windows.Forms.TextBox();
-            this.btnStopTest = new System.Windows.Forms.Button();
-            this.lblTestResult = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.dgvVariables = new System.Windows.Forms.DataGridView();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txbUser = new System.Windows.Forms.TextBox();
+            this.txbOperatingSite = new System.Windows.Forms.TextBox();
+            this.txbBatch = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -78,6 +85,7 @@ namespace TestProgram
             ((System.ComponentModel.ISupportInitialize)(this.nudFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLogSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVariables)).BeginInit();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSelectTest
@@ -97,9 +105,9 @@ namespace TestProgram
             this.groupBox1.Controls.Add(this.btnSelectFolder);
             this.groupBox1.Controls.Add(this.lblTestSelected);
             this.groupBox1.Controls.Add(this.btnSelectTest);
-            this.groupBox1.Location = new System.Drawing.Point(489, 17);
+            this.groupBox1.Location = new System.Drawing.Point(491, 68);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(253, 162);
+            this.groupBox1.Size = new System.Drawing.Size(253, 158);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "File options";
@@ -141,12 +149,41 @@ namespace TestProgram
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.lblSchedulerStepDone);
             this.groupBox2.Controls.Add(this.btnStartTest);
-            this.groupBox2.Location = new System.Drawing.Point(489, 185);
+            this.groupBox2.Location = new System.Drawing.Point(491, 232);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(253, 155);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Test options";
+            // 
+            // lblTestResult
+            // 
+            this.lblTestResult.AutoSize = true;
+            this.lblTestResult.Location = new System.Drawing.Point(113, 130);
+            this.lblTestResult.Name = "lblTestResult";
+            this.lblTestResult.Size = new System.Drawing.Size(13, 13);
+            this.lblTestResult.TabIndex = 9;
+            this.lblTestResult.Text = "--";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 130);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "Test result:";
+            // 
+            // btnStopTest
+            // 
+            this.btnStopTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStopTest.Location = new System.Drawing.Point(6, 50);
+            this.btnStopTest.Name = "btnStopTest";
+            this.btnStopTest.Size = new System.Drawing.Size(241, 23);
+            this.btnStopTest.TabIndex = 7;
+            this.btnStopTest.Text = "Stop test";
+            this.btnStopTest.UseVisualStyleBackColor = true;
+            this.btnStopTest.Click += new System.EventHandler(this.BtnStopTest_Click);
             // 
             // lblInstructionDescription
             // 
@@ -198,7 +235,7 @@ namespace TestProgram
             // 
             this.groupBox3.Controls.Add(this.btnStopResource);
             this.groupBox3.Controls.Add(this.btnStartResource);
-            this.groupBox3.Location = new System.Drawing.Point(18, 79);
+            this.groupBox3.Location = new System.Drawing.Point(20, 126);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(206, 100);
             this.groupBox3.TabIndex = 17;
@@ -233,7 +270,7 @@ namespace TestProgram
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.cbxDeviceList);
-            this.groupBox4.Location = new System.Drawing.Point(18, 17);
+            this.groupBox4.Location = new System.Drawing.Point(20, 68);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
@@ -287,7 +324,7 @@ namespace TestProgram
             this.groupBox6.Controls.Add(this.label7);
             this.groupBox6.Controls.Add(this.chbLogEnabled);
             this.groupBox6.Controls.Add(this.label8);
-            this.groupBox6.Location = new System.Drawing.Point(230, 79);
+            this.groupBox6.Location = new System.Drawing.Point(232, 126);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(253, 100);
             this.groupBox6.TabIndex = 19;
@@ -355,7 +392,7 @@ namespace TestProgram
             this.groupBox8.Controls.Add(this.btnReadLog);
             this.groupBox8.Controls.Add(this.nudLogSize);
             this.groupBox8.Controls.Add(this.label9);
-            this.groupBox8.Location = new System.Drawing.Point(18, 185);
+            this.groupBox8.Location = new System.Drawing.Point(20, 232);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(465, 155);
             this.groupBox8.TabIndex = 20;
@@ -467,56 +504,93 @@ namespace TestProgram
             this.txbTestLog.BackColor = System.Drawing.SystemColors.MenuText;
             this.txbTestLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txbTestLog.ForeColor = System.Drawing.SystemColors.Info;
-            this.txbTestLog.Location = new System.Drawing.Point(20, 346);
+            this.txbTestLog.Location = new System.Drawing.Point(20, 393);
             this.txbTestLog.Multiline = true;
             this.txbTestLog.Name = "txbTestLog";
             this.txbTestLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbTestLog.Size = new System.Drawing.Size(1292, 444);
+            this.txbTestLog.Size = new System.Drawing.Size(1292, 397);
             this.txbTestLog.TabIndex = 0;
-            // 
-            // btnStopTest
-            // 
-            this.btnStopTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopTest.Location = new System.Drawing.Point(6, 50);
-            this.btnStopTest.Name = "btnStopTest";
-            this.btnStopTest.Size = new System.Drawing.Size(241, 23);
-            this.btnStopTest.TabIndex = 7;
-            this.btnStopTest.Text = "Stop test";
-            this.btnStopTest.UseVisualStyleBackColor = true;
-            this.btnStopTest.Click += new System.EventHandler(this.BtnStopTest_Click);
-            // 
-            // lblTestResult
-            // 
-            this.lblTestResult.AutoSize = true;
-            this.lblTestResult.Location = new System.Drawing.Point(113, 130);
-            this.lblTestResult.Name = "lblTestResult";
-            this.lblTestResult.Size = new System.Drawing.Size(13, 13);
-            this.lblTestResult.TabIndex = 9;
-            this.lblTestResult.Text = "--";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 130);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "Test result:";
             // 
             // dgvVariables
             // 
             this.dgvVariables.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dgvVariables.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVariables.Location = new System.Drawing.Point(748, 20);
+            this.dgvVariables.Location = new System.Drawing.Point(750, 11);
             this.dgvVariables.Name = "dgvVariables";
-            this.dgvVariables.Size = new System.Drawing.Size(564, 320);
+            this.dgvVariables.Size = new System.Drawing.Size(562, 376);
             this.dgvVariables.TabIndex = 21;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.label12);
+            this.groupBox5.Controls.Add(this.txbBatch);
+            this.groupBox5.Controls.Add(this.txbOperatingSite);
+            this.groupBox5.Controls.Add(this.txbUser);
+            this.groupBox5.Controls.Add(this.label3);
+            this.groupBox5.Controls.Add(this.label11);
+            this.groupBox5.Location = new System.Drawing.Point(20, 11);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox5.Size = new System.Drawing.Size(724, 53);
+            this.groupBox5.TabIndex = 22;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "CAN resource settings";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(239, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(75, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Sito produttivo";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(5, 20);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(54, 13);
+            this.label11.TabIndex = 7;
+            this.label11.Text = "Operatore";
+            // 
+            // txbUser
+            // 
+            this.txbUser.Location = new System.Drawing.Point(65, 17);
+            this.txbUser.Name = "txbUser";
+            this.txbUser.Size = new System.Drawing.Size(168, 20);
+            this.txbUser.TabIndex = 9;
+            // 
+            // txbOperatingSite
+            // 
+            this.txbOperatingSite.Location = new System.Drawing.Point(320, 17);
+            this.txbOperatingSite.Name = "txbOperatingSite";
+            this.txbOperatingSite.Size = new System.Drawing.Size(168, 20);
+            this.txbOperatingSite.TabIndex = 10;
+            // 
+            // txbBatch
+            // 
+            this.txbBatch.Location = new System.Drawing.Point(575, 18);
+            this.txbBatch.Name = "txbBatch";
+            this.txbBatch.Size = new System.Drawing.Size(142, 20);
+            this.txbBatch.TabIndex = 11;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(534, 21);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(35, 13);
+            this.label12.TabIndex = 12;
+            this.label12.Text = "Batch";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1329, 802);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.dgvVariables);
             this.Controls.Add(this.txbTestLog);
             this.Controls.Add(this.groupBox4);
@@ -545,6 +619,8 @@ namespace TestProgram
             ((System.ComponentModel.ISupportInitialize)(this.nudFilter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLogSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVariables)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -591,6 +667,13 @@ namespace TestProgram
         private System.Windows.Forms.Label lblTestResult;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridView dgvVariables;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox txbBatch;
+        private System.Windows.Forms.TextBox txbOperatingSite;
+        private System.Windows.Forms.TextBox txbUser;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label11;
     }
 }
 
