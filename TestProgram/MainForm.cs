@@ -576,21 +576,21 @@ namespace TestProgram
         {
             bool check = true;
 
-            if(txbUser.Text.CompareTo("") == 0)
+            if (txbUser.Text.CompareTo("") == 0)
             {
                 check = false;
                 txbUser.Focus();
             }
             else
             {
-                if(txbOperatingSite.Text.CompareTo("") == 0)
+                if (txbOperatingSite.Text.CompareTo("") == 0)
                 {
                     check = false;
                     txbOperatingSite.Focus();
                 }
                 else
                 {
-                    if(txbBatch.Text.CompareTo("") == 0)
+                    if (txbBatch.Text.CompareTo("") == 0)
                     {
                         check = false;
                         txbBatch.Focus();
