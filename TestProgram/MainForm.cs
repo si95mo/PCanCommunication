@@ -58,6 +58,7 @@ namespace TestProgram
 
             // Set the resource started led to a default color
             pnlResourceStarted.BackColor = unknowkColor;
+            ledResourceStatus.BackColor = unknowkColor;
             // Set the log button border color to stopped
             btnReadLog.FlatAppearance.BorderColor = startedColor;
 
@@ -104,7 +105,8 @@ namespace TestProgram
         private void InitializeCanCommunication()
         {
             // Create the can resource
-            resource = new PeakCanResource(hardwareHandle, StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
+            if (resource == null)
+                resource = new PeakCanResource(hardwareHandle, StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
 
             // Update the UI and connect the event handler
             lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
@@ -134,11 +136,18 @@ namespace TestProgram
             lblResourceStatus.Invoke(new MethodInvoker(() =>
                     {
                         lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+                        lblCanResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
 
                         if (lblResourceStatus.Text.CompareTo("PCAN_ERROR_OK") != 0) // PCAN_ERROR_OK is for no error
+                        {
                             lblResourceStatus.ForeColor = Color.Red;
+                            lblCanResourceStatus.ForeColor = Color.Red;
+                        }
                         else
+                        {
                             lblResourceStatus.ForeColor = Color.Black;
+                            lblCanResourceStatus.ForeColor = Color.Black;
+                        }
                     }
                 )
             );
@@ -350,38 +359,48 @@ namespace TestProgram
                 MessageBox.Show("Enter the required information first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else
             {
-                if (testSelected)
-                {
-                    doUpdateSteps = true;
-
-                    if (scheduler != null)
-                        scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
-
-                    string[] files = Directory.GetFiles(folderPath);
-                    resultPath = Path.Combine(folderPath, $"result_{files.Length}.csv");
-                    await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
-
-                    lblTestResult.Invoke(new MethodInvoker(() =>
-                            {
-                                Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                                lblTestResult.ForeColor = textColor;
-
-                                lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-                            }
-                        )
-                    );
-
-                    await Task.Delay(100);
-                    doUpdateSteps = false;
-
-                    if (scheduler != null)
-                        scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
-
-                    scheduler = new Scheduler(testPath);
-                    totalSteps = scheduler.Instructions.Count;
-                }
+                if (resource == null)
+                    MessageBox.Show("CAN resource not started!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 else
-                    MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                {
+                    if (resource.Status != 0)
+                        MessageBox.Show("CAN resource not working!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                    {
+                        if (testSelected)
+                        {
+                            doUpdateSteps = true;
+
+                            if (scheduler != null)
+                                scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
+
+                            string[] files = Directory.GetFiles(folderPath);
+                            resultPath = Path.Combine(folderPath, $"result_{files.Length}.csv");
+                            await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
+
+                            lblTestResult.Invoke(new MethodInvoker(() =>
+                                    {
+                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                                        lblTestResult.ForeColor = textColor;
+
+                                        lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                                    }
+                                )
+                            );
+
+                            await Task.Delay(100);
+                            doUpdateSteps = false;
+
+                            if (scheduler != null)
+                                scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
+
+                            scheduler = new Scheduler(testPath);
+                            totalSteps = scheduler.Instructions.Count;
+                        }
+                        else
+                            MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
             }
         }
 
@@ -423,6 +442,8 @@ namespace TestProgram
             // Update UI
             btnStartResource.FlatAppearance.BorderColor = startedColor;
             btnStopResource.FlatAppearance.BorderColor = Color.Black;
+
+            ledResourceStatus.BackColor = startedColor;
             pnlResourceStarted.BackColor = startedColor;
         }
 
@@ -437,6 +458,8 @@ namespace TestProgram
             // Update UI
             btnStartResource.FlatAppearance.BorderColor = Color.Black;
             btnStopResource.FlatAppearance.BorderColor = stoppedColor;
+
+            ledResourceStatus.BackColor = stoppedColor;
             pnlResourceStarted.BackColor = stoppedColor;
         }
 
@@ -503,6 +526,46 @@ namespace TestProgram
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             resource?.Stop();
+        }
+
+        private void BtnStartCanResource_Click(object sender, EventArgs e)
+        {
+            hardwareHandle = 81; // PCan usb defualt hw handle
+
+            // Create the can resource
+            if (resource == null)
+                resource = new PeakCanResource(hardwareHandle, BaudRate.K1000);
+
+            // Update the UI and connect the event handler
+            lblCanResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+            resource.StatusChanged += Resource_StatusChanged;
+
+            if (resource.Status != 0) // 0 is for no error
+                lblCanResourceStatus.ForeColor = stoppedColor;
+            else
+                lblCanResourceStatus.ForeColor = startedColor;
+
+            rx = new IndexedCanChannel(canId: 0x200, index: 0x0, subIndex: 0x0, resource, cmd: 0);
+            rx.CanFrameChanged += Channel_CanFrameChanged;
+            tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, cmd: 1);
+
+            resource.AddFilteredCanId(0x200); // Rx
+            resource.AddFilteredCanId(0x100); // Tx
+
+            resource.Start();
+
+            ledResourceStatus.BackColor = startedColor;
+            pnlResourceStarted.BackColor = startedColor;
+        }
+
+        private void BtnStopCanResource_Click(object sender, EventArgs e)
+        {
+            // Stop the resource.
+            resource?.Stop();
+
+            // Update UI
+            ledResourceStatus.BackColor = stoppedColor;
+            pnlResourceStarted.BackColor = stoppedColor;
         }
 
         /// <summary>
