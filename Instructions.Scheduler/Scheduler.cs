@@ -200,6 +200,8 @@ namespace Instructions.Scheduler
 
                 TestResult = instructionResult;
             }
+
+            TestProgramManager.FinalizeFile(path, TestResult);
         }
 
         /// <summary>

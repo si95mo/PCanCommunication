@@ -81,6 +81,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cryptography\Cryptography.csproj">
+      <Project>{7c31d528-a0b9-431d-9f65-77dc762ace5d}</Project>
+      <Name>Cryptography</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataStructures.Variables\DataStructures.Variables.csproj">
       <Project>{9B4C98EF-8522-48E3-A224-282F8BC1655D}</Project>
       <Name>DataStructures.Variables</Name>
@@ -100,6 +104,10 @@
     <ProjectReference Include="..\Instructions\Instructions.csproj">
       <Project>{B539EC3D-3A1F-495D-B012-D187996055C7}</Project>
       <Name>Instructions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SerialNUmbers\SerialNumbers.csproj">
+      <Project>{F66D49A8-F6BA-4672-A011-A150634C2CF0}</Project>
+      <Name>SerialNumbers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

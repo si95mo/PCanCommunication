@@ -2,6 +2,7 @@
 using Hardware.Can;
 using Hardware.Can.Peak.Lib;
 using Instructions.Scheduler;
+using SerialNumbers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -120,9 +121,6 @@ namespace TestProgram
             rx = new IndexedCanChannel(canId: 0x200, index: 0x0, subIndex: 0x0, resource, cmd: 0);
             rx.CanFrameChanged += Channel_CanFrameChanged;
             tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, cmd: 1);
-
-            resource.AddFilteredCanId(0x200); // Rx
-            resource.AddFilteredCanId(0x100); // Tx
         }
 
         /// <summary>
@@ -264,29 +262,51 @@ namespace TestProgram
         // Select the test file
         private void BtnSelectTest_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-
-            if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
+            if (resource == null)
+                MessageBox.Show("CAN resource not started!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else
             {
-                testPath = Path.Combine(folderDialog.SelectedPath, "main.tp");
-                lblTestSelected.Text = testPath;
+                FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+                ledTestLoaded.BackColor = stoppedColor;
 
-                testFileSelected = true;
-                testSelected = testFileSelected && testFolderSelected;
+                if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
+                {
+                    testPath = Path.Combine(folderDialog.SelectedPath, "main.tp");
+                    lblTestSelected.Text = testPath;
 
-                // Initialize the scheduler (the test file read is done inside)
-                scheduler = new Scheduler(testPath);
-                totalSteps = scheduler.Instructions.Count;
+                    testFileSelected = true;
+                    ledTestLoaded.BackColor = startedColor;
+                    testSelected = testFileSelected && testFolderSelected;
 
-                // Read the variable file
-                variablePath = Path.Combine(folderDialog.SelectedPath, "variables.csv");
-                VariableDictionary.Variables.Clear();
-                VariableFileHandler.ReadTest(variablePath, '\t');
+                    // Initialize the scheduler (the test file read is done inside)
+                    scheduler = new Scheduler(testPath);
+                    totalSteps = scheduler.Instructions.Count;
 
-                foreach (IVariable v in VariableDictionary.Variables.Values)
-                    (v as DoubleVariable).ValueChanged += Variable_ValueChanged;
+                    // Update the can id or create the can channel if not already done (tx)
+                    if (tx != null)
+                        tx.CanId = TestProgramManager.TxCanId;
+                    else
+                        tx = new IndexedCanChannel(canId: TestProgramManager.TxCanId, index: 0x0, subIndex: 0x0, resource, cmd: 1);
 
-                UpdateDataGridItems();
+                    // Update the can id or create the can channel if not already done (rx)
+                    if (rx != null)
+                        rx.CanId = TestProgramManager.RxCanId;
+                    else
+                        rx = new IndexedCanChannel(canId: TestProgramManager.RxCanId, index: 0x0, subIndex: 0x0, resource, cmd: 0);
+
+                    resource.AddFilteredCanId(rx.CanId); // Rx
+                    resource.AddFilteredCanId(tx.CanId); // Tx
+
+                    // Read the variable file
+                    variablePath = Path.Combine(folderDialog.SelectedPath, "variables.csv");
+                    VariableDictionary.Variables.Clear();
+                    VariableFileHandler.ReadTest(variablePath, '\t');
+
+                    foreach (IVariable v in VariableDictionary.Variables.Values)
+                        (v as DoubleVariable).ValueChanged += Variable_ValueChanged;
+
+                    UpdateDataGridItems();
+                }
             }
         }
 
@@ -306,6 +326,7 @@ namespace TestProgram
         private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            ledResultFolderSelected.BackColor = stoppedColor;
 
             if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
             {
@@ -313,6 +334,7 @@ namespace TestProgram
                 lblFolderSelected.Text = folderPath;
 
                 testFolderSelected = true;
+                ledResultFolderSelected.BackColor = startedColor;
                 testSelected = testFileSelected && testFolderSelected;
             }
         }
@@ -337,8 +359,10 @@ namespace TestProgram
             {
                 str = $"{totalSteps - scheduler.Instructions.Count}/{totalSteps}";
                 lblSchedulerStepDone.Invoke(new MethodInvoker(() => lblSchedulerStepDone.Text = str));
+                lblBasicStepNumber.Invoke(new MethodInvoker(() => lblBasicStepNumber.Text = str));
 
                 lblInstructionDescription.Invoke(new MethodInvoker(() => lblInstructionDescription.Text = scheduler.ActualInstructionDescription));
+                lblBasicInstruction.Invoke(new MethodInvoker(() => lblBasicInstruction.Text = scheduler.ActualInstructionDescription));
 
                 await Task.Delay(10);
             }
@@ -359,23 +383,33 @@ namespace TestProgram
                 MessageBox.Show("Enter the required information first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else
             {
-                if (resource == null)
-                    MessageBox.Show("CAN resource not started!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                else
-                {
-                    if (resource.Status != 0)
-                        MessageBox.Show("CAN resource not working!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    else
-                    {
+                //if (resource == null)
+                //    MessageBox.Show("CAN resource not started!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //else
+                //{
+                //    if (resource.Status != 0)
+                //        MessageBox.Show("CAN resource not working!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    else
+                //    {
                         if (testSelected)
                         {
+                            TestProgramManager.UserName = txbUser.Text;
+                            TestProgramManager.ProductionSite = txbOperatingSite.Text;
+                            TestProgramManager.BatchNumber = txbBatch.Text;
+
                             doUpdateSteps = true;
 
                             if (scheduler != null)
                                 scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
 
                             string[] files = Directory.GetFiles(folderPath);
-                            resultPath = Path.Combine(folderPath, $"result_{files.Length}.csv");
+                            DateTime now = DateTime.Now;
+                            TestProgramManager.SerialIndex = files.Length;
+
+                            resultPath = Path.Combine(
+                                folderPath, 
+                                $"{SerialNumbers.SerialNumbers.CreateNew(txbOperatingSite.Text, files.Length)}_{now:yyyyMMdd}_{now:HHmmss}.csv"
+                            );
                             await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
 
                             lblTestResult.Invoke(new MethodInvoker(() =>
@@ -387,8 +421,17 @@ namespace TestProgram
                                     }
                                 )
                             );
+                            lblTestResult.Invoke(new MethodInvoker(() =>
+                                    {
+                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                                        lblBasicTestResult.ForeColor = textColor;
 
-                            await Task.Delay(100);
+                                        lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                                    }
+                                )
+                            );
+
+                    await Task.Delay(100);
                             doUpdateSteps = false;
 
                             if (scheduler != null)
@@ -399,8 +442,8 @@ namespace TestProgram
                         }
                         else
                             MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
+            //        }
+            //    }
             }
         }
 
@@ -566,6 +609,48 @@ namespace TestProgram
             // Update UI
             ledResourceStatus.BackColor = stoppedColor;
             pnlResourceStarted.BackColor = stoppedColor;
+        }
+
+        private void BtnCheckFileIntegrity_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "C:\\";
+                openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = false;
+                openFileDialog.Title = "Select result file to test";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    string filePath = openFileDialog.FileName;
+
+                    //Read the contents of the file into a stream
+                    var fileStream = openFileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        string fileContent = reader.ReadToEnd();
+
+                        int index = fileContent.IndexOf("User");
+                        string subText = fileContent.Substring(index);
+
+                        string oldMd5 = fileContent.Substring(0, index).Replace(Environment.NewLine, "");
+                        string newMd5 = Cryptography.MD5.CreateNew(subText);
+
+                        if (oldMd5.CompareTo(newMd5) == 0)
+                            MessageBox.Show("The file is intact!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        else
+                            MessageBox.Show(
+                                $"The file has been corrupted! {Environment.NewLine}  - Saved MD5: {oldMd5}{Environment.NewLine}  - Actual MD5: {newMd5}", 
+                                "Error", 
+                                MessageBoxButtons.OK, 
+                                MessageBoxIcon.Error
+                            );
+                    }
+                }
+            }
         }
 
         /// <summary>

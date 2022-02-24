@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SerialNumbers;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -8,8 +9,17 @@ namespace Instructions.Scheduler
     /// <summary>
     /// Load a test program from a csv file
     /// </summary>
-    internal static class TestProgramManager
+    public static class TestProgramManager
     {
+        public static int TxCanId { get; internal set; } = 0x200;
+        public static int RxCanId { get; internal set; } = 0x100;
+
+        public static string UserName { get; set; } = "";
+        public static string ProductionSite { get; set; } = "";
+        public static string BatchNumber { get; set; } = "";
+        public static int SerialIndex { get; set; } = 0;
+        public static string SerialNumber { get; set; } = "";
+
         private static object lockObject = new object();
 
         /// <summary>
@@ -33,7 +43,6 @@ namespace Instructions.Scheduler
                 File.Delete(fullFileAbsolutePath);
 
             int n = 0;
-            int counter = 0;
             for (int i = 0; i < mainText.Length; i++)
             {
                 // If the line contains a sub-test file path
@@ -45,6 +54,16 @@ namespace Instructions.Scheduler
 
                     // Save the sub-test in the full-test file
                     n = SaveTest(fileAbsolutePath, ++n);
+                }
+                else
+                {
+                    if(mainText[i].StartsWith("@TX="))
+                        TxCanId = Convert.ToInt32(mainText[i].Split('=')[1], 16);
+                    else
+                    {
+                        if (mainText[i].StartsWith("@RX="))
+                            RxCanId = Convert.ToInt32(mainText[i].Split('=')[1], 16);
+                    }
                 }
             }
 
@@ -260,10 +279,32 @@ namespace Instructions.Scheduler
         private static void InitializeFile(string path)
         {
             if (!File.Exists(path))
+            {
+                File.WriteAllText(
+                    path,
+                    $"User: {UserName}{Environment.NewLine}" +
+                    $"Production site: {ProductionSite}{Environment.NewLine}" +
+                    $"Batch number: {BatchNumber}{Environment.NewLine}" +
+                    $"Serial number: {SerialNumbers.SerialNumbers.CreateNew(ProductionSite, SerialIndex)}{Environment.NewLine}" +
+                    $"{Environment.NewLine}"
+                );
+
                 File.AppendAllText(
                     path,
                     $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}"
                 );
+            }
+        }
+
+        public static void FinalizeFile(string path, bool testResult)
+        {
+            string testResultAsString = testResult ? "Passed" : "Failed";
+            File.AppendAllText(path, $"{Environment.NewLine}Result: {testResultAsString}");
+
+            string text = File.ReadAllText(path);
+            string encryptResult = Cryptography.MD5.CreateNew(text);
+
+            File.WriteAllText(path, $"{encryptResult}{Environment.NewLine}{text}");
         }
     }
 }

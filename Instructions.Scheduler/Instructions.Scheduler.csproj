@@ -88,6 +88,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cryptography\Cryptography.csproj">
+      <Project>{7c31d528-a0b9-431d-9f65-77dc762ace5d}</Project>
+      <Name>Cryptography</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hardware.Can\Hardware.Can.csproj">
       <Project>{12360666-20BA-42C9-BC06-5F3766B11BB7}</Project>
       <Name>Hardware.Can</Name>
@@ -95,6 +99,10 @@
     <ProjectReference Include="..\Instructions\Instructions.csproj">
       <Project>{b539ec3d-3a1f-495d-b012-d187996055c7}</Project>
       <Name>Instructions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SerialNUmbers\SerialNumbers.csproj">
+      <Project>{F66D49A8-F6BA-4672-A011-A150634C2CF0}</Project>
+      <Name>SerialNumbers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

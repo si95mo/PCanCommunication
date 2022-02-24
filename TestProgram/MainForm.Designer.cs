@@ -78,17 +78,28 @@ namespace TestProgram
             this.btnSelectTest = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpgBasic = new System.Windows.Forms.TabPage();
-            this.tpgAdvanced = new System.Windows.Forms.TabPage();
-            this.btnStartCanResource = new System.Windows.Forms.Button();
-            this.btnStopCanResource = new System.Windows.Forms.Button();
-            this.label13 = new System.Windows.Forms.Label();
-            this.ledResourceStatus = new System.Windows.Forms.Panel();
-            this.lblCanResourceStatus = new System.Windows.Forms.Label();
-            this.btnSelectTestPlan = new System.Windows.Forms.Button();
-            this.btnSelectResultFolder = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.btnStartTestProgram = new System.Windows.Forms.Button();
             this.btnStopTestProgram = new System.Windows.Forms.Button();
+            this.btnStartTestProgram = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.btnSelectResultFolder = new System.Windows.Forms.Button();
+            this.btnSelectTestPlan = new System.Windows.Forms.Button();
+            this.lblCanResourceStatus = new System.Windows.Forms.Label();
+            this.ledResourceStatus = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btnStopCanResource = new System.Windows.Forms.Button();
+            this.btnStartCanResource = new System.Windows.Forms.Button();
+            this.tpgAdvanced = new System.Windows.Forms.TabPage();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.ledTestLoaded = new System.Windows.Forms.Panel();
+            this.ledResultFolderSelected = new System.Windows.Forms.Panel();
+            this.lblBasicTestResult = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.lblBasicInstruction = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.lblBasicStepNumber = new System.Windows.Forms.Label();
+            this.btnCheckFileIntegrity = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLogSize)).BeginInit();
             this.groupBox5.SuspendLayout();
@@ -182,15 +193,15 @@ namespace TestProgram
             // lbxFilteredCanId
             // 
             this.lbxFilteredCanId.FormattingEnabled = true;
-            this.lbxFilteredCanId.Location = new System.Drawing.Point(304, 9);
+            this.lbxFilteredCanId.Location = new System.Drawing.Point(304, 14);
             this.lbxFilteredCanId.Name = "lbxFilteredCanId";
-            this.lbxFilteredCanId.Size = new System.Drawing.Size(155, 134);
+            this.lbxFilteredCanId.Size = new System.Drawing.Size(155, 121);
             this.lbxFilteredCanId.TabIndex = 1;
             // 
             // btnRemoveFilter
             // 
             this.btnRemoveFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRemoveFilter.Location = new System.Drawing.Point(12, 91);
+            this.btnRemoveFilter.Location = new System.Drawing.Point(12, 87);
             this.btnRemoveFilter.Name = "btnRemoveFilter";
             this.btnRemoveFilter.Size = new System.Drawing.Size(286, 23);
             this.btnRemoveFilter.TabIndex = 17;
@@ -201,7 +212,7 @@ namespace TestProgram
             // btnAddFilter
             // 
             this.btnAddFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAddFilter.Location = new System.Drawing.Point(12, 62);
+            this.btnAddFilter.Location = new System.Drawing.Point(12, 58);
             this.btnAddFilter.Name = "btnAddFilter";
             this.btnAddFilter.Size = new System.Drawing.Size(286, 23);
             this.btnAddFilter.TabIndex = 16;
@@ -212,7 +223,7 @@ namespace TestProgram
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(9, 36);
+            this.label10.Location = new System.Drawing.Point(10, 37);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(148, 13);
             this.label10.TabIndex = 15;
@@ -221,7 +232,7 @@ namespace TestProgram
             // nudFilter
             // 
             this.nudFilter.Hexadecimal = true;
-            this.nudFilter.Location = new System.Drawing.Point(211, 34);
+            this.nudFilter.Location = new System.Drawing.Point(211, 35);
             this.nudFilter.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -240,7 +251,7 @@ namespace TestProgram
             // btnReadLog
             // 
             this.btnReadLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReadLog.Location = new System.Drawing.Point(12, 120);
+            this.btnReadLog.Location = new System.Drawing.Point(12, 116);
             this.btnReadLog.Name = "btnReadLog";
             this.btnReadLog.Size = new System.Drawing.Size(286, 23);
             this.btnReadLog.TabIndex = 10;
@@ -249,7 +260,7 @@ namespace TestProgram
             // 
             // nudLogSize
             // 
-            this.nudLogSize.Location = new System.Drawing.Point(211, 9);
+            this.nudLogSize.Location = new System.Drawing.Point(211, 14);
             this.nudLogSize.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -282,7 +293,7 @@ namespace TestProgram
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(938, 26);
+            this.label12.Location = new System.Drawing.Point(938, 25);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(51, 20);
             this.label12.TabIndex = 12;
@@ -290,42 +301,42 @@ namespace TestProgram
             // 
             // txbBatch
             // 
-            this.txbBatch.Location = new System.Drawing.Point(995, 24);
+            this.txbBatch.Location = new System.Drawing.Point(995, 21);
             this.txbBatch.Name = "txbBatch";
             this.txbBatch.Size = new System.Drawing.Size(317, 26);
             this.txbBatch.TabIndex = 11;
             // 
             // txbOperatingSite
             // 
-            this.txbOperatingSite.Location = new System.Drawing.Point(587, 24);
+            this.txbOperatingSite.Location = new System.Drawing.Point(587, 21);
             this.txbOperatingSite.Name = "txbOperatingSite";
             this.txbOperatingSite.Size = new System.Drawing.Size(345, 26);
             this.txbOperatingSite.TabIndex = 10;
             // 
             // txbUser
             // 
-            this.txbUser.Location = new System.Drawing.Point(92, 24);
+            this.txbUser.Location = new System.Drawing.Point(54, 21);
             this.txbUser.Name = "txbUser";
-            this.txbUser.Size = new System.Drawing.Size(372, 26);
+            this.txbUser.Size = new System.Drawing.Size(407, 26);
             this.txbUser.TabIndex = 9;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(470, 27);
+            this.label3.Location = new System.Drawing.Point(467, 24);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(111, 20);
+            this.label3.Size = new System.Drawing.Size(114, 20);
             this.label3.TabIndex = 8;
-            this.label3.Text = "Sito produttivo";
+            this.label3.Text = "Production site";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(5, 27);
+            this.label11.Location = new System.Drawing.Point(5, 24);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(81, 20);
+            this.label11.Size = new System.Drawing.Size(43, 20);
             this.label11.TabIndex = 7;
-            this.label11.Text = "Operatore";
+            this.label11.Text = "User";
             // 
             // cbxBaudRate
             // 
@@ -353,7 +364,7 @@ namespace TestProgram
             this.groupBox5.Size = new System.Drawing.Size(1321, 53);
             this.groupBox5.TabIndex = 30;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "CAN resource settings";
+            this.groupBox5.Text = "Test informations";
             // 
             // dgvVariables
             // 
@@ -417,9 +428,9 @@ namespace TestProgram
             this.groupBox8.Controls.Add(this.btnReadLog);
             this.groupBox8.Controls.Add(this.nudLogSize);
             this.groupBox8.Controls.Add(this.label9);
-            this.groupBox8.Location = new System.Drawing.Point(5, 169);
+            this.groupBox8.Location = new System.Drawing.Point(5, 179);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(465, 155);
+            this.groupBox8.Size = new System.Drawing.Size(465, 145);
             this.groupBox8.TabIndex = 28;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Log parameters";
@@ -433,7 +444,7 @@ namespace TestProgram
             this.groupBox6.Controls.Add(this.label8);
             this.groupBox6.Location = new System.Drawing.Point(217, 63);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(253, 100);
+            this.groupBox6.Size = new System.Drawing.Size(253, 110);
             this.groupBox6.TabIndex = 27;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "CAN resource info";
@@ -444,7 +455,7 @@ namespace TestProgram
             this.groupBox3.Controls.Add(this.btnStartResource);
             this.groupBox3.Location = new System.Drawing.Point(5, 63);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(206, 100);
+            this.groupBox3.Size = new System.Drawing.Size(206, 110);
             this.groupBox3.TabIndex = 26;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "CAN resource commands";
@@ -470,9 +481,9 @@ namespace TestProgram
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.lblSchedulerStepDone);
             this.groupBox2.Controls.Add(this.btnStartTest);
-            this.groupBox2.Location = new System.Drawing.Point(476, 170);
+            this.groupBox2.Location = new System.Drawing.Point(476, 179);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(253, 155);
+            this.groupBox2.Size = new System.Drawing.Size(253, 146);
             this.groupBox2.TabIndex = 24;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Test options";
@@ -480,7 +491,7 @@ namespace TestProgram
             // lblTestResult
             // 
             this.lblTestResult.AutoSize = true;
-            this.lblTestResult.Location = new System.Drawing.Point(113, 130);
+            this.lblTestResult.Location = new System.Drawing.Point(108, 127);
             this.lblTestResult.Name = "lblTestResult";
             this.lblTestResult.Size = new System.Drawing.Size(13, 13);
             this.lblTestResult.TabIndex = 9;
@@ -489,7 +500,7 @@ namespace TestProgram
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 130);
+            this.label4.Location = new System.Drawing.Point(3, 127);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 13);
             this.label4.TabIndex = 8;
@@ -498,7 +509,7 @@ namespace TestProgram
             // btnStopTest
             // 
             this.btnStopTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopTest.Location = new System.Drawing.Point(6, 50);
+            this.btnStopTest.Location = new System.Drawing.Point(6, 58);
             this.btnStopTest.Name = "btnStopTest";
             this.btnStopTest.Size = new System.Drawing.Size(241, 23);
             this.btnStopTest.TabIndex = 7;
@@ -508,7 +519,7 @@ namespace TestProgram
             // 
             // lblInstructionDescription
             // 
-            this.lblInstructionDescription.Location = new System.Drawing.Point(113, 89);
+            this.lblInstructionDescription.Location = new System.Drawing.Point(113, 97);
             this.lblInstructionDescription.Name = "lblInstructionDescription";
             this.lblInstructionDescription.Size = new System.Drawing.Size(134, 34);
             this.lblInstructionDescription.TabIndex = 6;
@@ -517,7 +528,7 @@ namespace TestProgram
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 89);
+            this.label2.Location = new System.Drawing.Point(6, 97);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(91, 13);
             this.label2.TabIndex = 5;
@@ -526,7 +537,7 @@ namespace TestProgram
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 76);
+            this.label1.Location = new System.Drawing.Point(6, 84);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(101, 13);
             this.label1.TabIndex = 4;
@@ -535,7 +546,7 @@ namespace TestProgram
             // lblSchedulerStepDone
             // 
             this.lblSchedulerStepDone.AutoSize = true;
-            this.lblSchedulerStepDone.Location = new System.Drawing.Point(113, 76);
+            this.lblSchedulerStepDone.Location = new System.Drawing.Point(113, 84);
             this.lblSchedulerStepDone.Name = "lblSchedulerStepDone";
             this.lblSchedulerStepDone.Size = new System.Drawing.Size(24, 13);
             this.lblSchedulerStepDone.TabIndex = 3;
@@ -544,7 +555,7 @@ namespace TestProgram
             // btnStartTest
             // 
             this.btnStartTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStartTest.Location = new System.Drawing.Point(6, 21);
+            this.btnStartTest.Location = new System.Drawing.Point(6, 29);
             this.btnStartTest.Name = "btnStartTest";
             this.btnStartTest.Size = new System.Drawing.Size(241, 23);
             this.btnStartTest.TabIndex = 0;
@@ -554,29 +565,30 @@ namespace TestProgram
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnCheckFileIntegrity);
             this.groupBox1.Controls.Add(this.lblFolderSelected);
             this.groupBox1.Controls.Add(this.btnSelectFolder);
             this.groupBox1.Controls.Add(this.lblTestSelected);
             this.groupBox1.Controls.Add(this.btnSelectTest);
             this.groupBox1.Location = new System.Drawing.Point(476, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(253, 158);
+            this.groupBox1.Size = new System.Drawing.Size(253, 167);
             this.groupBox1.TabIndex = 23;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "File options";
             // 
             // lblFolderSelected
             // 
-            this.lblFolderSelected.Location = new System.Drawing.Point(6, 112);
+            this.lblFolderSelected.Location = new System.Drawing.Point(6, 103);
             this.lblFolderSelected.Name = "lblFolderSelected";
-            this.lblFolderSelected.Size = new System.Drawing.Size(240, 33);
+            this.lblFolderSelected.Size = new System.Drawing.Size(241, 33);
             this.lblFolderSelected.TabIndex = 3;
             this.lblFolderSelected.Text = "Folder selected: ----";
             // 
             // btnSelectFolder
             // 
             this.btnSelectFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSelectFolder.Location = new System.Drawing.Point(6, 86);
+            this.btnSelectFolder.Location = new System.Drawing.Point(6, 77);
             this.btnSelectFolder.Name = "btnSelectFolder";
             this.btnSelectFolder.Size = new System.Drawing.Size(241, 23);
             this.btnSelectFolder.TabIndex = 2;
@@ -616,6 +628,16 @@ namespace TestProgram
             // 
             // tpgBasic
             // 
+            this.tpgBasic.Controls.Add(this.lblBasicTestResult);
+            this.tpgBasic.Controls.Add(this.label18);
+            this.tpgBasic.Controls.Add(this.lblBasicInstruction);
+            this.tpgBasic.Controls.Add(this.label20);
+            this.tpgBasic.Controls.Add(this.label21);
+            this.tpgBasic.Controls.Add(this.lblBasicStepNumber);
+            this.tpgBasic.Controls.Add(this.ledResultFolderSelected);
+            this.tpgBasic.Controls.Add(this.ledTestLoaded);
+            this.tpgBasic.Controls.Add(this.label16);
+            this.tpgBasic.Controls.Add(this.label15);
             this.tpgBasic.Controls.Add(this.btnStopTestProgram);
             this.tpgBasic.Controls.Add(this.btnStartTestProgram);
             this.tpgBasic.Controls.Add(this.label14);
@@ -635,6 +657,102 @@ namespace TestProgram
             this.tpgBasic.Text = "Basic";
             this.tpgBasic.UseVisualStyleBackColor = true;
             // 
+            // btnStopTestProgram
+            // 
+            this.btnStopTestProgram.Location = new System.Drawing.Point(942, 64);
+            this.btnStopTestProgram.Name = "btnStopTestProgram";
+            this.btnStopTestProgram.Size = new System.Drawing.Size(370, 52);
+            this.btnStopTestProgram.TabIndex = 9;
+            this.btnStopTestProgram.Text = "Stop test program";
+            this.btnStopTestProgram.UseVisualStyleBackColor = true;
+            this.btnStopTestProgram.Click += new System.EventHandler(this.BtnStopTest_Click);
+            // 
+            // btnStartTestProgram
+            // 
+            this.btnStartTestProgram.Location = new System.Drawing.Point(942, 6);
+            this.btnStartTestProgram.Name = "btnStartTestProgram";
+            this.btnStartTestProgram.Size = new System.Drawing.Size(370, 52);
+            this.btnStartTestProgram.TabIndex = 8;
+            this.btnStartTestProgram.Text = "Start test program";
+            this.btnStartTestProgram.UseVisualStyleBackColor = true;
+            this.btnStartTestProgram.Click += new System.EventHandler(this.BtnStartTest_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 151);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(158, 20);
+            this.label14.TabIndex = 7;
+            this.label14.Text = "Can resource started";
+            // 
+            // btnSelectResultFolder
+            // 
+            this.btnSelectResultFolder.Location = new System.Drawing.Point(474, 64);
+            this.btnSelectResultFolder.Name = "btnSelectResultFolder";
+            this.btnSelectResultFolder.Size = new System.Drawing.Size(370, 52);
+            this.btnSelectResultFolder.TabIndex = 6;
+            this.btnSelectResultFolder.Text = "Select result folder";
+            this.btnSelectResultFolder.UseVisualStyleBackColor = true;
+            this.btnSelectResultFolder.Click += new System.EventHandler(this.BtnSelectFolder_Click);
+            // 
+            // btnSelectTestPlan
+            // 
+            this.btnSelectTestPlan.Location = new System.Drawing.Point(474, 6);
+            this.btnSelectTestPlan.Name = "btnSelectTestPlan";
+            this.btnSelectTestPlan.Size = new System.Drawing.Size(370, 52);
+            this.btnSelectTestPlan.TabIndex = 5;
+            this.btnSelectTestPlan.Text = "Select test plan";
+            this.btnSelectTestPlan.UseVisualStyleBackColor = true;
+            this.btnSelectTestPlan.Click += new System.EventHandler(this.BtnSelectTest_Click);
+            // 
+            // lblCanResourceStatus
+            // 
+            this.lblCanResourceStatus.AutoSize = true;
+            this.lblCanResourceStatus.Location = new System.Drawing.Point(57, 219);
+            this.lblCanResourceStatus.Name = "lblCanResourceStatus";
+            this.lblCanResourceStatus.Size = new System.Drawing.Size(29, 20);
+            this.lblCanResourceStatus.TabIndex = 4;
+            this.lblCanResourceStatus.Text = "----";
+            // 
+            // ledResourceStatus
+            // 
+            this.ledResourceStatus.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.ledResourceStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ledResourceStatus.Location = new System.Drawing.Point(287, 143);
+            this.ledResourceStatus.Name = "ledResourceStatus";
+            this.ledResourceStatus.Size = new System.Drawing.Size(32, 32);
+            this.ledResourceStatus.TabIndex = 3;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 199);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(156, 20);
+            this.label13.TabIndex = 2;
+            this.label13.Text = "Can resource status:";
+            // 
+            // btnStopCanResource
+            // 
+            this.btnStopCanResource.Location = new System.Drawing.Point(6, 64);
+            this.btnStopCanResource.Name = "btnStopCanResource";
+            this.btnStopCanResource.Size = new System.Drawing.Size(370, 52);
+            this.btnStopCanResource.TabIndex = 1;
+            this.btnStopCanResource.Text = "Stop can resource";
+            this.btnStopCanResource.UseVisualStyleBackColor = true;
+            this.btnStopCanResource.Click += new System.EventHandler(this.BtnStopCanResource_Click);
+            // 
+            // btnStartCanResource
+            // 
+            this.btnStartCanResource.Location = new System.Drawing.Point(6, 6);
+            this.btnStartCanResource.Name = "btnStartCanResource";
+            this.btnStartCanResource.Size = new System.Drawing.Size(370, 52);
+            this.btnStartCanResource.TabIndex = 0;
+            this.btnStartCanResource.Text = "Start can resource";
+            this.btnStartCanResource.UseVisualStyleBackColor = true;
+            this.btnStartCanResource.Click += new System.EventHandler(this.BtnStartCanResource_Click);
+            // 
             // tpgAdvanced
             // 
             this.tpgAdvanced.Controls.Add(this.dgvVariables);
@@ -653,101 +771,105 @@ namespace TestProgram
             this.tpgAdvanced.Text = "Advanced";
             this.tpgAdvanced.UseVisualStyleBackColor = true;
             // 
-            // btnStartCanResource
+            // label15
             // 
-            this.btnStartCanResource.Location = new System.Drawing.Point(6, 6);
-            this.btnStartCanResource.Name = "btnStartCanResource";
-            this.btnStartCanResource.Size = new System.Drawing.Size(370, 52);
-            this.btnStartCanResource.TabIndex = 0;
-            this.btnStartCanResource.Text = "Start can resource";
-            this.btnStartCanResource.UseVisualStyleBackColor = true;
-            this.btnStartCanResource.Click += new System.EventHandler(this.BtnStartCanResource_Click);
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(470, 151);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(155, 20);
+            this.label15.TabIndex = 10;
+            this.label15.Text = "Test program loaded";
             // 
-            // btnStopCanResource
+            // label16
             // 
-            this.btnStopCanResource.Location = new System.Drawing.Point(6, 64);
-            this.btnStopCanResource.Name = "btnStopCanResource";
-            this.btnStopCanResource.Size = new System.Drawing.Size(370, 52);
-            this.btnStopCanResource.TabIndex = 1;
-            this.btnStopCanResource.Text = "Stop can resource";
-            this.btnStopCanResource.UseVisualStyleBackColor = true;
-            this.btnStopCanResource.Click += new System.EventHandler(this.BtnStopCanResource_Click);
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(470, 199);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(191, 20);
+            this.label16.TabIndex = 11;
+            this.label16.Text = "Test result folder selected";
             // 
-            // label13
+            // ledTestLoaded
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 199);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(156, 20);
-            this.label13.TabIndex = 2;
-            this.label13.Text = "Can resource status:";
+            this.ledTestLoaded.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.ledTestLoaded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ledTestLoaded.Location = new System.Drawing.Point(812, 143);
+            this.ledTestLoaded.Name = "ledTestLoaded";
+            this.ledTestLoaded.Size = new System.Drawing.Size(32, 32);
+            this.ledTestLoaded.TabIndex = 4;
             // 
-            // ledResourceStatus
+            // ledResultFolderSelected
             // 
-            this.ledResourceStatus.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.ledResourceStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ledResourceStatus.Location = new System.Drawing.Point(287, 143);
-            this.ledResourceStatus.Name = "ledResourceStatus";
-            this.ledResourceStatus.Size = new System.Drawing.Size(32, 32);
-            this.ledResourceStatus.TabIndex = 3;
+            this.ledResultFolderSelected.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.ledResultFolderSelected.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ledResultFolderSelected.Location = new System.Drawing.Point(812, 193);
+            this.ledResultFolderSelected.Name = "ledResultFolderSelected";
+            this.ledResultFolderSelected.Size = new System.Drawing.Size(32, 32);
+            this.ledResultFolderSelected.TabIndex = 4;
             // 
-            // lblCanResourceStatus
+            // lblBasicTestResult
             // 
-            this.lblCanResourceStatus.AutoSize = true;
-            this.lblCanResourceStatus.Location = new System.Drawing.Point(57, 219);
-            this.lblCanResourceStatus.Name = "lblCanResourceStatus";
-            this.lblCanResourceStatus.Size = new System.Drawing.Size(29, 20);
-            this.lblCanResourceStatus.TabIndex = 4;
-            this.lblCanResourceStatus.Text = "----";
+            this.lblBasicTestResult.AutoSize = true;
+            this.lblBasicTestResult.Location = new System.Drawing.Point(1119, 275);
+            this.lblBasicTestResult.Name = "lblBasicTestResult";
+            this.lblBasicTestResult.Size = new System.Drawing.Size(19, 20);
+            this.lblBasicTestResult.TabIndex = 17;
+            this.lblBasicTestResult.Text = "--";
             // 
-            // btnSelectTestPlan
+            // label18
             // 
-            this.btnSelectTestPlan.Location = new System.Drawing.Point(474, 6);
-            this.btnSelectTestPlan.Name = "btnSelectTestPlan";
-            this.btnSelectTestPlan.Size = new System.Drawing.Size(370, 52);
-            this.btnSelectTestPlan.TabIndex = 5;
-            this.btnSelectTestPlan.Text = "Select test plan";
-            this.btnSelectTestPlan.UseVisualStyleBackColor = true;
-            this.btnSelectTestPlan.Click += new System.EventHandler(this.BtnSelectTest_Click);
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(946, 275);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(87, 20);
+            this.label18.TabIndex = 16;
+            this.label18.Text = "Test result:";
             // 
-            // btnSelectResultFolder
+            // lblBasicInstruction
             // 
-            this.btnSelectResultFolder.Location = new System.Drawing.Point(474, 64);
-            this.btnSelectResultFolder.Name = "btnSelectResultFolder";
-            this.btnSelectResultFolder.Size = new System.Drawing.Size(370, 52);
-            this.btnSelectResultFolder.TabIndex = 6;
-            this.btnSelectResultFolder.Text = "Select result folder";
-            this.btnSelectResultFolder.UseVisualStyleBackColor = true;
-            this.btnSelectResultFolder.Click += new System.EventHandler(this.BtnSelectFolder_Click);
+            this.lblBasicInstruction.Location = new System.Drawing.Point(1119, 199);
+            this.lblBasicInstruction.Name = "lblBasicInstruction";
+            this.lblBasicInstruction.Size = new System.Drawing.Size(193, 54);
+            this.lblBasicInstruction.TabIndex = 15;
+            this.lblBasicInstruction.Text = "--";
             // 
-            // label14
+            // label20
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 151);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(158, 20);
-            this.label14.TabIndex = 7;
-            this.label14.Text = "Can resource started";
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(946, 199);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(135, 20);
+            this.label20.TabIndex = 14;
+            this.label20.Text = "Actual instruction:";
             // 
-            // btnStartTestProgram
+            // label21
             // 
-            this.btnStartTestProgram.Location = new System.Drawing.Point(942, 6);
-            this.btnStartTestProgram.Name = "btnStartTestProgram";
-            this.btnStartTestProgram.Size = new System.Drawing.Size(370, 52);
-            this.btnStartTestProgram.TabIndex = 8;
-            this.btnStartTestProgram.Text = "Start test program";
-            this.btnStartTestProgram.UseVisualStyleBackColor = true;
-            this.btnStartTestProgram.Click += new System.EventHandler(this.BtnStartTest_Click);
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(946, 151);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(151, 20);
+            this.label21.TabIndex = 13;
+            this.label21.Text = "Actual step number:";
             // 
-            // btnStopTestProgram
+            // lblBasicStepNumber
             // 
-            this.btnStopTestProgram.Location = new System.Drawing.Point(942, 64);
-            this.btnStopTestProgram.Name = "btnStopTestProgram";
-            this.btnStopTestProgram.Size = new System.Drawing.Size(370, 52);
-            this.btnStopTestProgram.TabIndex = 9;
-            this.btnStopTestProgram.Text = "Stop test program";
-            this.btnStopTestProgram.UseVisualStyleBackColor = true;
-            this.btnStopTestProgram.Click += new System.EventHandler(this.BtnStopTest_Click);
+            this.lblBasicStepNumber.AutoSize = true;
+            this.lblBasicStepNumber.Location = new System.Drawing.Point(1115, 151);
+            this.lblBasicStepNumber.Name = "lblBasicStepNumber";
+            this.lblBasicStepNumber.Size = new System.Drawing.Size(33, 20);
+            this.lblBasicStepNumber.TabIndex = 12;
+            this.lblBasicStepNumber.Text = "--/--";
+            // 
+            // btnCheckFileIntegrity
+            // 
+            this.btnCheckFileIntegrity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCheckFileIntegrity.Location = new System.Drawing.Point(6, 139);
+            this.btnCheckFileIntegrity.Name = "btnCheckFileIntegrity";
+            this.btnCheckFileIntegrity.Size = new System.Drawing.Size(241, 23);
+            this.btnCheckFileIntegrity.TabIndex = 4;
+            this.btnCheckFileIntegrity.Text = "Check file integrity";
+            this.btnCheckFileIntegrity.UseVisualStyleBackColor = true;
+            this.btnCheckFileIntegrity.Click += new System.EventHandler(this.BtnCheckFileIntegrity_Click);
             // 
             // MainForm
             // 
@@ -761,7 +883,7 @@ namespace TestProgram
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Text = "Test program";
+            this.Text = "AQ test";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudFilter)).EndInit();
@@ -848,6 +970,17 @@ namespace TestProgram
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button btnStopTestProgram;
         private System.Windows.Forms.Button btnStartTestProgram;
+        private System.Windows.Forms.Panel ledResultFolderSelected;
+        private System.Windows.Forms.Panel ledTestLoaded;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label lblBasicTestResult;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label lblBasicInstruction;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label lblBasicStepNumber;
+        private System.Windows.Forms.Button btnCheckFileIntegrity;
     }
 }
 

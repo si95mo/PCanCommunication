@@ -36,9 +36,11 @@ namespace SerialNumbers
         {
             string originCode = "";
 
-            IEnumerable<RegionInfo> regions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.LCID));
-            RegionInfo region = regions.FirstOrDefault(x => x.EnglishName.Contains(productionSite));
-            originCode = region.TwoLetterISORegionName;
+            //IEnumerable<RegionInfo> regions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.LCID));
+            //RegionInfo region = regions.FirstOrDefault(x => x.EnglishName.Contains(productionSite));
+            //originCode = region.TwoLetterISORegionName;
+
+            originCode = productionSite;
 
             return originCode;
         }
