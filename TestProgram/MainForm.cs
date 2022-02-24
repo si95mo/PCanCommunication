@@ -2,7 +2,6 @@
 using Hardware.Can;
 using Hardware.Can.Peak.Lib;
 using Instructions.Scheduler;
-using SerialNumbers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -391,59 +390,59 @@ namespace TestProgram
                 //        MessageBox.Show("CAN resource not working!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 //    else
                 //    {
-                        if (testSelected)
-                        {
-                            TestProgramManager.UserName = txbUser.Text;
-                            TestProgramManager.ProductionSite = txbOperatingSite.Text;
-                            TestProgramManager.BatchNumber = txbBatch.Text;
+                if (testSelected)
+                {
+                    TestProgramManager.UserName = txbUser.Text;
+                    TestProgramManager.ProductionSite = txbOperatingSite.Text;
+                    TestProgramManager.BatchNumber = txbBatch.Text;
 
-                            doUpdateSteps = true;
+                    doUpdateSteps = true;
 
-                            if (scheduler != null)
-                                scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
+                    if (scheduler != null)
+                        scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
 
-                            string[] files = Directory.GetFiles(folderPath);
-                            DateTime now = DateTime.Now;
-                            TestProgramManager.SerialIndex = files.Length;
+                    string[] files = Directory.GetFiles(folderPath);
+                    DateTime now = DateTime.Now;
+                    TestProgramManager.SerialIndex = files.Length;
 
-                            resultPath = Path.Combine(
-                                folderPath, 
-                                $"{SerialNumbers.SerialNumbers.CreateNew(txbOperatingSite.Text, files.Length)}_{now:yyyyMMdd}_{now:HHmmss}.csv"
-                            );
-                            await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
+                    resultPath = Path.Combine(
+                        folderPath,
+                        $"{SerialNumbers.SerialNumbers.CreateNew(txbOperatingSite.Text, files.Length)}_{now:yyyyMMdd}_{now:HHmmss}.csv"
+                    );
+                    await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
 
-                            lblTestResult.Invoke(new MethodInvoker(() =>
-                                    {
-                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                                        lblTestResult.ForeColor = textColor;
+                    lblTestResult.Invoke(new MethodInvoker(() =>
+                            {
+                                Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                                lblTestResult.ForeColor = textColor;
 
-                                        lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-                                    }
-                                )
-                            );
-                            lblTestResult.Invoke(new MethodInvoker(() =>
-                                    {
-                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                                        lblBasicTestResult.ForeColor = textColor;
+                                lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                            }
+                        )
+                    );
+                    lblTestResult.Invoke(new MethodInvoker(() =>
+                            {
+                                Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                                lblBasicTestResult.ForeColor = textColor;
 
-                                        lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-                                    }
-                                )
-                            );
+                                lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                            }
+                        )
+                    );
 
                     await Task.Delay(100);
-                            doUpdateSteps = false;
+                    doUpdateSteps = false;
 
-                            if (scheduler != null)
-                                scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
+                    if (scheduler != null)
+                        scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
 
-                            scheduler = new Scheduler(testPath);
-                            totalSteps = scheduler.Instructions.Count;
-                        }
-                        else
-                            MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        }
-            //    }
+                    scheduler = new Scheduler(testPath);
+                    totalSteps = scheduler.Instructions.Count;
+                }
+                else
+                    MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //        }
+                //    }
             }
         }
 
@@ -643,9 +642,9 @@ namespace TestProgram
                             MessageBox.Show("The file is intact!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         else
                             MessageBox.Show(
-                                $"The file has been corrupted! {Environment.NewLine}  - Saved MD5: {oldMd5}{Environment.NewLine}  - Actual MD5: {newMd5}", 
-                                "Error", 
-                                MessageBoxButtons.OK, 
+                                $"The file has been corrupted! {Environment.NewLine}  - Saved MD5: {oldMd5}{Environment.NewLine}  - Actual MD5: {newMd5}",
+                                "Error",
+                                MessageBoxButtons.OK,
                                 MessageBoxIcon.Error
                             );
                     }

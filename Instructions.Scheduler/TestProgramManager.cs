@@ -1,5 +1,4 @@
-﻿using SerialNumbers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -57,7 +56,7 @@ namespace Instructions.Scheduler
                 }
                 else
                 {
-                    if(mainText[i].StartsWith("@TX="))
+                    if (mainText[i].StartsWith("@TX="))
                         TxCanId = Convert.ToInt32(mainText[i].Split('=')[1], 16);
                     else
                     {
