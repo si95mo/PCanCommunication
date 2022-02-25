@@ -3,6 +3,9 @@ using System.Text;
 
 namespace SerialNumbers
 {
+    /// <summary>
+    /// Implement serial number generation
+    /// </summary>
     public static class SerialNumbers
     {
         /// <summary>
@@ -31,20 +34,19 @@ namespace SerialNumbers
         /// <returns>The 2 letter id origin code</returns>
         private static string ProductionSiteToOriginCode(string productionSite)
         {
-            string originCode = "";
-
+            // Only if the production site is in english, otherwise Exception!
             //IEnumerable<RegionInfo> regions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.LCID));
             //RegionInfo region = regions.FirstOrDefault(x => x.EnglishName.Contains(productionSite));
-            //originCode = region.TwoLetterISORegionName;
+            //string originCode = region.TwoLetterISORegionName;
 
-            originCode = productionSite;
+            string originCode = productionSite;
 
             return originCode;
         }
 
         private static string DayToCode(int day)
         {
-            string dayCode = "";
+            string dayCode;
 
             if (day >= 1 && day <= 9)
                 dayCode = day.ToString();

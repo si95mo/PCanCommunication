@@ -150,8 +150,13 @@ namespace TestProgram
             );
         }
 
+        /// <summary>
+        /// Update the can resource baud rate
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CbxBaudRate_SelectedIndexChanged(object sender, EventArgs e)
-            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString())); // Update the can resource baud rate
+            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
 
         /// <summary>
         /// Convert a textual representation of a <see cref="BaudRate"/>
@@ -228,6 +233,9 @@ namespace TestProgram
             return convertedBaudRate;
         }
 
+        /// <summary>
+        /// Create a new instance of <see cref="MainForm"/>
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
@@ -261,6 +269,7 @@ namespace TestProgram
         // Select the test file
         private void BtnSelectTest_Click(object sender, EventArgs e)
         {
+            // The can resource has to be started first
             if (resource == null)
                 MessageBox.Show("CAN resource not started!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else
@@ -321,7 +330,11 @@ namespace TestProgram
             dgvVariables.Invoke(new MethodInvoker(() => dgvVariables.DataSource = bs.DataSource));
         }
 
-        // Select the result folder
+        /// <summary>
+        /// Select the result folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
@@ -369,90 +382,108 @@ namespace TestProgram
             txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += Environment.NewLine));
         }
 
-        // Update the log
+        /// <summary>
+        /// Update the log
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
         {
             txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += scheduler.InstructionLog + Environment.NewLine));
         }
 
-        // Start the test
+        /// <summary>
+        /// Start the test
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void BtnStartTest_Click(object sender, EventArgs e)
         {
             if (!CheckTextBoxes())
                 MessageBox.Show("Enter the required information first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else
             {
-                //if (resource == null)
-                //    MessageBox.Show("CAN resource not started!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //else
-                //{
-                //    if (resource.Status != 0)
-                //        MessageBox.Show("CAN resource not working!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    else
-                //    {
-                if (testSelected)
-                {
-                    TestProgramManager.UserName = txbUser.Text;
-                    TestProgramManager.ProductionSite = txbOperatingSite.Text;
-                    TestProgramManager.BatchNumber = txbBatch.Text;
-
-                    doUpdateSteps = true;
-
-                    if (scheduler != null)
-                        scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
-
-                    string[] files = Directory.GetFiles(folderPath);
-                    DateTime now = DateTime.Now;
-                    TestProgramManager.SerialIndex = files.Length;
-
-                    resultPath = Path.Combine(
-                        folderPath,
-                        $"{SerialNumbers.SerialNumbers.CreateNew(txbOperatingSite.Text, files.Length)}_{now:yyyyMMdd}_{now:HHmmss}.csv"
-                    );
-                    await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
-
-                    lblTestResult.Invoke(new MethodInvoker(() =>
-                            {
-                                Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                                lblTestResult.ForeColor = textColor;
-
-                                lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-                            }
-                        )
-                    );
-                    lblTestResult.Invoke(new MethodInvoker(() =>
-                            {
-                                Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                                lblBasicTestResult.ForeColor = textColor;
-
-                                lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-                            }
-                        )
-                    );
-
-                    await Task.Delay(100);
-                    doUpdateSteps = false;
-
-                    if (scheduler != null)
-                        scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
-
-                    scheduler = new Scheduler(testPath);
-                    totalSteps = scheduler.Instructions.Count;
-                }
+                if (resource == null)
+                    MessageBox.Show("CAN resource not started!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 else
-                    MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //        }
-                //    }
+                {
+                    if (resource.Status != 0)
+                        MessageBox.Show("CAN resource not working!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                    {
+                        if (testSelected)
+                        {
+                            // Preliminary info
+                            TestProgramManager.UserName = txbUser.Text;
+                            TestProgramManager.ProductionSite = txbOperatingSite.Text;
+                            TestProgramManager.BatchNumber = txbBatch.Text;
+
+                            doUpdateSteps = true;
+
+                            if (scheduler != null)
+                                scheduler.InstructionLogChanged += Scheduler_InstructionLogChanged;
+
+                            string[] files = Directory.GetFiles(folderPath);
+                            DateTime now = DateTime.Now;
+                            TestProgramManager.SerialIndex = files.Length;
+
+                            resultPath = Path.Combine(
+                                folderPath,
+                                $"{SerialNumbers.SerialNumbers.CreateNew(txbOperatingSite.Text, files.Length)}_{now:yyyyMMdd}_{now:HHmmss}.csv"
+                            );
+                            await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
+
+                            // UI update
+                            lblTestResult.Invoke(new MethodInvoker(() =>
+                                    {
+                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                                        lblTestResult.ForeColor = textColor;
+
+                                        lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                                    }
+                                )
+                            );
+                            lblTestResult.Invoke(new MethodInvoker(() =>
+                                    {
+                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+                                        lblBasicTestResult.ForeColor = textColor;
+
+                                        lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+                                    }
+                                )
+                            );
+
+                            await Task.Delay(100);
+                            doUpdateSteps = false;
+
+                            if (scheduler != null)
+                                scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
+
+                            scheduler = new Scheduler(testPath);
+                            totalSteps = scheduler.Instructions.Count;
+                        }
+                        else
+                            MessageBox.Show("No test or result folder selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
             }
         }
 
-        // Stop the test
+        /// <summary>
+        /// Stop the test
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnStopTest_Click(object sender, EventArgs e)
         {
             scheduler?.Stop();
         }
 
-        // Rx has changed -> Update the variable
+        /// <summary>
+        /// Update the variables on RX value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Channel_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
             VariableDictionary.Variables
@@ -461,13 +492,21 @@ namespace TestProgram
             );
         }
 
-        // The variable has changed -> Update the DataGridView
+        /// <summary>
+        /// Update the datagrid view on variable value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Variable_ValueChanged(object sender, ValueChangedEventArgs e)
         {
             UpdateDataGridItems();
         }
 
-        // Start the can resource
+        /// <summary>
+        /// Start the can resource
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnStart_Click(object sender, EventArgs e)
         {
             // Initialize can-related objects
@@ -489,7 +528,11 @@ namespace TestProgram
             pnlResourceStarted.BackColor = startedColor;
         }
 
-        // Stop the can resource
+        /// <summary>
+        /// Stop the can resource
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnStop_Click(object sender, EventArgs e)
         {
             // Stop the resource.
@@ -505,7 +548,11 @@ namespace TestProgram
             pnlResourceStarted.BackColor = stoppedColor;
         }
 
-        // Unable/disable the can log
+        /// <summary>
+        /// Unable/disable the log from the CAN bus
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CbxLogEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (chbLogEnabled.Checked)
@@ -540,21 +587,33 @@ namespace TestProgram
             }
         }
 
-        // Add a filetered can id to the log
+        /// <summary>
+        /// Add a can id to the filtered list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnAddFiltered_Click(object sender, EventArgs e)
         {
             resource?.AddFilteredCanId((int)nudFilter.Value);
             UpdateFilteredCanId();
         }
 
-        // Remove a filtered can id from the log
+        /// <summary>
+        /// Remove a can id from the filtered list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnRemoveFilter_Click(object sender, EventArgs e)
         {
             resource?.RemoveFilteredCanId((int)nudFilter.Value);
             UpdateFilteredCanId();
         }
 
-        // Update the hardware handle for the can resource
+        /// <summary>
+        /// Update the hardware handle of the can resource
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CbxDeviceList_SelectedIndexChanged(object sender, EventArgs e)
         {
             string str = cbxDeviceList.Text;
@@ -564,12 +623,21 @@ namespace TestProgram
             hardwareHandle = Convert.ToUInt16(str, 16);
         }
 
-        // Form closing -> stop the scheduler
+        /// <summary>
+        /// Stop the scheduler (if running) when the form is clising
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             resource?.Stop();
         }
 
+        /// <summary>
+        /// Basic panel can resource start (different from the advanced version!)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnStartCanResource_Click(object sender, EventArgs e)
         {
             hardwareHandle = 81; // PCan usb defualt hw handle
@@ -600,6 +668,11 @@ namespace TestProgram
             pnlResourceStarted.BackColor = startedColor;
         }
 
+        /// <summary>
+        /// Basic panel can resource stop (different from the advanced version!)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnStopCanResource_Click(object sender, EventArgs e)
         {
             // Stop the resource.
@@ -610,6 +683,11 @@ namespace TestProgram
             pnlResourceStarted.BackColor = stoppedColor;
         }
 
+        /// <summary>
+        /// Check the file integrity (MD5 must be correct)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnCheckFileIntegrity_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())

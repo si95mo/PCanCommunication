@@ -47,8 +47,9 @@ namespace Instructions
                     VariableDictionary.Get(variableName, out IVariable variable);
                     variable.ValueAsObject = valueToSet;
 
+                    // Update can channel value and send
                     Tx.Cmd = 1;
-                    (variable as Variable<double>).UpdateVariable(Tx);
+                    (variable as Variable<double>).UpdateIndexedCanChannel(Tx);
                 }
             );
 
@@ -60,8 +61,9 @@ namespace Instructions
                     Stopwatch time = Stopwatch.StartNew();
 
                     received = false;
-                    (variable as Variable<double>).UpdateVariable(Tx);
+                    (variable as Variable<double>).UpdateIndexedCanChannel(Tx);
 
+                    // Wait for event fired or timeout occurred
                     while (!received && time.Elapsed.TotalMilliseconds <= timeout)
                         await Task.Delay(50);
 
@@ -84,7 +86,7 @@ namespace Instructions
 
         private void LocalRx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
-            received = true;
+            received = true; // Event received
         }
 
         public override string ToString()

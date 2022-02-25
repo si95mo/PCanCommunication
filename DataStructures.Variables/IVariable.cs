@@ -1,5 +1,8 @@
 ﻿namespace DataStructures.VariablesDictionary
 {
+    /// <summary>
+    /// Define the type of <see cref="IVariable"/>
+    /// </summary>
     public enum VariableType
     {
         /// <summary>

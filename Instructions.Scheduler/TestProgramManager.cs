@@ -295,11 +295,18 @@ namespace Instructions.Scheduler
             }
         }
 
+        /// <summary>
+        /// Finalize the result file with the last necessary lines (test passed or failed and MD5 hash)
+        /// </summary>
+        /// <param name="path">THe file path</param>
+        /// <param name="testResult">The test result (<see langword="true"/> if passed, <see langword="false"/> otherwise</param>
         public static void FinalizeFile(string path, bool testResult)
         {
+            // Test passed
             string testResultAsString = testResult ? "Passed" : "Failed";
             File.AppendAllText(path, $"{Environment.NewLine}Result: {testResultAsString}");
 
+            // MD5 calculus and prepend (first line of the file)
             string text = File.ReadAllText(path);
             string encryptResult = Cryptography.MD5.CreateNew(text);
 

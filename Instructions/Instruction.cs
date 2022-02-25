@@ -81,8 +81,19 @@ namespace Instructions
             set => description = value;
         }
 
+        /// <summary>
+        /// The transmit <see cref="IndexedCanChannel"/>
+        /// </summary>
         public IndexedCanChannel Tx { get; set; }
+
+        /// <summary>
+        /// The receive <see cref="IndexedCanChannel"/>
+        /// </summary>
         public IndexedCanChannel Rx { get; set; }
+
+        /// <summary>
+        /// The <see cref="ICanResource"/>
+        /// </summary>
         public ICanResource Resource { get; set; }
 
         /// <summary>

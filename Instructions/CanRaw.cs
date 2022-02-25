@@ -30,7 +30,7 @@ namespace Instructions
         public override async Task Execute()
         {
             startTime = DateTime.Now;
-            await Task.Run(() => result = Resource.Send(canFrame));
+            await Task.Run(() => result = Resource.Send(canFrame)); // Forcibly send the frame
             stopTime = DateTime.Now;
         }
 

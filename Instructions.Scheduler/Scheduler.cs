@@ -48,6 +48,10 @@ namespace Instructions.Scheduler
 
         public string ActualInstructionDescription { get; private set; } = "";
 
+        /// <summary>
+        /// The <see cref="Scheduler"/> <see cref="Instruction"/> log
+        /// (i.e. last <see cref="Instruction"/> executed)
+        /// </summary>
         public string InstructionLog
         {
             get => instructionLog;
@@ -62,6 +66,9 @@ namespace Instructions.Scheduler
             }
         }
 
+        /// <summary>
+        /// The test execution result
+        /// </summary>
         public bool TestResult { get; private set; } = false;
 
         /// <summary>
@@ -117,12 +124,10 @@ namespace Instructions.Scheduler
         public Scheduler(string path)
         {
             instructions = new SortedDictionary<int, Queue<Instruction>>();
+            stop = false;
+            instructionLog = "";
 
             TestProgramManager.ReadMain(path, pathString: "->", delimiter: '\t').ForEach(x => Add(x));
-
-            stop = false;
-
-            instructionLog = "";
         }
 
         /// <summary>
@@ -132,6 +137,7 @@ namespace Instructions.Scheduler
         /// <param name="instruction">The <see cref="Instruction"/> to add</param>
         public void Add(Instruction instruction)
         {
+            // Add an instruction with regard to its order
             if (instructions.ContainsKey(instruction.Order))
                 instructions[instruction.Order].Enqueue(instruction);
             else
@@ -152,23 +158,23 @@ namespace Instructions.Scheduler
             stop = false;
             bool instructionResult = true;
 
+            // Result path, if not previously valorized
             if (path.CompareTo("") == 0)
-                path = System.IO.Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                    "result.csv"
-                );
+                path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "result.csv");
 
             int order = instructions.Keys.Min();
             List<Instruction> instructionList = new List<Instruction>();
 
             while (instructions.Count > 0 && !stop)
             {
+                // Retrieve all the instructions with the same order
                 while (instructions[order].Count > 0)
                 {
                     Instruction instruction = instructions[order].Dequeue();
                     instructionList.Add(instruction);
                 }
 
+                // And execute them asynchronously in parallel
                 await instructionList.ParallelForEachAsync(
                     async (x) =>
                     {
@@ -185,11 +191,14 @@ namespace Instructions.Scheduler
                             await x.Execute();
                         }
 
+                        // Get the result
                         instructionResult &= x.Result;
 
+                        // And then eventually fire the events
                         ActualInstructionDescription = x.Description;
                         InstructionLog = x.ToString();
 
+                        // Save the instruction result
                         TestProgramManager.SaveResult(path, x);
                     }
                 );
@@ -201,6 +210,7 @@ namespace Instructions.Scheduler
                 TestResult = instructionResult;
             }
 
+            // Add the final lines to the result file
             TestProgramManager.FinalizeFile(path, TestResult);
         }
 

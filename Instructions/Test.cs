@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Instructions
 {
+    /// <summary>
+    /// Implement an <see cref="Instruction"/> for testing a value received from the CAN bus
+    /// </summary>
     public class Test : Instruction
     {
         protected string variableName;
@@ -47,8 +50,9 @@ namespace Instructions
                 {
                     VariableDictionary.Get(variableName, out IVariable variable);
 
+                    // Get the value
                     Tx.Cmd = 0;
-                    (variable as Variable<double>).UpdateVariable(Tx);
+                    (variable as Variable<double>).UpdateIndexedCanChannel(Tx);
 
                     outputParameters.Add(valueGot);
                 }
@@ -62,8 +66,9 @@ namespace Instructions
                     Stopwatch time = Stopwatch.StartNew();
 
                     received = false;
-                    (variable as Variable<double>).UpdateVariable(Tx);
+                    (variable as Variable<double>).UpdateIndexedCanChannel(Tx);
 
+                    // Wait for the received event or timeout occurred
                     while (!received && time.Elapsed.TotalMilliseconds <= timeout)
                         await Task.Delay(50);
 
@@ -75,6 +80,7 @@ namespace Instructions
 
             result = received;
 
+            // If the event has been received, then check if the condition is met
             if (result)
             {
                 double threshold = 0.000001;
@@ -113,10 +119,12 @@ namespace Instructions
 
         private void LocalRx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
+            // Retrieve the value
             VariableDictionary.Get(variableName, out IVariable variable);
             (variable as DoubleVariable).Value = variable.Type == VariableType.Sgl ?
                 BitConverter.ToSingle((e.NewCanFrame as CanFrame).Data, 4) : BitConverter.ToInt32((e.NewCanFrame as CanFrame).Data, 4);
 
+            // And store it
             valueGot = Convert.ToDouble(variable.ValueAsObject);
 
             received = true;

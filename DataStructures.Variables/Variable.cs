@@ -4,7 +4,7 @@ using System;
 namespace DataStructures.VariablesDictionary
 {
     /// <summary>
-    /// Handles the <see cref="CanChannel.Data"/> changed event.
+    /// Handles the <see cref="Variable{T}.Value"/> changed event.
     /// See also <see cref="EventArgs"/>
     /// </summary>
     public class ValueChangedEventArgs : EventArgs
@@ -66,7 +66,8 @@ namespace DataStructures.VariablesDictionary
         public VariableType Type { get => type; set => type = value; }
 
         /// <summary>
-        /// The <see cref="Variable{T}"/> value
+        /// The <see cref="Variable{T}"/> value.
+        /// Also handle the offset and scaling
         /// </summary>
         public T Value
         {
@@ -92,7 +93,7 @@ namespace DataStructures.VariablesDictionary
         }
 
         /// <summary>
-        /// The <see cref="Variable{T}"/> as <see cref="object"/>
+        /// The <see cref="Variable{T}.Value"/> as <see cref="object"/>
         /// </summary>
         public object ValueAsObject
         {
@@ -182,17 +183,20 @@ namespace DataStructures.VariablesDictionary
         protected virtual void OnValueChanged(ValueChangedEventArgs e)
             => ValueChangedHandler?.Invoke(this, e);
 
-        public void UpdateVariable(IndexedCanChannel tx)
+        /// <summary>
+        /// Update the <see cref="IndexedCanChannel"/> with the <see cref="Variable{T}.value"/>
+        /// </summary>
+        /// <param name="tx"></param>
+        public void UpdateIndexedCanChannel(IndexedCanChannel tx)
         {
             tx.Index = Index;
             tx.SubIndex = SubIndex;
 
+            // Get the byte array from the variable value
             byte[] data = Type == VariableType.Int ? BitConverter.GetBytes(Convert.ToInt32(Value))
                 : BitConverter.GetBytes(Convert.ToSingle(Value));
 
             tx.Data = data;
-
-            // UpdateDataGridItems();
         }
 
         public override string ToString()

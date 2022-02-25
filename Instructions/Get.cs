@@ -42,10 +42,12 @@ namespace Instructions
 
             await Task.Run(() =>
                 {
+                    // Get the variable
                     VariableDictionary.Get(variableName, out IVariable variable);
 
+                    // Update the indexed can channel
                     Tx.Cmd = 0;
-                    (variable as Variable<double>).UpdateVariable(Tx);
+                    (variable as Variable<double>).UpdateIndexedCanChannel(Tx);
 
                     outputParameters.Add(valueGot);
                 }
@@ -59,8 +61,9 @@ namespace Instructions
                     Stopwatch time = Stopwatch.StartNew();
 
                     received = false;
-                    (variable as Variable<double>).UpdateVariable(Tx);
+                    (variable as Variable<double>).UpdateIndexedCanChannel(Tx);
 
+                    // Await the receive event or timeout occurred
                     while (!received && time.Elapsed.TotalMilliseconds <= timeout)
                         await Task.Delay(50);
 
@@ -94,14 +97,17 @@ namespace Instructions
             return description;
         }
 
+        // IndexedCanChannel value changed event
         private void LocalRx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
             VariableDictionary.Get(variableName, out IVariable variable);
             (variable as DoubleVariable).Value = variable.Type == VariableType.Sgl ?
                 BitConverter.ToSingle((e.NewCanFrame as CanFrame).Data, 4) : BitConverter.ToInt32((e.NewCanFrame as CanFrame).Data, 4);
 
+            // The value retrieved from the CAN buss
             valueGot = Convert.ToDouble(variable.ValueAsObject);
 
+            // Event fired
             received = true;
         }
     }

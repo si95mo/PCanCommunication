@@ -3,6 +3,9 @@ using Crypto = System.Security.Cryptography.MD5;
 
 namespace Cryptography
 {
+    /// <summary>
+    /// Implement an MD5 hash calculus
+    /// </summary>
     public static class MD5
     {
         /// <summary>

@@ -134,13 +134,15 @@ namespace Instructions
                     while (!cond && time.Elapsed.TotalMilliseconds <= timeout)
                     {
                         received = false;
-                        (variable as Variable<double>).UpdateVariable(Tx);
+                        (variable as Variable<double>).UpdateIndexedCanChannel(Tx);
 
+                        // Wait for the receive event fired or timeout occurred
                         while (!received && time.Elapsed.TotalMilliseconds <= timeout)
                             await Task.Delay(pollingInterval);
 
                         cond = condition();
 
+                        // Antibounce control
                         Stopwatch sw = Stopwatch.StartNew();
                         do
                         {
@@ -170,10 +172,12 @@ namespace Instructions
 
         private void LocalRx_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
         {
+            // Retrieve the value from the CAN bus
             VariableDictionary.Get(variableName, out IVariable variable);
             (variable as DoubleVariable).Value = variable.Type == VariableType.Sgl ?
                 BitConverter.ToSingle((e.NewCanFrame as CanFrame).Data, 4) : BitConverter.ToInt32((e.NewCanFrame as CanFrame).Data, 4);
 
+            // And store it
             valueGot = Convert.ToDouble(variable.ValueAsObject);
 
             received = true;
