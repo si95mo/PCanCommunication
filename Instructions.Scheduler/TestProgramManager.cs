@@ -100,7 +100,7 @@ namespace Instructions.Scheduler
                 File.AppendAllText(fullTestAbsolutePath, line);
             }
 
-            return n;
+            return counter + n;
         }
 
         /// <summary>

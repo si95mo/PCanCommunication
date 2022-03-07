@@ -116,7 +116,7 @@ namespace Instructions
                         break;
 
                     case ConditionOperand.Included:
-                        returnValue = (valueGot < value - threshold) && (valueGot > value - threshold);
+                        returnValue = (valueGot >= value - threshold) && (valueGot <= value + threshold); // v - t <= m <= v + t
                         break;
                 }
 
@@ -143,12 +143,12 @@ namespace Instructions
                         cond = condition();
 
                         // Antibounce control
-                        Stopwatch sw = Stopwatch.StartNew();
-                        do
-                        {
-                            cond = condition();
-                            await Task.Delay(pollingInterval);
-                        } while (sw.Elapsed.TotalMilliseconds < conditionTime != !cond);
+                        //Stopwatch sw = Stopwatch.StartNew();
+                        //do
+                        //{
+                        //    cond = condition();
+                        //    await Task.Delay(pollingInterval);
+                        //} while (sw.Elapsed.TotalMilliseconds < conditionTime != !cond);
 
                         if (cond)
                             return true;
