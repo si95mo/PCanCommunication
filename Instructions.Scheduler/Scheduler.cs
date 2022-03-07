@@ -66,6 +66,8 @@ namespace Instructions.Scheduler
             }
         }
 
+        public string FullLog { get; private set; } = "";
+
         /// <summary>
         /// The test execution result
         /// </summary>
@@ -127,8 +129,13 @@ namespace Instructions.Scheduler
             stop = false;
             instructionLog = "";
 
+            InstructionLogChanged += Scheduler_InstructionLogChanged;
+
             TestProgramManager.ReadMain(path, pathString: "->", delimiter: '\t').ForEach(x => Add(x));
         }
+
+        private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
+            => FullLog += InstructionLog;
 
         /// <summary>
         /// Add an <see cref="Instruction"/> to the
@@ -155,6 +162,8 @@ namespace Instructions.Scheduler
         /// file will be saved in Desktop)</param>
         public async Task ExecuteAll(string path = "", ICanResource resource = null, IndexedCanChannel tx = null, IndexedCanChannel rx = null)
         {
+            FullLog = "";
+
             stop = false;
             bool instructionResult = true;
 
@@ -165,7 +174,7 @@ namespace Instructions.Scheduler
             int order = instructions.Keys.Min();
             List<Instruction> instructionList = new List<Instruction>();
 
-            while (instructions.Count > 0 && !stop)
+            while (instructions.Count > 0 && !stop && instructionResult)
             {
                 // Retrieve all the instructions with the same order
                 while (instructions[order].Count > 0)

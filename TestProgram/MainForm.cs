@@ -379,7 +379,15 @@ namespace TestProgram
                 await Task.Delay(10);
             }
 
-            txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += Environment.NewLine));
+            txbTestLog.Invoke(new MethodInvoker(() =>
+                    {
+                        txbTestLog.Text += Environment.NewLine;
+                        txbTestLog.SelectionStart = txbTestLog.Text.Length;
+                        txbTestLog.SelectionLength = 0;
+                        txbTestLog.ScrollToCaret();
+                    }
+                )
+            );
         }
 
         /// <summary>
@@ -389,7 +397,15 @@ namespace TestProgram
         /// <param name="e"></param>
         private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
         {
-            txbTestLog.Invoke(new MethodInvoker(() => txbTestLog.Text += scheduler.InstructionLog + Environment.NewLine));
+            txbTestLog.Invoke(new MethodInvoker(() =>
+                    {
+                        txbTestLog.Text += scheduler.InstructionLog + Environment.NewLine;
+                        txbTestLog.SelectionStart = txbTestLog.Text.Length;
+                        txbTestLog.SelectionLength = 0;
+                        txbTestLog.ScrollToCaret();
+                    }
+                )
+            );
         }
 
         /// <summary>
@@ -427,6 +443,29 @@ namespace TestProgram
                             DateTime now = DateTime.Now;
                             TestProgramManager.SerialIndex = files.Length;
 
+                            // UI update
+                            lblTestResult.Invoke(new MethodInvoker(() =>
+                                    {
+                                        Color textColor = Color.Black;
+                                        lblTestResult.ForeColor = textColor;
+
+                                        lblTestResult.Text = "In progress...";
+                                    }
+                                )
+                            );
+                            lblBasicTestResult.Invoke(new MethodInvoker(() =>
+                                    {
+                                        Color textColor = Color.Black;
+                                        lblBasicTestResult.ForeColor = textColor;
+
+                                        lblBasicTestResult.Text = "In progress...";
+
+                                        btnStartTest.Enabled = false;
+                                        btnStartTestProgram.Enabled = false;
+                                    }
+                                )
+                            );
+
                             resultPath = Path.Combine(
                                 folderPath,
                                 $"{SerialNumbers.SerialNumbers.CreateNew(txbOperatingSite.Text, files.Length)}_{now:yyyyMMdd}_{now:HHmmss}.csv"
@@ -443,12 +482,15 @@ namespace TestProgram
                                     }
                                 )
                             );
-                            lblTestResult.Invoke(new MethodInvoker(() =>
+                            lblBasicTestResult.Invoke(new MethodInvoker(() =>
                                     {
                                         Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
                                         lblBasicTestResult.ForeColor = textColor;
 
                                         lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+
+                                        btnStartTest.Enabled = true;
+                                        btnStartTestProgram.Enabled = true;
                                     }
                                 )
                             );
