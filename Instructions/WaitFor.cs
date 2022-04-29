@@ -32,7 +32,7 @@ namespace Instructions
         Lesser = 3,
 
         /// <summary>
-        /// '<' operand
+        /// '<= & >=' operand
         /// </summary>
         Included = 4
     }
@@ -48,6 +48,16 @@ namespace Instructions
         private ConditionOperand operand;
         private int conditionTime;
         private int pollingInterval;
+
+        /// <summary>
+        /// The high limit of the comparison
+        /// </summary>
+        public double MaxValue { get; set; }
+
+        /// <summary>
+        /// The low limit of the comparison
+        /// </summary>
+        public double MinValue { get; set; }
 
         /// <summary>
         /// Create a new instance of <see cref="WaitFor"/>
@@ -116,7 +126,7 @@ namespace Instructions
                         break;
 
                     case ConditionOperand.Included:
-                        returnValue = (valueGot >= value - threshold) && (valueGot <= value + threshold); // v - t <= m <= v + t
+                        returnValue = (valueGot >= MinValue - threshold) && (valueGot <= MaxValue + threshold); // v - t <= m <= v + t
                         break;
                 }
 

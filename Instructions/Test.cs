@@ -17,6 +17,16 @@ namespace Instructions
         protected ConditionOperand operand;
 
         /// <summary>
+        /// The high limit of the comparison
+        /// </summary>
+        public double MaxValue { get; set; }
+
+        /// <summary>
+        /// The low limit of the comparison
+        /// </summary>
+        public double MinValue { get; set; }
+
+        /// <summary>
         /// Create a new instance of <see cref="Test"/>
         /// </summary>
         /// <param name="variableName">The variable name</param>
@@ -103,7 +113,7 @@ namespace Instructions
                         break;
 
                     case ConditionOperand.Included:
-                        result &= (valueGot < value - threshold) && (valueGot > value + threshold);
+                        result &= (valueGot >= MinValue - threshold) && (valueGot <= MaxValue + threshold); // v - t <= m <= v + t
                         break;
                 }
             }

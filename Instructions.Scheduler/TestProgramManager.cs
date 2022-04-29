@@ -125,6 +125,8 @@ namespace Instructions.Scheduler
                 int.TryParse(testParsed[i][1].Trim(), out int order);
                 string instructionType = testParsed[i][2].Trim();
                 string variableName = testParsed[i][3].Trim();
+                double.TryParse(testParsed[i][6].Trim(), out double maxValue);
+                double.TryParse(testParsed[i][7].Trim(), out double minValue);
 
                 double value = 0d;
                 int canId = 0;
@@ -191,6 +193,8 @@ namespace Instructions.Scheduler
 
                         case "TEST":
                             instruction = new Test(variableName, id, order, value, ParseOperand(condition), description);
+                            (instruction as Test).MaxValue = maxValue;
+                            (instruction as Test).MinValue = minValue;
                             break;
 
                         case "WAIT_FOR":
@@ -204,6 +208,8 @@ namespace Instructions.Scheduler
                                 order,
                                 description: description
                             );
+                            (instruction as WaitFor).MaxValue = maxValue;
+                            (instruction as WaitFor).MinValue = minValue;
                             break;
 
                         case "CAN_RAW":
