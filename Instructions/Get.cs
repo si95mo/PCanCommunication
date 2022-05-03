@@ -65,7 +65,7 @@ namespace Instructions
 
                     // Await the receive event or timeout occurred
                     while (!received && time.Elapsed.TotalMilliseconds <= timeout)
-                        await Task.Delay(50);
+                        await Task.Delay(20);
 
                     time.Stop();
 

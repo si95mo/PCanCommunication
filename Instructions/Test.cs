@@ -80,7 +80,7 @@ namespace Instructions
 
                     // Wait for the received event or timeout occurred
                     while (!received && time.Elapsed.TotalMilliseconds <= timeout)
-                        await Task.Delay(50);
+                        await Task.Delay(20);
 
                     time.Stop();
 
@@ -142,14 +142,17 @@ namespace Instructions
 
         public override string ToString()
         {
-            string description = $"{name}\t " +
-                $"{id}\t " +
-                $"{order}\t " +
-                $"{variableName}\t \t " +
-                $"{variableName} ({valueGot}) is {operand} than {value}\t " +
-                $"{startTime:HH:mm:ss.fff}\t " +
+            string description = $"{name}\t" +
+                $"{id}\t" +
+                $"{order}\t" +
+                $"{variableName}\t \t ";
+            description += operand != ConditionOperand.Included ?
+                $"{variableName} ({valueGot}) is {operand} than {value}\t " :
+                $"{variableName} ({valueGot}) is {operand} in ({MinValue}, {MaxValue})\t ";
+            description += $"{startTime:HH:mm:ss.fff}\t " +
                 $"{stopTime:HH:mm:ss.fff}\t " +
                 $"{result}";
+
             return description;
         }
     }

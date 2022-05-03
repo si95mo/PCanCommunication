@@ -18,6 +18,7 @@ namespace Instructions.Scheduler
         public static string BatchNumber { get; set; } = "";
         public static int SerialIndex { get; set; } = 0;
         public static string SerialNumber { get; set; } = "";
+        public static string EndingSequencePath { get; private set; } = "";
 
         private static object lockObject = new object();
 
@@ -53,6 +54,7 @@ namespace Instructions.Scheduler
 
                     // Save the sub-test in the full-test file
                     n = SaveTest(fileAbsolutePath, ++n);
+                    EndingSequencePath = fileAbsolutePath;
                 }
                 else
                 {
@@ -125,21 +127,14 @@ namespace Instructions.Scheduler
                 int.TryParse(testParsed[i][1].Trim(), out int order);
                 string instructionType = testParsed[i][2].Trim();
                 string variableName = testParsed[i][3].Trim();
-                double.TryParse(testParsed[i][6].Trim(), out double maxValue);
-                double.TryParse(testParsed[i][7].Trim(), out double minValue);
+                double.TryParse(testParsed[i][6].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double maxValue);
+                double.TryParse(testParsed[i][7].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double minValue);
 
                 double value = 0d;
                 int canId = 0;
                 byte[] payload = new byte[8];
                 if (instructionType.CompareTo("CAN_RAW") != 0)
-                {
-                    double.TryParse(
-                        testParsed[i][4].TrimEnd(),
-                        NumberStyles.Any,
-                        CultureInfo.InvariantCulture,
-                        out value
-                    );
-                }
+                    double.TryParse(testParsed[i][4].TrimEnd(), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
                 else
                 {
                     string valueAsString = testParsed[i][4];
@@ -167,7 +162,12 @@ namespace Instructions.Scheduler
                 int.TryParse(testParsed[i][8].Trim(), out int time);
                 int.TryParse(testParsed[i][9].Trim(), out int timeout);
 
-                bool skip = testParsed[i][10].Trim().CompareTo("") != 0; // "" then do not skip, anything else then skip the instruction
+                bool skip = false;
+                try
+                {
+                    skip = testParsed[i][10].Trim().CompareTo("") != 0; // "" then do not skip, anything else then skip the instruction
+                }
+                catch { }
                 string description = "";
                 try
                 {

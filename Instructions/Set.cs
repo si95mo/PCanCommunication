@@ -65,7 +65,7 @@ namespace Instructions
 
                     // Wait for event fired or timeout occurred
                     while (!received && time.Elapsed.TotalMilliseconds <= timeout)
-                        await Task.Delay(50);
+                        await Task.Delay(20);
 
                     time.Stop();
 

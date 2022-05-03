@@ -41,6 +41,8 @@ namespace Instructions.Scheduler
     /// </summary>
     public class Scheduler
     {
+        internal SortedDictionary<int, Queue<Instruction>> EndingSequence { get; set; }
+
         private SortedDictionary<int, Queue<Instruction>> instructions;
         private bool stop;
         private object objectLock = new object();
@@ -125,13 +127,19 @@ namespace Instructions.Scheduler
         /// <param name="path">The test program file path</param>
         public Scheduler(string path)
         {
+            EndingSequence = new SortedDictionary<int, Queue<Instruction>>();
+
             instructions = new SortedDictionary<int, Queue<Instruction>>();
             stop = false;
             instructionLog = "";
 
             InstructionLogChanged += Scheduler_InstructionLogChanged;
 
-            TestProgramManager.ReadMain(path, pathString: "->", delimiter: '\t').ForEach(x => Add(x));
+            List<Instruction> testProgram = TestProgramManager.ReadMain(path, pathString: "->", delimiter: '\t');
+            testProgram.ForEach(x => Add(x)); // Normal test program
+            int n = TestProgramManager.ReadTest(TestProgramManager.EndingSequencePath, delimiter: '\t').Count; // Ending sequence 
+            for (int i = testProgram.Count - n; i < testProgram.Count; i++)
+                AddToEndingSequence(testProgram[i]);
         }
 
         private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
@@ -155,6 +163,23 @@ namespace Instructions.Scheduler
         }
 
         /// <summary>
+        /// Add an <see cref="Instruction"/> to the
+        /// <see cref="EndingSequence"/>
+        /// </summary>
+        /// <param name="instruction">The <see cref="Instruction"/> to add</param>
+        internal void AddToEndingSequence(Instruction instruction)
+        {
+            // Add an instruction with regard to its order
+            if (EndingSequence.ContainsKey(instruction.Order))
+                EndingSequence[instruction.Order].Enqueue(instruction);
+            else
+            {
+                EndingSequence.Add(instruction.Order, new Queue<Instruction>());
+                EndingSequence[instruction.Order].Enqueue(instruction);
+            }
+        }
+
+        /// <summary>
         /// Execute all the subscribed <see cref="Instruction"/>
         /// and remove them from <see cref="Instructions"/>
         /// </summary>
@@ -165,21 +190,43 @@ namespace Instructions.Scheduler
             FullLog = "";
 
             stop = false;
-            bool instructionResult = true;
 
             // Result path, if not previously valorized
             if (path.CompareTo("") == 0)
                 path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "result.csv");
 
-            int order = instructions.Keys.Min();
+            // Normal execution
+            bool instructionResut = await Execute(instructions, resource, tx, rx, path);
+
+            // If an error occurred, run the ending sequence of instruction
+            if (!instructionResut)
+                await Execute(EndingSequence, resource, tx, rx, path);
+
+            // Add the final lines to the result file
+            TestProgramManager.FinalizeFile(path, TestResult);
+        }
+
+        /// <summary>
+        /// Execute a list of <see cref="Instruction"/>
+        /// </summary>
+        /// <param name="list">The <see cref="Instruction"/> collection</param>
+        /// <param name="resource">The <see cref="ICanResource"/></param>
+        /// <param name="tx">The TX <see cref="IndexedCanChannel"/></param>
+        /// <param name="rx">The RX <see cref="IndexedCanChannel"/></param>
+        /// <returns><see langword="true"/> if the execution succeeded, <see langword="false"/> otherwise</returns>
+        private async Task<bool> Execute(SortedDictionary<int, Queue<Instruction>> list, ICanResource resource, 
+            IndexedCanChannel tx, IndexedCanChannel rx, string path)
+        {
+            bool instructionResult = true;
+            int order = list.Keys.Min();
             List<Instruction> instructionList = new List<Instruction>();
 
-            while (instructions.Count > 0 && !stop && instructionResult)
+            while (list.Count > 0 && !stop && instructionResult)
             {
                 // Retrieve all the instructions with the same order
-                while (instructions[order].Count > 0)
+                while (list[order].Count > 0)
                 {
-                    Instruction instruction = instructions[order].Dequeue();
+                    Instruction instruction = list[order].Dequeue();
                     instructionList.Add(instruction);
                 }
 
@@ -212,15 +259,14 @@ namespace Instructions.Scheduler
                     }
                 );
 
-                instructions.Remove(order);
-                order = instructions.Count > 0 ? instructions.Keys.Min() : 0;
+                list.Remove(order);
+                order = list.Count > 0 ? list.Keys.Min() : 0;
                 instructionList.Clear();
 
                 TestResult = instructionResult;
             }
 
-            // Add the final lines to the result file
-            TestProgramManager.FinalizeFile(path, TestResult);
+            return instructionResult;
         }
 
         /// <summary>

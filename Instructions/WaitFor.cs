@@ -198,11 +198,14 @@ namespace Instructions
             string description = $"{name}\t" +
                 $"{id}\t" +
                 $"{order}\t" +
-                $"{variableName}\t \t " +
-                $"{variableName} ({valueGot}) is {operand} than {value}\t " +
-                $"{startTime:HH:mm:ss.fff}\t " +
+                $"{variableName}\t \t ";
+            description += operand != ConditionOperand.Included ?
+                $"{variableName} ({valueGot}) is {operand} than {value}\t " :
+                $"{variableName} ({valueGot}) is {operand} in ({MinValue}, {MaxValue})\t ";
+            description += $"{startTime:HH:mm:ss.fff}\t " +
                 $"{stopTime:HH:mm:ss.fff}\t " +
                 $"{result}";
+
             return description;
         }
     }
