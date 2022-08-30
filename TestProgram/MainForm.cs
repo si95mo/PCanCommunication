@@ -375,6 +375,8 @@ namespace TestProgram
 
         #region Event handlers
 
+        #region Non-UI event handlers
+
         /// <summary>
         /// Handle the resource status changed
         /// </summary>
@@ -442,6 +444,8 @@ namespace TestProgram
                 .Where((x) => x.Value.Index == rx.Index && x.Value.SubIndex == rx.SubIndex)
                 .Select((x) => x.Value.ValueAsObject = BitConverter.ToSingle(rx.CanFrame.Data, 4));
         }
+
+        #endregion Non-UI event handlers
 
         #region UI event handlers
 
