@@ -28,6 +28,7 @@ namespace TestProgram
 
         // File-related variables
         private string testPath;
+        private string batchFilePath;
 
         private string variablePath;
         private string folderPath;
@@ -241,9 +242,10 @@ namespace TestProgram
             InitializeComponent();
 
             // Variables initialization
-            testPath = "";
-            folderPath = "";
-            resultPath = "";
+            testPath = string.Empty;
+            batchFilePath = string.Empty;
+            folderPath = string.Empty;
+            resultPath = string.Empty;
 
             testFileSelected = false;
             testFolderSelected = false;
@@ -275,6 +277,7 @@ namespace TestProgram
             else
             {
                 FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+                folderDialog.Description = "Select the test programs folder";
                 ledTestLoaded.BackColor = stoppedColor;
 
                 if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
@@ -286,8 +289,14 @@ namespace TestProgram
                     ledTestLoaded.BackColor = startedColor;
                     testSelected = testFileSelected && testFolderSelected;
 
+                    FolderBrowserDialog batchFolderDialog = new FolderBrowserDialog();
+                    batchFolderDialog.Description = "Select the batch file folder";
+
+                    if(batchFolderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(batchFolderDialog.SelectedPath))
+                        batchFilePath = batchFolderDialog.SelectedPath;
+
                     // Initialize the scheduler (the test file read is done inside)
-                    scheduler = new Scheduler(testPath);
+                    scheduler = new Scheduler(testPath, batchFilePath);
                     totalSteps = scheduler.Instructions.Count;
 
                     // Update the can id or create the can channel if not already done (tx)
@@ -338,6 +347,7 @@ namespace TestProgram
         private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            folderDialog.Description = "Select the test results folder";
             ledResultFolderSelected.BackColor = stoppedColor;
 
             if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
@@ -501,7 +511,7 @@ namespace TestProgram
                             if (scheduler != null)
                                 scheduler.InstructionLogChanged -= Scheduler_InstructionLogChanged;
 
-                            scheduler = new Scheduler(testPath);
+                            scheduler = new Scheduler(testPath, batchFilePath);
                             totalSteps = scheduler.Instructions.Count;
                         }
                         else

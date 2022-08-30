@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31515.178
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hardware.Can", "Hardware.Can\Hardware.Can.csproj", "{12360666-20BA-42C9-BC06-5F3766B11BB7}"
 EndProject
@@ -18,6 +18,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography", "Cryptography\Cryptography.csproj", "{7C31D528-A0B9-431D-9F65-77DC762ACE5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialNumbers", "SerialNUmbers\SerialNumbers.csproj", "{F66D49A8-F6BA-4672-A011-A150634C2CF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Instructions.Extensions", "Instructions.Extensions\Instructions.Extensions.csproj", "{64745357-8B23-4037-8B49-E40AD95A7A46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JCommanderTests", "JCommanderTests\JCommanderTests.csproj", "{E0E4D374-66FB-42A6-94F9-4F0064728CA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{F66D49A8-F6BA-4672-A011-A150634C2CF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F66D49A8-F6BA-4672-A011-A150634C2CF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F66D49A8-F6BA-4672-A011-A150634C2CF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64745357-8B23-4037-8B49-E40AD95A7A46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64745357-8B23-4037-8B49-E40AD95A7A46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64745357-8B23-4037-8B49-E40AD95A7A46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64745357-8B23-4037-8B49-E40AD95A7A46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0E4D374-66FB-42A6-94F9-4F0064728CA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0E4D374-66FB-42A6-94F9-4F0064728CA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0E4D374-66FB-42A6-94F9-4F0064728CA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0E4D374-66FB-42A6-94F9-4F0064728CA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
