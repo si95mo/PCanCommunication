@@ -221,6 +221,119 @@ namespace Instructions.Scheduler
             return instructions;
         }
 
+        /// <summary>
+        /// Load an ending sequence for test program from disk
+        /// </summary>
+        /// <param name="endingSequencePath">The ending sequence test program path</param>
+        /// <param name="batchFolder">The batch file base folder path</param>
+        /// <param name="delimeter">The delimiter <see cref="char"/></param>
+        /// <returns>A <see cref="List"/> with the retrieved <see cref="Instruction"/> of the ending sequence</returns>
+        internal static List<Instruction> ReadEndingSequence(string endingSequencePath, string batchFolder, char delimiter = '\t')
+        {
+            List<Instruction> instructions = new List<Instruction>();
+
+            string[] endingSequence = File.ReadAllLines(endingSequencePath);
+            string[][] testParsed = new string[endingSequence.Length][];
+
+            Instruction instruction;
+            for (int i = 1; i < endingSequence.Length; i++) // No headers
+            {
+                testParsed[i] = endingSequence[i].Split(delimiter);
+
+                int id = i;
+                int order = i;
+                string instructionType = testParsed[i][0].Trim();
+                string variableName = testParsed[i][1].Trim();
+                double.TryParse(testParsed[i][4].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double maxValue);
+                double.TryParse(testParsed[i][5].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double minValue);
+
+                double value = 0d;
+                int canId = 0;
+                byte[] payload = new byte[8];
+                string batchFileName = string.Empty;
+                if (instructionType.CompareTo("CAN_RAW") != 0 && instructionType.CompareTo("PROGRAM") != 0)
+                    double.TryParse(testParsed[i][4].TrimEnd(), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
+                else if (instructionType.CompareTo("CAN_RAW") == 0)// Can raw instruction
+                {
+                    string valueAsString = testParsed[i][2];
+                    string[] valueAsStringSplitted = valueAsString.Split('|');
+                    canId = Convert.ToInt32(valueAsStringSplitted[0], 16);
+
+                    string[] payloadAsString = valueAsStringSplitted[1].Split(' ');
+                    for (int j = 0; j < 8; j++)
+                        payload[j] = Convert.ToByte(payloadAsString[j], 16);
+                }
+                else // Program instruction
+                {
+                    batchFileName = testParsed[i][2];
+                }
+
+                string condition = testParsed[i][3].Trim();
+                int.TryParse(testParsed[i][6].Trim(), out int time);
+                int.TryParse(testParsed[i][7].Trim(), out int timeout);
+
+                bool skip = false;
+                try
+                {
+                    skip = testParsed[i][8].Trim().CompareTo("") != 0; // "" then do not skip, anything else then skip the instruction
+                }
+                catch { }
+                string description = "";
+                try
+                {
+                    description = testParsed[i][9].Trim();
+                }
+                catch { }
+
+                if (!skip)
+                {
+                    switch (instructionType)
+                    {
+                        case "GET":
+                            instruction = new Get(variableName, id, order, timeout, description);
+                            break;
+
+                        case "SET":
+                            instruction = new Set(variableName, value, id, order, timeout, description);
+                            break;
+
+                        case "WAIT":
+                            instruction = new Wait(time, id, order, description);
+                            break;
+
+                        case "TEST":
+                            instruction = new Test(variableName, id, order, value, ParseOperand(condition), description);
+                            (instruction as Test).MaxValue = maxValue;
+                            (instruction as Test).MinValue = minValue;
+                            break;
+
+                        case "WAIT_FOR":
+                            instruction = new WaitFor(variableName, value, ParseOperand(condition), time, timeout, id, order, description: description);
+                            (instruction as WaitFor).MaxValue = maxValue;
+                            (instruction as WaitFor).MinValue = minValue;
+                            break;
+
+                        case "CAN_RAW":
+                            instruction = new CanRaw(id, order, canId, payload, description: description);
+                            break;
+
+                        case "PROGRAM":
+                            string batchFilePath = Path.Combine(batchFolder, batchFileName);
+                            instruction = new ProgramMcu(batchFilePath, id, order, description);
+                            break;
+
+                        default:
+                            instruction = null;
+                            break; // ?
+                    }
+
+                    instructions.Add(instruction);
+                }
+            }
+
+            return instructions;
+        }
+
         private static ConditionOperand ParseOperand(string condition)
         {
             ConditionOperand operand = ConditionOperand.Equal;

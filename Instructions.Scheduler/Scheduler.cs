@@ -138,9 +138,8 @@ namespace Instructions.Scheduler
 
             List<Instruction> testProgram = TestProgramManager.ReadMain(testProgramPath, batchFilePath, pathString: "->", delimiter: '\t');
             testProgram.ForEach(x => Add(x)); // Normal test program
-            int n = TestProgramManager.ReadTest(TestProgramManager.EndingSequencePath, batchFilePath, delimiter: '\t').Count; // Ending sequence
-            for (int i = testProgram.Count - n; i < testProgram.Count; i++)
-                AddToEndingSequence(testProgram[i]);
+            List<Instruction> endingSequence = TestProgramManager.ReadEndingSequence(TestProgramManager.EndingSequencePath, batchFilePath, delimiter: '\t');
+            endingSequence.ForEach(x => AddToEndingSequence(x));
         }
 
         private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
@@ -201,6 +200,8 @@ namespace Instructions.Scheduler
             if (!instructionResut)
                 await Execute(EndingSequence, resource, tx, rx, path);
 
+            TestResult = instructionResut; // Force to false if normal test program failed
+
             // Add the final lines to the result file
             TestProgramManager.FinalizeFile(path, TestResult);
         }
@@ -249,7 +250,7 @@ namespace Instructions.Scheduler
                         // Get the result
                         instructionResult &= x.Result;
 
-                        // And then eventually fire the events
+                        // Fire events
                         ActualInstructionDescription = x.Description;
                         InstructionLog = x.ToString();
 

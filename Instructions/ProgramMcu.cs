@@ -44,21 +44,21 @@ namespace Instructions
 
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
+                CreateNoWindow = false,
                 UseShellExecute = false, // To redirect standard streams
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 FileName = path,
                 WorkingDirectory = info.Directory.FullName
             };
-            Process process = Process.Start(startInfo);
 
-            process.Start();
+            Process process = Process.Start(startInfo);
             await process.WaitForExitAsync();
 
             standardOutput = await process.StandardOutput.ReadToEndAsync();
             standardError = await process.StandardError.ReadToEndAsync();
 
-            result = process.ExitCode == 0 && standardError.CompareTo(string.Empty) == 0;
+            result =  standardError.CompareTo(string.Empty) == 0 || standardError.CompareTo("^C") == 0;
 
             outputParameters.Add(standardOutput);
             outputParameters.Add(standardError);
