@@ -22,8 +22,7 @@ namespace Instructions
         /// <param name="order">The order index</param>
         /// <param name="timeout">The timeout (in ms)</param>
         /// <param name="description">The description</param>
-        public Set(string variableName, double valueToSet, int id, int order, int timeout = 1000, string description = "")
-            : base("Set", id, order, timeout, description)
+        public Set(string variableName, double valueToSet, int id, int order, int timeout = 1000, string description = "") : base("Set", id, order, timeout, description)
         {
             this.variableName = variableName;
             this.valueToSet = valueToSet;

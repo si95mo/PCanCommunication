@@ -21,8 +21,7 @@ namespace Instructions
         /// <param name="payload">The payload</param>
         /// <param name="resource">The <see cref="ICanResource"/></param>
         /// <param name="description">The description</param>
-        public CanRaw(int id, int order, int canId, byte[] payload, string description = "")
-            : base("CanRaw", id, order, timeout: 0, description: description)
+        public CanRaw(int id, int order, int canId, byte[] payload, string description = "") : base("CanRaw", id, order, timeout: 0, description: description)
         {
             canFrame = new CanFrame(canId, payload);
         }
