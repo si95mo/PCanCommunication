@@ -10,18 +10,8 @@ namespace Instructions
     /// </summary>
     public class ProgramMcu : Instruction
     {
-        /// <summary>
-        /// The J-Link exe path
-        /// </summary>
-        public const string JLinkPath = @"C:\Program Files\SEGGER\JLink\JLink.exe";
-
-        /// <summary>
-        /// The command to send to the MCU
-        /// </summary>
-        public const string Command = "commanderscript";
-
         private string path;
-        private string standardOutput, standardError;
+        private int exitCode;
 
         /// <summary>
         /// Create a new instance of <see cref="ProgramMcu"/>
@@ -33,9 +23,6 @@ namespace Instructions
         public ProgramMcu(string path, int id, int order, string description = "") : base("UploadFirmware", id, order, timeout: 0, description: description)
         {
             this.path = path;
-
-            standardOutput = string.Empty;
-            standardError = string.Empty;
         }
 
         public override async Task Execute()
@@ -44,10 +31,6 @@ namespace Instructions
 
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
-                CreateNoWindow = false,
-                UseShellExecute = false, // To redirect standard streams
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
                 FileName = path,
                 WorkingDirectory = info.Directory.FullName
             };
@@ -55,18 +38,15 @@ namespace Instructions
             Process process = Process.Start(startInfo);
             await process.WaitForExitAsync();
 
-            standardOutput = await process.StandardOutput.ReadToEndAsync();
-            standardError = await process.StandardError.ReadToEndAsync();
+            exitCode = process.ExitCode;
+            result =  exitCode == 0;
 
-            result =  standardError.CompareTo(string.Empty) == 0 || standardError.CompareTo("^C") == 0;
-
-            outputParameters.Add(standardOutput);
-            outputParameters.Add(standardError);
+            outputParameters.Add(exitCode);
         }
 
         public override string ToString()
         {
-            string description = $"{name}\t{standardOutput}\t{standardError}";
+            string description = $"{name}\t{exitCode}";
             return description;
         }
     }

@@ -19,21 +19,16 @@ namespace JCommanderTests
 
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
                 FileName = BatchPath,
                 WorkingDirectory = info.Directory.FullName
             };
-            Process process = Process.Start(startInfo);
 
-            process.Start();
+            Process process = Process.Start(startInfo);
             await process.WaitForExitAsync();
 
             Console.WriteLine(
-                $"Standard output: {process.StandardOutput.ReadToEnd()}{Environment.NewLine}" +
-                $"Standard error: {process.StandardOutput.ReadToEnd()}{Environment.NewLine}" +
-                $"-------------------------------------------------------"
+                $"Exit code: {process.ExitCode}{Environment.NewLine}" +
+                $"--------------------------------"
             );
 
             Console.Write("Press 'ENTER' to exit application: ");
