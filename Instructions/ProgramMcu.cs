@@ -26,10 +26,9 @@ namespace Instructions
         /// <summary>
         /// Create a new instance of <see cref="ProgramMcu"/>
         /// </summary>
-        /// <param name="jLinkPath">The batch file path</param>
+        /// <param name="path">The batch file path</param>
         /// <param name="id">The id</param>
         /// <param name="order">The order index</param>
-        /// <param name="timeout">The timeout (in milliseconds)</param>
         /// <param name="description">The description</param>
         public ProgramMcu(string path, int id, int order, string description = "") : base("UploadFirmware", id, order, timeout: 0, description: description)
         {
@@ -41,11 +40,11 @@ namespace Instructions
 
         public override async Task Execute()
         {
-            FileInfo info = new FileInfo(path);
+            FileInfo info = new FileInfo(path); // Working directory (same as script file)
 
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
-                UseShellExecute = false,
+                UseShellExecute = false, // To redirect standard streams
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 FileName = path,
