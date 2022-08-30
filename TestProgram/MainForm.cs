@@ -16,16 +16,19 @@ namespace TestProgram
     {
         // Color "constants"
         private readonly Color startedColor = Color.Green;
+
         private readonly Color stoppedColor = Color.Red;
         private readonly Color unknowkColor = Color.DarkGray;
 
         // Can resource variables
         private ushort hardwareHandle = 0; // The hardware handle (changed in InitializeCanCommunication)
+
         private PeakCanResource resource;
         private IndexedCanChannel tx, rx;
 
         // File-related variables
         private string testPath;
+
         private string batchFilePath;
         private string variablePath;
         private string folderPath;
@@ -33,11 +36,13 @@ namespace TestProgram
 
         // Scheduler-related variables
         private Scheduler scheduler;
+
         private int totalSteps;
         private bool doUpdateSteps; // Used in the updating step task
 
         // Test selected logic-related variables
         private bool testFileSelected;
+
         private bool testFolderSelected;
         private bool testSelected;
 

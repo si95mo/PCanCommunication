@@ -50,7 +50,7 @@ namespace Instructions
                 RedirectStandardError = true,
                 FileName = path,
                 WorkingDirectory = info.Directory.FullName
-            };                   
+            };
             Process process = Process.Start(startInfo);
 
             process.Start();

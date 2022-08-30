@@ -10,6 +10,7 @@ namespace JCommanderTests
     {
         //private static readonly string ExePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "J-Link Commander V7.70c.lnk");
         private static readonly string ExePath = @"C:\Program Files\SEGGER\JLink\JLink.exe";
+
         private static readonly string BatchPath = @"C:\Users\simod\Desktop\Meta\Lavori\AqTest\Batch\test.bat";
 
         private static async Task Main()
@@ -23,7 +24,7 @@ namespace JCommanderTests
                 RedirectStandardError = true,
                 FileName = BatchPath,
                 WorkingDirectory = info.Directory.FullName
-            };                   
+            };
             Process process = Process.Start(startInfo);
 
             process.Start();
