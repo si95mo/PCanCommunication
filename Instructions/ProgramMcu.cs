@@ -21,6 +21,7 @@ namespace Instructions
         public const string Command = "commanderscript";
 
         private string path;
+        private string standardOutput, standardError;
 
         /// <summary>
         /// Create a new instance of <see cref="ProgramMcu"/>
@@ -33,18 +34,41 @@ namespace Instructions
         public ProgramMcu(string path, int id, int order, string description = "") : base("UploadFirmware", id, order, timeout: 0, description: description)
         {
             this.path = path;
+
+            standardOutput = string.Empty;
+            standardError = string.Empty;
         }
 
         public override async Task Execute()
         {
             FileInfo info = new FileInfo(path);
 
-            Process process = new Process();
-            process.StartInfo.FileName = path;
-            process.StartInfo.WorkingDirectory = info.Directory.FullName;
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                FileName = path,
+                WorkingDirectory = info.Directory.FullName
+            };                   
+            Process process = Process.Start(startInfo);
 
             process.Start();
             await process.WaitForExitAsync();
+
+            standardOutput = await process.StandardOutput.ReadToEndAsync();
+            standardError = await process.StandardError.ReadToEndAsync();
+
+            result = process.ExitCode == 0 && standardError.CompareTo(string.Empty) == 0;
+
+            outputParameters.Add(standardOutput);
+            outputParameters.Add(standardError);
+        }
+
+        public override string ToString()
+        {
+            string description = $"{name}\t{standardOutput}\t{standardError}";
+            return description;
         }
     }
 }
