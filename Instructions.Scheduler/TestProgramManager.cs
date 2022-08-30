@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Windows.Forms;
 
 namespace Instructions.Scheduler
 {
@@ -139,7 +138,7 @@ namespace Instructions.Scheduler
                 string batchFileName = string.Empty;
                 if (instructionType.CompareTo("CAN_RAW") != 0 && instructionType.CompareTo("PROGRAM") != 0)
                     double.TryParse(testParsed[i][4].TrimEnd(), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
-                else if(instructionType.CompareTo("CAN_RAW") == 0)// Can raw instruction
+                else if (instructionType.CompareTo("CAN_RAW") == 0)// Can raw instruction
                 {
                     string valueAsString = testParsed[i][4];
                     string[] valueAsStringSplitted = valueAsString.Split('|');
@@ -151,7 +150,7 @@ namespace Instructions.Scheduler
                 }
                 else // Program instruction
                 {
-                    batchFileName = testParsed[i][4]; 
+                    batchFileName = testParsed[i][4];
                 }
 
                 string condition = testParsed[i][5].Trim();
@@ -196,7 +195,7 @@ namespace Instructions.Scheduler
                             break;
 
                         case "WAIT_FOR":
-                            instruction = new WaitFor(variableName,  value, ParseOperand(condition), time, timeout, id, order, description: description);
+                            instruction = new WaitFor(variableName, value, ParseOperand(condition), time, timeout, id, order, description: description);
                             (instruction as WaitFor).MaxValue = maxValue;
                             (instruction as WaitFor).MinValue = minValue;
                             break;

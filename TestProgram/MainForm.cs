@@ -28,6 +28,7 @@ namespace TestProgram
 
         // File-related variables
         private string testPath;
+
         private string batchFilePath;
 
         private string variablePath;
@@ -292,7 +293,7 @@ namespace TestProgram
                     FolderBrowserDialog batchFolderDialog = new FolderBrowserDialog();
                     batchFolderDialog.Description = "Select the batch file folder";
 
-                    if(batchFolderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(batchFolderDialog.SelectedPath))
+                    if (batchFolderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(batchFolderDialog.SelectedPath))
                         batchFilePath = batchFolderDialog.SelectedPath;
 
                     // Initialize the scheduler (the test file read is done inside)

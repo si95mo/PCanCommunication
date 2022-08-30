@@ -138,7 +138,7 @@ namespace Instructions.Scheduler
 
             List<Instruction> testProgram = TestProgramManager.ReadMain(testProgramPath, batchFilePath, pathString: "->", delimiter: '\t');
             testProgram.ForEach(x => Add(x)); // Normal test program
-            int n = TestProgramManager.ReadTest(TestProgramManager.EndingSequencePath, batchFilePath, delimiter: '\t').Count; // Ending sequence 
+            int n = TestProgramManager.ReadTest(TestProgramManager.EndingSequencePath, batchFilePath, delimiter: '\t').Count; // Ending sequence
             for (int i = testProgram.Count - n; i < testProgram.Count; i++)
                 AddToEndingSequence(testProgram[i]);
         }
@@ -213,7 +213,7 @@ namespace Instructions.Scheduler
         /// <param name="tx">The TX <see cref="IndexedCanChannel"/></param>
         /// <param name="rx">The RX <see cref="IndexedCanChannel"/></param>
         /// <returns><see langword="true"/> if the execution succeeded, <see langword="false"/> otherwise</returns>
-        private async Task<bool> Execute(SortedDictionary<int, Queue<Instruction>> list, ICanResource resource, 
+        private async Task<bool> Execute(SortedDictionary<int, Queue<Instruction>> list, ICanResource resource,
             IndexedCanChannel tx, IndexedCanChannel rx, string path)
         {
             bool instructionResult = true;
