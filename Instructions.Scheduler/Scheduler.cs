@@ -124,8 +124,9 @@ namespace Instructions.Scheduler
         /// <summary>
         /// Create a new instance of <see cref="Scheduler"/>
         /// </summary>
-        /// <param name="path">The test program file path</param>
-        public Scheduler(string path)
+        /// <param name="testProgramPath">The test program file path</param>
+        /// <param name="batchFilePath">The batch file path</param>
+        public Scheduler(string testProgramPath, string batchFilePath)
         {
             EndingSequence = new SortedDictionary<int, Queue<Instruction>>();
 
@@ -135,9 +136,9 @@ namespace Instructions.Scheduler
 
             InstructionLogChanged += Scheduler_InstructionLogChanged;
 
-            List<Instruction> testProgram = TestProgramManager.ReadMain(path, pathString: "->", delimiter: '\t');
+            List<Instruction> testProgram = TestProgramManager.ReadMain(testProgramPath, batchFilePath, pathString: "->", delimiter: '\t');
             testProgram.ForEach(x => Add(x)); // Normal test program
-            int n = TestProgramManager.ReadTest(TestProgramManager.EndingSequencePath, delimiter: '\t').Count; // Ending sequence 
+            int n = TestProgramManager.ReadTest(TestProgramManager.EndingSequencePath, batchFilePath, delimiter: '\t').Count; // Ending sequence 
             for (int i = testProgram.Count - n; i < testProgram.Count; i++)
                 AddToEndingSequence(testProgram[i]);
         }
@@ -146,8 +147,7 @@ namespace Instructions.Scheduler
             => FullLog += InstructionLog;
 
         /// <summary>
-        /// Add an <see cref="Instruction"/> to the
-        /// <see cref="Instructions"/>
+        /// Add an <see cref="Instruction"/> to the <see cref="Instructions"/>
         /// </summary>
         /// <param name="instruction">The <see cref="Instruction"/> to add</param>
         public void Add(Instruction instruction)
@@ -163,8 +163,7 @@ namespace Instructions.Scheduler
         }
 
         /// <summary>
-        /// Add an <see cref="Instruction"/> to the
-        /// <see cref="EndingSequence"/>
+        /// Add an <see cref="Instruction"/> to the <see cref="EndingSequence"/>
         /// </summary>
         /// <param name="instruction">The <see cref="Instruction"/> to add</param>
         internal void AddToEndingSequence(Instruction instruction)

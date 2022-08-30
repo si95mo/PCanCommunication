@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Instructions.Scheduler
 {
@@ -26,10 +27,11 @@ namespace Instructions.Scheduler
         /// Read the main file and parse each sub-test file contained
         /// </summary>
         /// <param name="path">The main file path</param>
+        /// <param name="batchFolder">The batch file base folder path</param>
         /// <param name="pathString">The delimiter of the sub-test file path inside the main</param>
         /// <param name="delimiter">The sub-file char delimiter (<see cref="ReadTest(string, char)"/>)</param>
         /// <returns>The <see cref="List{T}"/> with all the parsed <see cref="Instruction"/></returns>
-        internal static List<Instruction> ReadMain(string path, string pathString = "->", char delimiter = '\t')
+        internal static List<Instruction> ReadMain(string path, string batchFolder, string pathString = "->", char delimiter = '\t')
         {
             List<Instruction> instructions = new List<Instruction>();
 
@@ -68,7 +70,7 @@ namespace Instructions.Scheduler
                 }
             }
 
-            instructions.AddRange(ReadTest(fullFileAbsolutePath, delimiter));
+            instructions.AddRange(ReadTest(fullFileAbsolutePath, batchFolder, delimiter));
 
             return instructions;
         }
@@ -108,14 +110,15 @@ namespace Instructions.Scheduler
         /// <summary>
         /// Load a test program from disk
         /// </summary>
-        /// <param name="path">The test program path</param>
+        /// <param name="testProgramPath">The test program path</param>
+        /// <param name="batchFolder">The batch file base folder path</param>
         /// <param name="delimeter">The delimiter <see cref="char"/></param>
         /// <returns>A <see cref="List"/> with the retrieved <see cref="Instruction"/></returns>
-        internal static List<Instruction> ReadTest(string path, char delimiter = '\t')
+        internal static List<Instruction> ReadTest(string testProgramPath, string batchFolder, char delimiter = '\t')
         {
             List<Instruction> instructions = new List<Instruction>();
 
-            string[] testProgram = File.ReadAllLines(path);
+            string[] testProgram = File.ReadAllLines(testProgramPath);
             string[][] testParsed = new string[testProgram.Length][];
 
             Instruction instruction;
@@ -133,9 +136,10 @@ namespace Instructions.Scheduler
                 double value = 0d;
                 int canId = 0;
                 byte[] payload = new byte[8];
-                if (instructionType.CompareTo("CAN_RAW") != 0)
+                string batchFileName = string.Empty;
+                if (instructionType.CompareTo("CAN_RAW") != 0 && instructionType.CompareTo("PROGRAM") != 0)
                     double.TryParse(testParsed[i][4].TrimEnd(), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
-                else
+                else if(instructionType.CompareTo("CAN_RAW") == 0)// Can raw instruction
                 {
                     string valueAsString = testParsed[i][4];
                     string[] valueAsStringSplitted = valueAsString.Split('|');
@@ -145,20 +149,14 @@ namespace Instructions.Scheduler
                     for (int j = 0; j < 8; j++)
                         payload[j] = Convert.ToByte(payloadAsString[j], 16);
                 }
+                else // Program instruction
+                {
+                    batchFileName = testParsed[i][4]; 
+                }
 
                 string condition = testParsed[i][5].Trim();
-                double.TryParse(
-                    testParsed[i][6].Trim(),
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out double highLim
-                );
-                double.TryParse(
-                    testParsed[i][7].Trim(),
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out double lowLim
-                );
+                double.TryParse(testParsed[i][6].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double highLim);
+                double.TryParse(testParsed[i][7].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double lowLim);
                 int.TryParse(testParsed[i][8].Trim(), out int time);
                 int.TryParse(testParsed[i][9].Trim(), out int timeout);
 
@@ -198,28 +196,18 @@ namespace Instructions.Scheduler
                             break;
 
                         case "WAIT_FOR":
-                            instruction = new WaitFor(
-                                variableName,
-                                value,
-                                ParseOperand(condition),
-                                time,
-                                timeout,
-                                id,
-                                order,
-                                description: description
-                            );
+                            instruction = new WaitFor(variableName,  value, ParseOperand(condition), time, timeout, id, order, description: description);
                             (instruction as WaitFor).MaxValue = maxValue;
                             (instruction as WaitFor).MinValue = minValue;
                             break;
 
                         case "CAN_RAW":
-                            instruction = new CanRaw(
-                                id,
-                                order,
-                                canId,
-                                payload,
-                                description: description
-                            );
+                            instruction = new CanRaw(id, order, canId, payload, description: description);
+                            break;
+
+                        case "PROGRAM":
+                            string batchFilePath = Path.Combine(batchFolder, batchFileName);
+                            instruction = new ProgramMcu(batchFilePath, id, order, description);
                             break;
 
                         default:
