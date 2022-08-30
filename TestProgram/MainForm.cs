@@ -16,36 +16,52 @@ namespace TestProgram
     {
         // Color "constants"
         private readonly Color startedColor = Color.Green;
-
         private readonly Color stoppedColor = Color.Red;
         private readonly Color unknowkColor = Color.DarkGray;
 
         // Can resource variables
         private ushort hardwareHandle = 0; // The hardware handle (changed in InitializeCanCommunication)
-
         private PeakCanResource resource;
         private IndexedCanChannel tx, rx;
 
         // File-related variables
         private string testPath;
-
         private string batchFilePath;
-
         private string variablePath;
         private string folderPath;
         private string resultPath;
 
         // Scheduler-related variables
         private Scheduler scheduler;
-
         private int totalSteps;
         private bool doUpdateSteps; // Used in the updating step task
 
         // Test selected logic-related variables
         private bool testFileSelected;
-
         private bool testFolderSelected;
         private bool testSelected;
+
+        /// <summary>
+        /// Create a new instance of <see cref="MainForm"/>
+        /// </summary>
+        public MainForm()
+        {
+            InitializeComponent();
+
+            // Variables initialization
+            testPath = string.Empty;
+            batchFilePath = string.Empty;
+            folderPath = string.Empty;
+            resultPath = string.Empty;
+
+            testFileSelected = false;
+            testFolderSelected = false;
+            testSelected = false;
+
+            VariableDictionary.Initialize();
+        }
+
+        #region Initialization methods
 
         /// <summary>
         /// Initialize user interface-related components
@@ -124,41 +140,9 @@ namespace TestProgram
             tx = new IndexedCanChannel(canId: 0x100, index: 0x0, subIndex: 0x0, resource, cmd: 1);
         }
 
-        /// <summary>
-        /// Handle the resource status changed
-        /// </summary>
-        /// <param name="sender">The sender</param>
-        /// <param name="e">The <see cref="StatusChangedEventArgs"/></param>
-        private void Resource_StatusChanged(object sender, StatusChangedEventArgs e)
-        {
-            // Update the UI component (different thread)
-            lblResourceStatus.Invoke(new MethodInvoker(() =>
-                    {
-                        lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
-                        lblCanResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+        #endregion Initialization methods
 
-                        if (lblResourceStatus.Text.CompareTo("PCAN_ERROR_OK") != 0) // PCAN_ERROR_OK is for no error
-                        {
-                            lblResourceStatus.ForeColor = Color.Red;
-                            lblCanResourceStatus.ForeColor = Color.Red;
-                        }
-                        else
-                        {
-                            lblResourceStatus.ForeColor = Color.Black;
-                            lblCanResourceStatus.ForeColor = Color.Black;
-                        }
-                    }
-                )
-            );
-        }
-
-        /// <summary>
-        /// Update the can resource baud rate
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CbxBaudRate_SelectedIndexChanged(object sender, EventArgs e)
-            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
+        #region Helper methods
 
         /// <summary>
         /// Convert a textual representation of a <see cref="BaudRate"/>
@@ -236,29 +220,234 @@ namespace TestProgram
         }
 
         /// <summary>
-        /// Create a new instance of <see cref="MainForm"/>
+        /// Update the DataGridView with all the variables found in the relative file
         /// </summary>
-        public MainForm()
+        private void UpdateDataGridItems()
         {
-            InitializeComponent();
-
-            // Variables initialization
-            testPath = string.Empty;
-            batchFilePath = string.Empty;
-            folderPath = string.Empty;
-            resultPath = string.Empty;
-
-            testFileSelected = false;
-            testFolderSelected = false;
-            testSelected = false;
-
-            VariableDictionary.Initialize();
+            BindingSource bs = new BindingSource
+            {
+                DataSource = VariableDictionary.Variables.Values.ToList()
+            };
+            dgvVariables.Invoke(new MethodInvoker(() => dgvVariables.DataSource = bs.DataSource));
         }
 
-        // Handle initialization that can only be done
-        // after the form control has been created
-        // (in particular the can communication initialization
-        // because there is an Invoke method call inside)
+        /// <summary>
+        /// Update the actual steps done by the scheduler
+        /// </summary>
+        /// <returns>The (async) <see cref="Task"/></returns>
+        private async Task UpdateSteps()
+        {
+            Action update = new Action(() =>
+                    txbTestLog.Text = $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}".Replace("\t", "  ")
+            );
+            // Log header
+            if (!InvokeRequired)
+                update();
+            else
+                BeginInvoke(update);
+
+            // Steps done and instruction executed
+            string str = string.Empty;
+            update = new Action(() =>
+                {
+                    lblSchedulerStepDone.Text = str;
+                    lblBasicStepNumber.Text = str;
+                    lblInstructionDescription.Text = scheduler.ActualInstructionDescription;
+                    lblBasicInstruction.Text = scheduler.ActualInstructionDescription;
+                }
+            );
+            while (doUpdateSteps)
+            {
+                str = $"{totalSteps - scheduler.Instructions.Count}/{totalSteps}";
+
+                if (!InvokeRequired)
+                    update();
+                else
+                    BeginInvoke(update);
+
+                await Task.Delay(10);
+            }
+
+            update = new Action(() =>
+                {
+                    txbTestLog.Text += Environment.NewLine;
+                    txbTestLog.SelectionStart = txbTestLog.Text.Length;
+                    txbTestLog.SelectionLength = 0;
+                    txbTestLog.ScrollToCaret();
+                }
+            );
+            if (!InvokeRequired)
+                update();
+            else
+                BeginInvoke(update);
+        }
+
+        /// <summary>
+        /// Update UI on program start
+        /// </summary>
+        private void UpdateUserInterfaceOnStart()
+        {
+            Color textColor = Color.Black;
+            lblTestResult.ForeColor = textColor;
+            lblTestResult.Text = "In progress...";
+
+            textColor = Color.Black;
+            lblBasicTestResult.ForeColor = textColor;
+            lblBasicTestResult.Text = "In progress...";
+
+            btnStartTest.Enabled = false;
+            btnStartTestProgram.Enabled = false;
+
+            textColor = scheduler.TestResult ? Color.Green : Color.Red;
+            lblTestResult.ForeColor = textColor;
+
+            lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+        }
+
+        /// <summary>
+        /// Update UI on program stop
+        /// </summary>
+        private void UpdateUserInterfaceOnStop()
+        {
+            Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
+            lblBasicTestResult.ForeColor = textColor;
+            lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
+
+            btnStartTest.Enabled = true;
+            btnStartTestProgram.Enabled = true;
+        }
+
+        /// <summary>
+        /// Update the UI component with the updated
+        /// filtered can id
+        /// </summary>
+        private void UpdateFilteredCanId()
+        {
+            Dictionary<int, bool> ids = resource?.FilteredCanId;
+
+            lbxFilteredCanId.Items.Clear();
+            foreach (KeyValuePair<int, bool> id in ids)
+            {
+                if (id.Value)
+                    lbxFilteredCanId.Items.Add($"0x{id.Key:X2}");
+            }
+        }
+
+        /// <summary>
+        /// Check whether the form text boxes are valorized (no empty string)
+        /// </summary>
+        /// <returns><see langword="true"/> if all is ok, <see langword="false"/> otherwise</returns>
+        private bool CheckTextBoxes()
+        {
+            bool check = true;
+
+            if (txbUser.Text.CompareTo("") == 0)
+            {
+                check = false;
+                txbUser.Focus();
+            }
+            else
+            {
+                if (txbOperatingSite.Text.CompareTo("") == 0)
+                {
+                    check = false;
+                    txbOperatingSite.Focus();
+                }
+                else
+                {
+                    if (txbBatch.Text.CompareTo("") == 0)
+                    {
+                        check = false;
+                        txbBatch.Focus();
+                    }
+                }
+            }
+
+            return check;
+        }
+
+        #endregion Helper methods
+
+        #region Event handlers
+
+        /// <summary>
+        /// Handle the resource status changed
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The <see cref="StatusChangedEventArgs"/></param>
+        private void Resource_StatusChanged(object sender, StatusChangedEventArgs e)
+        {
+            // Update the UI component (different thread)
+            lblResourceStatus.Invoke(new MethodInvoker(() =>
+            {
+                lblResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+                lblCanResourceStatus.Text = ((TPCANStatus)resource.Status).ToString();
+
+                if (lblResourceStatus.Text.CompareTo("PCAN_ERROR_OK") != 0) // PCAN_ERROR_OK is for no error
+                {
+                    lblResourceStatus.ForeColor = Color.Red;
+                    lblCanResourceStatus.ForeColor = Color.Red;
+                }
+                else
+                {
+                    lblResourceStatus.ForeColor = Color.Black;
+                    lblCanResourceStatus.ForeColor = Color.Black;
+                }
+            }
+                )
+            );
+        }
+
+        /// <summary>
+        /// Update the datagrid view on variable value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Variable_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            UpdateDataGridItems();
+        }
+
+        /// <summary>
+        /// Update the log
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
+        {
+            if (!InvokeRequired)
+            {
+                txbTestLog.Text += scheduler.InstructionLog + Environment.NewLine;
+                txbTestLog.SelectionStart = txbTestLog.Text.Length;
+                txbTestLog.SelectionLength = 0;
+                txbTestLog.ScrollToCaret();
+            }
+            else
+                BeginInvoke(new Action(() => Scheduler_InstructionLogChanged(sender, e)));
+        }
+
+        /// <summary>
+        /// Update the variables on RX value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Channel_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
+        {
+            VariableDictionary.Variables
+                .Where((x) => x.Value.Index == rx.Index && x.Value.SubIndex == rx.SubIndex)
+                .Select((x) => x.Value.ValueAsObject = BitConverter.ToSingle(rx.CanFrame.Data, 4));
+        }
+
+        #region UI event handlers
+
+        /// <summary>
+        /// Handle initialization that can only be done
+        /// after the form control has been created
+        /// (in particular the can communication initialization
+        /// because there is an Invoke method call inside)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainForm_Load(object sender, EventArgs e)
         {
             // Initialize other UI components
@@ -269,7 +458,19 @@ namespace TestProgram
             Location = new Point(8, 8);
         }
 
-        // Select the test file
+        /// <summary>
+        /// Update the can resource baud rate
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CbxBaudRate_SelectedIndexChanged(object sender, EventArgs e)
+            => resource?.SetBaudRate(StringToBaudRate(cbxBaudRate.SelectedItem.ToString()));
+
+        /// <summary>
+        /// Select the test file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnSelectTest_Click(object sender, EventArgs e)
         {
             // The can resource has to be started first
@@ -329,18 +530,6 @@ namespace TestProgram
         }
 
         /// <summary>
-        /// Update the DataGridView with all the variables found in the relative file
-        /// </summary>
-        private void UpdateDataGridItems()
-        {
-            BindingSource bs = new BindingSource
-            {
-                DataSource = VariableDictionary.Variables.Values.ToList()
-            };
-            dgvVariables.Invoke(new MethodInvoker(() => dgvVariables.DataSource = bs.DataSource));
-        }
-
-        /// <summary>
         /// Select the result folder
         /// </summary>
         /// <param name="sender"></param>
@@ -360,63 +549,6 @@ namespace TestProgram
                 ledResultFolderSelected.BackColor = startedColor;
                 testSelected = testFileSelected && testFolderSelected;
             }
-        }
-
-        /// <summary>
-        /// Update the actual steps done by the scheduler
-        /// </summary>
-        /// <returns>The (async) <see cref="Task"/></returns>
-        private async Task UpdateSteps()
-        {
-            // Log header
-            txbTestLog.Invoke(new MethodInvoker(() =>
-                    txbTestLog.Text =
-                        $"Name\tID\tOrder\tVariable involved\tValue\tCondition to verify\tStart time\tStop time\tResult{Environment.NewLine}"
-                            .Replace("\t", "  ")
-                )
-            );
-
-            // Steps done and instruction executed
-            string str = "";
-            while (doUpdateSteps)
-            {
-                str = $"{totalSteps - scheduler.Instructions.Count}/{totalSteps}";
-                lblSchedulerStepDone.Invoke(new MethodInvoker(() => lblSchedulerStepDone.Text = str));
-                lblBasicStepNumber.Invoke(new MethodInvoker(() => lblBasicStepNumber.Text = str));
-
-                lblInstructionDescription.Invoke(new MethodInvoker(() => lblInstructionDescription.Text = scheduler.ActualInstructionDescription));
-                lblBasicInstruction.Invoke(new MethodInvoker(() => lblBasicInstruction.Text = scheduler.ActualInstructionDescription));
-
-                await Task.Delay(10);
-            }
-
-            txbTestLog.Invoke(new MethodInvoker(() =>
-                    {
-                        txbTestLog.Text += Environment.NewLine;
-                        txbTestLog.SelectionStart = txbTestLog.Text.Length;
-                        txbTestLog.SelectionLength = 0;
-                        txbTestLog.ScrollToCaret();
-                    }
-                )
-            );
-        }
-
-        /// <summary>
-        /// Update the log
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Scheduler_InstructionLogChanged(object sender, InstructionLogChangedEventArgs e)
-        {
-            txbTestLog.Invoke(new MethodInvoker(() =>
-                    {
-                        txbTestLog.Text += scheduler.InstructionLog + Environment.NewLine;
-                        txbTestLog.SelectionStart = txbTestLog.Text.Length;
-                        txbTestLog.SelectionLength = 0;
-                        txbTestLog.ScrollToCaret();
-                    }
-                )
-            );
         }
 
         /// <summary>
@@ -454,28 +586,11 @@ namespace TestProgram
                             DateTime now = DateTime.Now;
                             TestProgramManager.SerialIndex = files.Length;
 
-                            // UI update
-                            lblTestResult.Invoke(new MethodInvoker(() =>
-                                    {
-                                        Color textColor = Color.Black;
-                                        lblTestResult.ForeColor = textColor;
-
-                                        lblTestResult.Text = "In progress...";
-                                    }
-                                )
-                            );
-                            lblBasicTestResult.Invoke(new MethodInvoker(() =>
-                                    {
-                                        Color textColor = Color.Black;
-                                        lblBasicTestResult.ForeColor = textColor;
-
-                                        lblBasicTestResult.Text = "In progress...";
-
-                                        btnStartTest.Enabled = false;
-                                        btnStartTestProgram.Enabled = false;
-                                    }
-                                )
-                            );
+                            // UI update on start
+                            if (!InvokeRequired)
+                                UpdateUserInterfaceOnStart();
+                            else
+                                BeginInvoke(new Action(() => UpdateUserInterfaceOnStart()));
 
                             resultPath = Path.Combine(
                                 folderPath,
@@ -483,28 +598,11 @@ namespace TestProgram
                             );
                             await Task.WhenAny(scheduler?.ExecuteAll(resultPath, resource: resource, tx: tx, rx: rx), UpdateSteps()); // Wait for task to finish
 
-                            // UI update
-                            lblTestResult.Invoke(new MethodInvoker(() =>
-                                    {
-                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                                        lblTestResult.ForeColor = textColor;
-
-                                        lblTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-                                    }
-                                )
-                            );
-                            lblBasicTestResult.Invoke(new MethodInvoker(() =>
-                                    {
-                                        Color textColor = scheduler.TestResult ? Color.Green : Color.Red;
-                                        lblBasicTestResult.ForeColor = textColor;
-
-                                        lblBasicTestResult.Text = scheduler.TestResult ? "Succeeded" : "Failed";
-
-                                        btnStartTest.Enabled = true;
-                                        btnStartTestProgram.Enabled = true;
-                                    }
-                                )
-                            );
+                            // UI update on stop
+                            if (!InvokeRequired)
+                                UpdateUserInterfaceOnStop();
+                            else
+                                BeginInvoke(new Action(() => UpdateUserInterfaceOnStop()));
 
                             await Task.Delay(100);
                             doUpdateSteps = false;
@@ -530,29 +628,6 @@ namespace TestProgram
         private void BtnStopTest_Click(object sender, EventArgs e)
         {
             scheduler?.Stop();
-        }
-
-        /// <summary>
-        /// Update the variables on RX value changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Channel_CanFrameChanged(object sender, CanFrameChangedEventArgs e)
-        {
-            VariableDictionary.Variables
-                .Where(x => x.Value.Index == rx.Index && x.Value.SubIndex == rx.SubIndex)
-                .Select(x => x.Value.ValueAsObject = BitConverter.ToSingle(rx.CanFrame.Data, 4)
-            );
-        }
-
-        /// <summary>
-        /// Update the datagrid view on variable value changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Variable_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            UpdateDataGridItems();
         }
 
         /// <summary>
@@ -621,22 +696,6 @@ namespace TestProgram
                 resource.DisableLog();
                 // And update UI
                 btnReadLog.FlatAppearance.BorderColor = stoppedColor;
-            }
-        }
-
-        /// <summary>
-        /// Update the UI component with the updated
-        /// filtered can id
-        /// </summary>
-        private void UpdateFilteredCanId()
-        {
-            Dictionary<int, bool> ids = resource?.FilteredCanId;
-
-            lbxFilteredCanId.Items.Clear();
-            foreach (KeyValuePair<int, bool> id in ids)
-            {
-                if (id.Value)
-                    lbxFilteredCanId.Items.Add($"0x{id.Key:X2}");
             }
         }
 
@@ -783,37 +842,8 @@ namespace TestProgram
             }
         }
 
-        /// <summary>
-        /// Check whether the form text boxes are valorized (no empty string)
-        /// </summary>
-        /// <returns><see langword="true"/> if all is ok, <see langword="false"/> otherwise</returns>
-        private bool CheckTextBoxes()
-        {
-            bool check = true;
+        #endregion UI event handlers
 
-            if (txbUser.Text.CompareTo("") == 0)
-            {
-                check = false;
-                txbUser.Focus();
-            }
-            else
-            {
-                if (txbOperatingSite.Text.CompareTo("") == 0)
-                {
-                    check = false;
-                    txbOperatingSite.Focus();
-                }
-                else
-                {
-                    if (txbBatch.Text.CompareTo("") == 0)
-                    {
-                        check = false;
-                        txbBatch.Focus();
-                    }
-                }
-            }
-
-            return check;
-        }
+        #endregion Event handlers
     }
 }
